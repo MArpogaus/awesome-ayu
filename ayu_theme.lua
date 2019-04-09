@@ -200,29 +200,54 @@ local theme = {
 
 
     -- Define the image to load
-    self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
-    self.titlebar_floating_button_focus_inactive  = themes_path.."default/titlebar/floating_focus_inactive.png"
-    self.titlebar_floating_button_normal_active   = themes_path.."default/titlebar/floating_normal_active.png"
-    self.titlebar_floating_button_focus_active    = themes_path.."default/titlebar/floating_focus_active.png"
-
+    if cs == ayu_colors.light then
+      self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
+      self.titlebar_floating_button_focus_inactive  = themes_path.."default/titlebar/floating_focus_inactive.png"
+      self.titlebar_floating_button_normal_active   = themes_path.."default/titlebar/floating_focus_active.png"
+      self.titlebar_floating_button_focus_active    = themes_path.."default/titlebar/floating_focus_active.png"
+    else
+      self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
+      self.titlebar_floating_button_focus_inactive  = themes_path.."default/titlebar/floating_normal_inactive.png"
+      self.titlebar_floating_button_normal_active   = themes_path.."default/titlebar/floating_normal_active.png"
+      self.titlebar_floating_button_focus_active    = themes_path.."default/titlebar/floating_normal_active.png"
+    end
 
     -- load layout icons
-    self.layout_fairh      = themes_path.."default/layouts/fairhw.png"
-    self.layout_fairv      = themes_path.."default/layouts/fairvw.png"
-    self.layout_floating   = themes_path.."default/layouts/floatingw.png"
-    self.layout_magnifier  = themes_path.."default/layouts/magnifierw.png"
-    self.layout_max        = themes_path.."default/layouts/maxw.png"
-    self.layout_fullscreen = themes_path.."default/layouts/fullscreenw.png"
-    self.layout_tilebottom = themes_path.."default/layouts/tilebottomw.png"
-    self.layout_tileleft   = themes_path.."default/layouts/tileleftw.png"
-    self.layout_tile       = themes_path.."default/layouts/tilew.png"
-    self.layout_tiletop    = themes_path.."default/layouts/tiletopw.png"
-    self.layout_spiral     = themes_path.."default/layouts/spiralw.png"
-    self.layout_dwindle    = themes_path.."default/layouts/dwindlew.png"
-    self.layout_cornernw   = themes_path.."default/layouts/cornernww.png"
-    self.layout_cornerne   = themes_path.."default/layouts/cornernew.png"
-    self.layout_cornersw   = themes_path.."default/layouts/cornersww.png"
-    self.layout_cornerse   = themes_path.."default/layouts/cornersew.png"
+    if cs == ayu_colors.light then
+      self.layout_fairh      = themes_path.."default/layouts/fairh.png"
+      self.layout_fairv      = themes_path.."default/layouts/fairv.png"
+      self.layout_floating   = themes_path.."default/layouts/floating.png"
+      self.layout_magnifier  = themes_path.."default/layouts/magnifier.png"
+      self.layout_max        = themes_path.."default/layouts/max.png"
+      self.layout_fullscreen = themes_path.."default/layouts/fullscreen.png"
+      self.layout_tilebottom = themes_path.."default/layouts/tilebottom.png"
+      self.layout_tileleft   = themes_path.."default/layouts/tileleft.png"
+      self.layout_tile       = themes_path.."default/layouts/tile.png"
+      self.layout_tiletop    = themes_path.."default/layouts/tiletop.png"
+      self.layout_spiral     = themes_path.."default/layouts/spiral.png"
+      self.layout_dwindle    = themes_path.."default/layouts/dwindle.png"
+      self.layout_cornernw   = themes_path.."default/layouts/cornernw.png"
+      self.layout_cornerne   = themes_path.."default/layouts/cornerne.png"
+      self.layout_cornersw   = themes_path.."default/layouts/cornersw.png"
+      self.layout_cornerse   = themes_path.."default/layouts/cornerse.png"
+    else
+      self.layout_fairh      = themes_path.."default/layouts/fairhw.png"
+      self.layout_fairv      = themes_path.."default/layouts/fairvw.png"
+      self.layout_floating   = themes_path.."default/layouts/floatingw.png"
+      self.layout_magnifier  = themes_path.."default/layouts/magnifierw.png"
+      self.layout_max        = themes_path.."default/layouts/maxw.png"
+      self.layout_fullscreen = themes_path.."default/layouts/fullscreenw.png"
+      self.layout_tilebottom = themes_path.."default/layouts/tilebottomw.png"
+      self.layout_tileleft   = themes_path.."default/layouts/tileleftw.png"
+      self.layout_tile       = themes_path.."default/layouts/tilew.png"
+      self.layout_tiletop    = themes_path.."default/layouts/tiletopw.png"
+      self.layout_spiral     = themes_path.."default/layouts/spiralw.png"
+      self.layout_dwindle    = themes_path.."default/layouts/dwindlew.png"
+      self.layout_cornernw   = themes_path.."default/layouts/cornernww.png"
+      self.layout_cornerne   = themes_path.."default/layouts/cornernew.png"
+      self.layout_cornersw   = themes_path.."default/layouts/cornersww.png"
+      self.layout_cornerse   = themes_path.."default/layouts/cornersew.png"
+    end
 
     -- Generate Awesome icon:
     self.awesome_icon = theme_assets.awesome_icon(

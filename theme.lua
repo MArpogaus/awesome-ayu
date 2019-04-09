@@ -123,9 +123,13 @@ local fa_bat_icons = {
 }
 local baticon = lain.widget.bat({
     settings = function()
-        local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or bat_now.perc
+        if bat_now.ac_status == 1 then
+            ico = ''
+        else
+            ico = fa_bat_icons[math.floor(bat_now.perc/25)+1]
+        end
 
-        widget:set_markup(markup.fontfg(theme.fa_font, theme.widget_colors.bat, fa_bat_icons[math.floor(bat_now.perc/25)+1]))
+        widget:set_markup(markup.fontfg(theme.fa_font, theme.widget_colors.bat, ico))
     end
 })
 baticon.align  = 'center'
@@ -134,10 +138,6 @@ baticon.forced_width = theme.ico_width
 local bat = lain.widget.bat({
     settings = function()
         local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or bat_now.perc
-
-        if bat_now.ac_status == 1 then
-            perc = perc .. " plug"
-        end
 
         widget:set_markup(markup.fontfg(theme.font, theme.widget_colors.bat, perc .. " "))
     end

@@ -19,11 +19,14 @@ local ayu_colors = require("themes.ayu.ayu_colors")
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = "HighContrast"
-
+local city_id = 2658372
 -- set the wallpaper
-theme.wallpaper  = theme.confdir .. "/wall.png"
+--theme.wallpaper  = theme.confdir .. "/wall.png"
 
 local markup = lain.util.markup
+
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
 
 -- Textclock
 os.setlocale(os.getenv("LANG")) -- to localize the clock
@@ -53,7 +56,7 @@ theme.cal = lain.widget.cal({
 -- Weather
 local weathericon = fa_ico(theme.widget_colors.weather, '')
 theme.weather = lain.widget.weather({
-    city_id = 2658372, -- placeholder (London)
+    city_id = city_id,
     notification_preset = { font = "xos4 Terminus 10", fg = theme.fg_normal },
     weather_na_markup = markup.fontfg(theme.font, theme.widget_colors.weather, "N/A "),
     settings = function()
@@ -226,6 +229,55 @@ theme.mpd = lain.widget.mpd({
     end
 })
 
+-- stolen from: https://github.com/elenapan/dotfiles/blob/master/config/awesome/noodle/start_screen.lua
+-- Helper function that puts a widget inside a box with a specified background color
+-- Invisible margins are added so that the boxes created with this function are evenly separated
+-- The widget_to_be_boxed is vertically and horizontally centered inside the box
+local function create_boxed_widget(widget_to_be_boxed, width, height, bg_color)
+    local box_container = wibox.container.background()
+    box_container.bg = bg_color
+    box_container.shape = function(c,h,w) gears.shape.rounded_rect(c,h,w,30) end
+    box_container.forced_height = height
+    box_container.forced_width = width
+
+    local boxed_widget = wibox.widget {
+        -- add margins
+        {
+            -- Add background color
+            {
+                -- Center widget_to_be_boxed horizontally
+                nil,
+                {
+                    -- Center widget_to_be_boxed vertically
+                    nil,
+                    {
+                        -- The actual widget goes here
+                        widget_to_be_boxed,
+                        height = height,
+                        width = width,
+                        strategy = "min",
+                        expand = "none",
+                        layout   = wibox.layout.constraint,
+                    },
+                    nil,
+                    layout = wibox.layout.align.vertical,
+                    expand = "none"
+                },
+                nil,
+                layout = wibox.layout.align.horizontal,
+                expand = "none"
+            },
+            widget = box_container
+        },
+        margins = dpi(24),
+        color = "#FF000000",
+        widget = wibox.container.margin,
+    }
+
+    return boxed_widget
+end
+
+
 function theme.at_screen_connect(s)
     -- Quake application
     if not s.quake then
@@ -325,6 +377,70 @@ function theme.at_screen_connect(s)
             layout = wibox.layout.fixed.horizontal,
             s.mylayoutbox,
         },
+    }
+
+    deskop_clock = wibox.widget.textclock(
+        markup.fontfg("xos4 Terminus "..dpi(48),"#FFFFFF", " %H:%M ")
+    )
+    deskop_clock_box = create_boxed_widget(deskop_clock, 420, 180, theme.widget_colors.desktop_clock)
+
+    desktop_date = wibox.widget.textclock(
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, "It's ") ..
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_day, "%A") ..
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, ", ") ..
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_date, "%d. %B") ..
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, " and there is "))
+
+    desktop_weather = lain.widget.weather({
+        city_id = city_id,
+        weather_na_markup = markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_weather, "N/A "),
+        settings = function()
+            descr = weather_now["weather"][1]["description"]:lower()
+            units = math.floor(weather_now["main"]["temp"])
+            widget:set_markup(markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_weather, descr) .. markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, "."))
+        end
+    })
+
+    s.desktop_widget = wibox({
+        x = s.workarea.x,
+        y = s.workarea.y,
+        screen = s,
+        visible = true,
+        ontop = false,
+        width = s.workarea.width,
+        height = s.workarea.height,
+        --fg = theme.fg_normal
+    })
+    s.desktop_widget:setup{
+        -- Center widgets vertically
+        nil,
+        {
+            -- Center widgets horizontally
+            nil,
+            {
+                {
+                    nil,
+                    deskop_clock_box,
+                    nil,
+                    expand = "none",
+                    layout = wibox.layout.align.horizontal
+                },
+                {
+                    desktop_date,
+                    desktop_weather,
+                    expand = "none",
+                    layout = wibox.layout.fixed.horizontal
+                },
+                expand = "none",
+                layout = wibox.layout.fixed.vertical
+            },
+            nil,
+            expand = "none",
+            layout = wibox.layout.align.vertical
+        },
+        nil,
+        expand = "none",
+        layout = wibox.layout.align.horizontal
     }
 end
 

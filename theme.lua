@@ -15,6 +15,7 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme = require("themes.ayu.ayu_theme")
 local ayu_colors = require("themes.ayu.ayu_colors")
+local util = require("themes.ayu.util")
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
@@ -28,8 +29,6 @@ local markup = lain.util.markup
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
--- Textclock
-os.setlocale(os.getenv("LANG")) -- to localize the clock
 local fa_ico = function(col, ico)
     return wibox.widget{
         markup = markup.fontfg(theme.fa_font, col, ico),
@@ -39,6 +38,8 @@ local fa_ico = function(col, ico)
         forced_width = theme.ico_width
     }
 end
+-- Textclock
+os.setlocale(os.getenv("LANG")) -- to localize the clock
 local clockicon = fa_ico(theme.widget_colors.cal, '')
 local mytextclock = wibox.widget.textclock(markup(theme.widget_colors.cal, "%A %d %B ") .. markup(theme.fg_normal, ">") .. markup(theme.widget_colors.clock, " %H:%M "))
 mytextclock.font = theme.font
@@ -101,16 +102,22 @@ theme.mail = lain.widget.imap({
 --]]
 
 -- CPU
-local cpuicon = fa_ico(theme.widget_colors.cpu, '')
-local cpu = lain.widget.cpu({
+local cpu_ico = ''
+local cpu_widget = lain.widget.cpu({
     settings = function()
         widget:set_markup(markup.fontfg(theme.font, theme.widget_colors.cpu, cpu_now.usage .. "% "))
     end
-})
+}).widget
+local cpu_wibox = util.create_wibox_widget(
+    theme.widget_colors.cpu,
+    cpu_ico,
+    cpu_widget
+)
 
 -- Coretemp
 local tempicon = fa_ico(theme.widget_colors.temp, '')
 local temp = lain.widget.temp({
+    tempfile = '/sys/class/thermal/thermal_zone1/temp',
     settings = function()
         widget:set_markup(markup.fontfg(theme.font, theme.widget_colors.temp, coretemp_now .. "°C "))
     end
@@ -229,54 +236,6 @@ theme.mpd = lain.widget.mpd({
     end
 })
 
--- stolen from: https://github.com/elenapan/dotfiles/blob/master/config/awesome/noodle/start_screen.lua
--- Helper function that puts a widget inside a box with a specified background color
--- Invisible margins are added so that the boxes created with this function are evenly separated
--- The widget_to_be_boxed is vertically and horizontally centered inside the box
-local function create_boxed_widget(widget_to_be_boxed, width, height, bg_color)
-    local box_container = wibox.container.background()
-    box_container.bg = bg_color
-    box_container.shape = function(c,h,w) gears.shape.rounded_rect(c,h,w,30) end
-    box_container.forced_height = height
-    box_container.forced_width = width
-
-    local boxed_widget = wibox.widget {
-        -- add margins
-        {
-            -- Add background color
-            {
-                -- Center widget_to_be_boxed horizontally
-                nil,
-                {
-                    -- Center widget_to_be_boxed vertically
-                    nil,
-                    {
-                        -- The actual widget goes here
-                        widget_to_be_boxed,
-                        height = height,
-                        width = width,
-                        strategy = "min",
-                        expand = "none",
-                        layout   = wibox.layout.constraint,
-                    },
-                    nil,
-                    layout = wibox.layout.align.vertical,
-                    expand = "none"
-                },
-                nil,
-                layout = wibox.layout.align.horizontal,
-                expand = "none"
-            },
-            widget = box_container
-        },
-        margins = dpi(24),
-        color = "#FF000000",
-        widget = wibox.container.margin,
-    }
-
-    return boxed_widget
-end
-
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -334,32 +293,34 @@ function theme.at_screen_connect(s)
         },
         --s.mytasklist, -- Middle widget
         nil,
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            wibox.widget.systray(),
-            --mailicon,
-            --theme.mail.widget,
-            netdownicon,
-            netdowninfo,
-            netupicon,
-            netupinfo.widget,
-            volicon,
-            theme.volume.widget,
-            memicon,
-            memory.widget,
-            cpuicon,
-            cpu.widget,
-            --fsicon,
-            --theme.fs.widget,
-            weathericon,
-            theme.weather.widget,
-            tempicon,
-            temp.widget,
-            baticon,
-            bat.widget,
-            clockicon,
-            mytextclock,
-        },
+        -- { -- Right widgets
+        --     layout = wibox.layout.fixed.horizontal,
+        --     wibox.widget.systray(),
+        --     --mailicon,
+        --     --theme.mail.widget,
+        --     netdownicon,
+        --     netdowninfo,
+        --     netupicon,
+        --     netupinfo.widget,
+        --     volicon,
+        --     theme.volume.widget,
+        --     memicon,
+        --     memory.widget,
+        --     --cpuicon,
+        --     --cpu.widget,
+        --     cpu_wibox,
+        --     --fsicon,
+        --     --theme.fs.widget,
+        --     weathericon,
+        --     theme.weather.widget,
+        --     tempicon,
+        --     temp.widget,
+        --     baticon,
+        --     bat.widget,
+        --     clockicon,
+        --     mytextclock,
+        -- },
+        require("themes.ayu.widgets.wibox")
     }
 
     -- Create the bottom wibox
@@ -382,10 +343,10 @@ function theme.at_screen_connect(s)
     deskop_clock = wibox.widget.textclock(
         markup.fontfg("xos4 Terminus "..dpi(48),"#FFFFFF", " %H:%M ")
     )
-    deskop_clock_box = create_boxed_widget(deskop_clock, 420, 180, theme.widget_colors.desktop_clock)
+    deskop_clock_box = util.create_boxed_widget(deskop_clock, 420, 180, theme.widget_colors.desktop_clock)
 
     desktop_date = wibox.widget.textclock(
-        markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, "It's ") ..
+        markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, "Today is ") ..
         markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_day, "%A") ..
         markup.fontfg("xos4 Terminus "..dpi(18), theme.fg_normal, ", ") ..
         markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_date, "%d. %B") ..
@@ -393,7 +354,7 @@ function theme.at_screen_connect(s)
 
     desktop_weather = lain.widget.weather({
         city_id = city_id,
-        weather_na_markup = markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_weather, "N/A "),
+        weather_na_markup = markup.fontfg("xos4 Terminus "..dpi(18), theme.widget_colors.desktop_weather, "no forecast available"),
         settings = function()
             descr = weather_now["weather"][1]["description"]:lower()
             units = math.floor(weather_now["main"]["temp"])

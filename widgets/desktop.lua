@@ -83,7 +83,7 @@ local gen_weather_box = function(color)
             temp_min = math.floor(weather_now["main"]["temp_min"])
             temp_max = math.floor(weather_now["main"]["temp_max"])
 
-            weather_icon:set_markup(util.owf_markup(color, descr, dpi(55)))
+            weather_icon:set_markup(util.owf_markup(color, weather_now, dpi(55)))
             weather_temp:set_markup(markup_color_size(30, color, temp))
             weather_temp_min:set_markup(markup_color_size(8, color,
                                                           temp_min .. ' - '))

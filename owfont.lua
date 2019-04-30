@@ -1,4 +1,7 @@
-module = {
+local awful = require("awful")
+local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
+
+local common = {
     -- Thunderstorm --------------------------------------------------------------
     ["thunderstorm with light rain"] = "&#60200;",
     ["thunderstorm with rain"] = "&#60201;",
@@ -59,16 +62,18 @@ module = {
     ["tornado"] = "&#60781;",
 
     -- Clouds --------------------------------------------------------------------
-    ["sky is clear"] = "&#60800;",
-    ["calm"] = "&#60800;",
+    -- ["sky is clear night"] = "&#61800;",
+    -- ["sky is clear"] = "&#60800;",
 
-    ["sky is clear night"] = "&#61800;",
-    ["calm night"] = "&#61800;",
-    ["few clouds"] = "&#60801;",
-    ["few clouds night"] = "&#61801;",
+    -- ["calm"] = "&#60800;",
+    -- ["calm night"] = "&#61800;",
 
-    ["scattered clouds"] = "&#60802;",
-    ["scattered clouds night"] = "&#61802;",
+    -- ["few clouds"] = "&#60801;",
+    -- ["few clouds night"] = "&#61801;",
+
+    -- ["scattered clouds"] = "&#60802;",
+    -- ["scattered clouds night"] = "&#61802;",
+
     ["broken clouds"] = "&#60803;",
     ["overcast clouds"] = "&#60804;",
 
@@ -94,6 +99,21 @@ module = {
     ["storm"] = "&#60960;",
     ["violent storm"] = "&#60961;",
     ["hurricane"] = "&#60962;"
+}
+
+local module = {
+    day = my_table.join(common, {
+        ["sky is clear"] = "&#60800;",
+        ["calm"] = "&#60800;",
+        ["few clouds"] = "&#60801;",
+        ["scattered clouds"] = "&#60802;"
+    }),
+    night = my_table.join(common, {
+        ["sky is clear"] = "&#61800;",
+        ["calm"] = "&#61800;",
+        ["few clouds"] = "&#61801;",
+        ["scattered clouds"] = "&#61802;"
+    })
 }
 
 return module

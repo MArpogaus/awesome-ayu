@@ -61,7 +61,7 @@ local gen_weather_widget = function(color)
                 units = math.floor(weather_now["main"]["temp"])
                 widget:set_markup(markup.fontfg(beautiful.font, color,
                                                 descr .. " @ " .. units .. "°C"))
-                weather_icon:set_markup(util.owf_markup(color, descr))
+                weather_icon:set_markup(util.owf_markup(color, weather_now))
             end
         })
     beautiful.weather = weather_widget

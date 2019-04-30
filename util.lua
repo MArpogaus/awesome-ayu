@@ -1,18 +1,40 @@
 local gears = require("gears")
-local wibox = require("wibox")
-
 local lain  = require("lain")
+local wibox = require("wibox")
+local beautiful = require("beautiful")
+local xresources = require("beautiful.xresources")
+
+local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
+local owfont = require("themes.ayu.owfont")
 
 local module = {}
 
+module.fa_markup = function(col, ico)
+    local fa_font =  "FontAwesome " .. beautiful.font_size
+    return markup.fontfg(fa_font, col, ico)
+end
+
 module.fa_ico = function (col, ico)
-    local fa_font =  "FontAwesome " .. dpi(8)
     return wibox.widget{
-        markup = markup.fontfg(fa_font, col, ico),
+        markup = module.fa_markup(col, ico),
+        widget = wibox.widget.textbox,
+        align = 'center',
+        valign = 'center',
+        forced_width = dpi(20)
+    }
+end
+
+module.owf_markup = function(col, cond)
+    local owf_font =  "owf-regular " .. beautiful.font_size
+    ico = owfont[cond] or "N/A"
+    return markup.fontfg(owf_font, col, ico)
+end
+
+module.owf_ico = function (col, cond)
+    return wibox.widget{
+        markup = module.owf_markup(col, cond),
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
@@ -48,7 +70,7 @@ module.create_boxed_widget = function (widget_to_be_boxed, width, height, bg_col
                         width = width,
                         strategy = "min",
                         expand = "none",
-                        layout = wibox.layout.constraint,
+                        layout = wibox.container.constraint,
                     },
                     nil,
                     layout = wibox.layout.align.vertical,
@@ -78,8 +100,8 @@ module.create_wibox_widget = function (color, icon, widget)
         {
             -- add margins
             icon_widget,
-            left = dpi(10),
-            right = dpi(5),
+            left = dpi(5),
+            right = dpi(2),
             color = "#FF000000",
             widget = wibox.container.margin
         },

@@ -82,8 +82,9 @@ local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
         self.confdir = config_path .. "/themes/ayu"
-        self.font = "xos4 Terminus " .. dpi(8)
-        self.fa_font = "FontAwesome " .. dpi(8)
+        self.font_name = "Monospace "
+        self.font_size = dpi(8)
+        self.font = self.font_name .. self.font_size
         self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
@@ -149,7 +150,7 @@ local theme = {
             desktop_clock = cs.entity, -- #399EE6
             desktop_day = cs.accent, -- #FF9940
             desktop_date = cs.markup, -- #F07171
-            desktop_weather = cs.added, -- #99BF4D
+            desktop_clock_weather = cs.added, -- #99BF4D
         }
         
         -- generate buttons

@@ -280,8 +280,8 @@ local module = {
     cpu = gen_cpu_widget(beautiful.widget_colors.cpu),
     temp = gen_temp_widget(beautiful.widget_colors.temp),
     bat = gen_bat_widget(beautiful.widget_colors.bat),
-    fs = gen_fs_widget("#e54c62"),
-    mpd = gen_mpd_widget("#e54c62"),
+    fs = gen_fs_widget(beautiful.widget_colors.fs),
+    mpd = gen_mpd_widget(beautiful.widget_colors.mpd),
     datetime = gen_datetime_widget(beautiful.widget_colors.cal,
                                    beautiful.widget_colors.clock)
 }

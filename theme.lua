@@ -92,12 +92,12 @@ function theme.at_screen_connect(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-            wibox_widgets.fs,
             wibox_widgets.netdown,
             wibox_widgets.netup,
             wibox_widgets.vol,
             wibox_widgets.mem,
             wibox_widgets.cpu,
+            wibox_widgets.fs,
             wibox_widgets.weather,
             wibox_widgets.temp,
             wibox_widgets.bat,

@@ -97,13 +97,13 @@ local theme = {
         self.bg_focus = cs.bg
         self.bg_urgent = cs.bg
         self.fg_normal = cs.fg
-        self.fg_focus = cs.accent
+        self.fg_focus = cs.colors[4]
         self.fg_urgent = cs.error
         self.fg_minimize = cs.fg
         self.border_width = 1
         self.border_normal = cs.fg
         self.border_focus = cs.fg
-        self.border_marked = cs.accent
+        self.border_marked = cs.colors[4]
         self.top_bar_height = dpi(20)
         self.bottom_bar_height = dpi(20)
         self.menu_border_width = 0
@@ -111,16 +111,16 @@ local theme = {
         self.menu_height = dpi(15)
         self.menu_width = dpi(150)
         self.menu_fg_normal = cs.fg
-        self.menu_fg_focus = cs.accent
+        self.menu_fg_focus = cs.colors[4]
         self.menu_bg_normal = cs.bg
         self.menu_bg_focus = cs.bg
         
         -- set colors for buttons and widgets
-        self.close_button_fg_color = cs.markup --"#F07171"
-        self.maximized_button_fg_color = cs.string --"#86B300"
-        self.minimize_button_fg_color = cs.accent --"#FF9940"
-        self.ontop_button_fg_color = cs.entity --"#399EE6"
-        self.sticky_button_fg_color = cs.comment --"#ABB0B6"
+        self.close_button_fg_color = cs.colors[2] --"#F07171"
+        self.maximized_button_fg_color = cs.colors[11] --"#86B300"
+        self.minimize_button_fg_color = cs.colors[4] --"#FF9940"
+        self.ontop_button_fg_color = cs.colors[13] --"#399EE6"
+        self.sticky_button_fg_color = cs.colors[8] --"#ABB0B6"
         
         if cs == ayu_colors.light then
             self.close_button_bg_color = reduce_contrast(self.close_button_fg_color, -70)
@@ -137,20 +137,21 @@ local theme = {
         end
         
         self.widget_colors = {
-            netdown = cs.entity, -- #399EE6
-            netup = cs.keyword, -- #FA8D3E
-            volume = cs.markup, -- #F07171
-            memory = cs.string, -- #86B300
-            cpu = cs.modified, -- #709ECC
-            weather = cs.func, -- #F2AE49
-            temp = cs.removed, -- #F27983
-            bat = cs.added, -- #99BF4D
-            cal = cs.fg, -- #6C7680
-            clock = cs.accent, -- #FF9940
-            desktop_clock = cs.entity, -- #399EE6
-            desktop_day = cs.accent, -- #FF9940
-            desktop_date = cs.markup, -- #F07171
-            desktop_month = cs.added, -- #99BF4D
+            netdown = cs.colors[2],
+            netup = cs.colors[3],
+            volume = cs.colors[4],
+            fs = cs.colors[6],
+            memory = cs.colors[5],
+            cpu = cs.colors[7],
+            weather = cs.colors[10],
+            temp = cs.colors[11],
+            bat = cs.colors[12],
+            cal = cs.colors[16],
+            clock = cs.colors[4],
+            desktop_clock = cs.colors[13],
+            desktop_day = cs.colors[4],
+            desktop_date = cs.colors[2],
+            desktop_month = cs.colors[3],
         }
         
         -- generate buttons

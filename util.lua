@@ -11,14 +11,15 @@ local owfont = require("themes.ayu.owfont")
 
 local module = {}
 
-module.fa_markup = function(col, ico)
-    local fa_font =  "FontAwesome " .. beautiful.font_size
+module.fa_markup = function(col, ico, size)
+    local font_size = size or beautiful.font_size
+    local fa_font =  "FontAwesome " .. font_size
     return markup.fontfg(fa_font, col, ico)
 end
 
-module.fa_ico = function (col, ico)
+module.fa_ico = function (col, ico, size)
     return wibox.widget{
-        markup = module.fa_markup(col, ico),
+        markup = module.fa_markup(col, ico, size),
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
@@ -26,15 +27,16 @@ module.fa_ico = function (col, ico)
     }
 end
 
-module.owf_markup = function(col, cond)
-    local owf_font =  "owf-regular " .. beautiful.font_size
+module.owf_markup = function(col, cond, size)
+    local font_size = size or beautiful.font_size
+    local owf_font =  "owf-regular " .. font_size
     ico = owfont[cond] or "N/A"
     return markup.fontfg(owf_font, col, ico)
 end
 
-module.owf_ico = function (col, cond)
+module.owf_ico = function (col, cond, size)
     return wibox.widget{
-        markup = module.owf_markup(col, cond),
+        markup = module.owf_markup(col, cond, size),
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
@@ -69,7 +71,6 @@ module.create_boxed_widget = function (widget_to_be_boxed, width, height, bg_col
                         height = height,
                         width = width,
                         strategy = "min",
-                        expand = "none",
                         layout = wibox.container.constraint,
                     },
                     nil,
@@ -100,7 +101,7 @@ module.create_wibox_widget = function (color, icon, widget)
         {
             -- add margins
             icon_widget,
-            left = dpi(5),
+            left = dpi(8),
             right = dpi(2),
             color = "#FF000000",
             widget = wibox.container.margin

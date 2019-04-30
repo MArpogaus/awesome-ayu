@@ -150,7 +150,7 @@ local theme = {
             desktop_clock = cs.entity, -- #399EE6
             desktop_day = cs.accent, -- #FF9940
             desktop_date = cs.markup, -- #F07171
-            desktop_clock_weather = cs.added, -- #99BF4D
+            desktop_month = cs.added, -- #99BF4D
         }
         
         -- generate buttons

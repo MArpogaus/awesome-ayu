@@ -24,9 +24,9 @@ os.setlocale(os.getenv("LANG")) -- to localize the clock
 local gen_datetime_widget = function(color_date, color_time)
     local clock_icon = util.fa_ico(color_date, '')
     local clock_widget = wibox.widget.textclock(
-                             markup(color_date, "%A %d %B ") ..
-                                 markup(beautiful.fg_normal, ">") ..
-                                 markup(color_time, " %H:%M "))
+                             markup(color_date, "%A %d %B") ..
+                                 markup(beautiful.fg_normal, " > ") ..
+                                 markup(color_time, "%H:%M"))
     clock_widget.font = beautiful.font
     local clock_wibox_widget = util.create_wibox_widget(color_date, clock_icon,
                                                         clock_widget)
@@ -44,7 +44,7 @@ local gen_datetime_widget = function(color_date, color_time)
     return clock_wibox_widget
 end
 
--- [ Weather ] ------------------------------------------------------------------
+-- [ weather ] ------------------------------------------------------------------
 local gen_weather_widget = function(color)
     local weather_icon = util.owf_ico(color)
     local weather_widget = lain.widget.weather(
@@ -52,16 +52,16 @@ local gen_weather_widget = function(color)
             city_id = city_id,
             notification_preset = {
                 font = beautiful.font_name .. dpi(10),
-                fg = beautiful.fg_normal
+                fg = beautiful.fg_normal,
+                bg = beautiful.bg_normal
             },
-            weather_na_markup = markup.fontfg(beautiful.font, color, "N/A "),
+            weather_na_markup = markup.fontfg(beautiful.font, color, "N/A"),
             settings = function()
                 descr = weather_now["weather"][1]["description"]:lower()
                 units = math.floor(weather_now["main"]["temp"])
                 widget:set_markup(markup.fontfg(beautiful.font, color,
-                                                descr .. " @ " .. units ..
-                                                    "°C "))
-                weather_icon:set_markup(util.owf_markup(color,descr))
+                                                descr .. " @ " .. units .. "°C"))
+                weather_icon:set_markup(util.owf_markup(color, descr))
             end
         })
     beautiful.weather = weather_widget
@@ -71,7 +71,7 @@ end
 
 -- [ fs ] -----------------------------------------------------------------------
 local gen_fs_widget = function(color)
-    local fs_icon = wibox.widget.imagebox(beautiful.widget_fs)
+    local fs_icon = ""
     fs_widget = lain.widget.fs({
         notification_preset = {
             font = beautiful.font_name .. dpi(10),
@@ -81,7 +81,7 @@ local gen_fs_widget = function(color)
             widget:set_markup(markup.fontfg(beautiful.font, color,
                                             string.format("%.1f",
                                                           fs_now["/"].used) ..
-                                                "% "))
+                                                "%"))
         end
     })
     beautiful.fs = fs_widget
@@ -89,19 +89,19 @@ local gen_fs_widget = function(color)
     return util.create_wibox_widget(color, fs_icon, fs_widget)
 end
 
--- [ CPU ] ----------------------------------------------------------------------
+-- [ cpu ] ----------------------------------------------------------------------
 local gen_cpu_widget = function(color)
     local cpu_icon = ''
     local cpu_widget = lain.widget.cpu({
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font, color,
-                                            cpu_now.usage .. "% "))
+                                            cpu_now.usage .. "%"))
         end
     })
     return util.create_wibox_widget(color, cpu_icon, cpu_widget)
 end
 
--- [ Coretemp ] -----------------------------------------------------------------
+-- [ coretemp ] -----------------------------------------------------------------
 local gen_temp_widget = function(color)
     local temp_icon = util.fa_ico(color, '')
     local temp_widget = lain.widget.temp(
@@ -109,14 +109,14 @@ local gen_temp_widget = function(color)
             tempfile = '/sys/class/thermal/thermal_zone1/temp',
             settings = function()
                 widget:set_markup(markup.fontfg(beautiful.font, color,
-                                                coretemp_now .. "°C "))
+                                                coretemp_now .. "°C"))
             end
         })
 
     return util.create_wibox_widget(color, temp_icon, temp_widget)
 end
 
--- [ Battery ] ------------------------------------------------------------------
+-- [ battery ] ------------------------------------------------------------------
 local gen_bat_widget = function(color)
     local fa_bat_icons = {
         '', -- fa-battery-0 (alias) [&#xf244;]
@@ -151,7 +151,7 @@ local gen_bat_widget = function(color)
     return util.create_wibox_widget(color, bat_icon, bat_widget)
 end
 
--- [ ALSA volume ] --------------------------------------------------------------
+-- [ alsa volume ] --------------------------------------------------------------
 local gen_vol_widget = function(color)
     local fa_vol_icons = {
         '', -- fa-volume-off [&#xf026;]
@@ -185,7 +185,7 @@ local gen_vol_widget = function(color)
     return util.create_wibox_widget(color, vol_icon, vol_widget)
 end
 
--- [ Net ] ----------------------------------------------------------------------
+-- [ net ] ----------------------------------------------------------------------
 local gen_netdown_widget = function(color)
     local netdown_icon = util.fa_ico(color, '')
     local netdown_widget = lain.widget.net(
@@ -208,7 +208,12 @@ local gen_netup_widget = function(color)
                                          string.match(
                                              beautiful.weather.widget.text,
                                              "N/A") then
-                    beautiful.weather.update()
+                    if beautiful.weather then
+                        beautiful.weather.update()
+                    end
+                    if beautiful.desktop_weather then
+                        beautiful.desktop_weather.update()
+                    end
                 end
 
                 widget:set_markup(markup.fontfg(beautiful.font, color,
@@ -219,20 +224,20 @@ local gen_netup_widget = function(color)
     return util.create_wibox_widget(color, netup_icon, netup_widget)
 end
 
--- [ MEM ] ----------------------------------------------------------------------
+-- [ mem ] ----------------------------------------------------------------------
 local gen_mem_widget = function(color)
     local mem_icon = util.fa_ico(color, '')
     local mem_widget = lain.widget.mem({
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font, color,
-                                            mem_now.used .. "M "))
+                                            mem_now.used .. "M"))
         end
     })
 
     return util.create_wibox_widget(color, mem_icon, mem_widget)
 end
 
--- [ MPD ] ----------------------------------------------------------------------
+-- [ mpd ] ----------------------------------------------------------------------
 local gen_mpd_widget = function(color)
     local mpd_icon = wibox.widget.textbox()
     mpd_widget = lain.widget.mpd({

@@ -94,7 +94,6 @@ module = {
     ["storm"] = "&#60960;",
     ["violent storm"] = "&#60961;",
     ["hurricane"] = "&#60962;"
-
 }
 
 return module

@@ -147,9 +147,10 @@ function theme.at_screen_connect(s)
         nil,
         {
             -- Center widgets horizontally
-            nil,
-            desktop_widgets.clock,
-            desktop_widgets.weather,
+            --nil,
+            desktop_widgets.cpu(),
+            desktop_widgets.clock(),
+            desktop_widgets.weather(),
             expand = "outside",
             layout = wibox.layout.align.vertical
         },

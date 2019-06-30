@@ -17,13 +17,13 @@ module.fa_markup = function(col, ico, size)
     return markup.fontfg(fa_font, col, ico)
 end
 
-module.fa_ico = function(col, ico, size)
+module.fa_ico = function(col, ico, size, width)
     return wibox.widget{
         markup = module.fa_markup(col, ico, size),
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = dpi(20)
+        forced_width = width or dpi(20)
     }
 end
 
@@ -75,7 +75,7 @@ end
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
 module.create_boxed_widget = function(widget_to_be_boxed, width, height,
-         bg_color)
+                                      bg_color)
     local box_container = wibox.container.background()
     box_container.bg = bg_color
     box_container.shape = function(c, h, w)
@@ -120,7 +120,8 @@ module.create_boxed_widget = function(widget_to_be_boxed, width, height,
     return boxed_widget
 end
 
-module.create_wibox_widget = function(color, icon, widget)
+module.create_wibar_widget = function(color, icon, widget)
+    local icon_widget
     if type(icon) == "table" then
         icon_widget = icon
     else
@@ -140,6 +141,52 @@ module.create_wibox_widget = function(color, icon, widget)
         expand = "none"
     }
     return wibox_widget
+end
+
+module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
+                                 thickness)
+    local icon_widget
+    if type(icon) == "table" then
+        icon_widget = icon
+    else
+        icon_widget = module.fa_ico(fg, icon, math.floor(size / 8),
+                                    math.floor(size / 3))
+    end
+    widget.align = "center"
+    local arc_container = wibox.widget{
+        {
+            nil,
+            {
+                nil,
+                icon_widget,
+                widget,
+                expand = "outside",
+                layout = wibox.layout.align.vertical
+            },
+            nil,
+            expand = 'outside',
+            layout = wibox.layout.align.horizontal
+        },
+        bg = bg,
+        colors = {fg},
+        min_value = min,
+        max_value = max,
+        thickness = thickness or size / 12,
+        forced_width = size or dpi(100),
+        forced_height = size or dpi(100),
+        start_angle = 0,
+        widget = wibox.container.arcchart
+    }
+    local margin_container = wibox.widget{
+        arc_container,
+        margins = margin or size / 2,
+        color = "#FF000000",
+        layout = wibox.container.margin
+    }
+    arc_container:connect_signal("widget::value_changed", function(_, usage)
+        arc_container.value = usage
+    end)
+    return margin_container
 end
 
 return module

@@ -98,7 +98,7 @@ local theme = {
         self.bg_urgent = cs.bg
         self.fg_normal = cs.fg
         self.fg_focus = cs.colors[4]
-        self.fg_urgent = cs.error
+        self.fg_urgent = cs.colors[2]
         self.fg_minimize = cs.fg
         self.border_width = 1
         self.border_normal = cs.fg
@@ -140,19 +140,55 @@ local theme = {
             netdown = cs.colors[2],
             netup = cs.colors[3],
             volume = cs.colors[4],
-            fs = cs.colors[6],
             memory = cs.colors[5],
-            cpu = cs.colors[7],
+            cpu = cs.colors[13],
+            fs = cs.colors[7],
             weather = cs.colors[10],
             temp = cs.colors[11],
             bat = cs.colors[12],
             cal = cs.colors[16],
             clock = cs.colors[4],
-            desktop_clock = cs.colors[13],
+            desktop_clock = cs.colors[8 + 5],
             desktop_day = cs.colors[4],
             desktop_date = cs.colors[2],
             desktop_month = cs.colors[3],
         }
+
+        if cs == ayu_colors.light then
+            self.widget_colors.desktop_cpu = {
+                fg = cs.colors[8 + 2],
+                bg = reduce_contrast(cs.colors[2], -50),
+            }
+            self.widget_colors.desktop_mem = {
+                fg = cs.colors[8 + 3],
+                bg = reduce_contrast(cs.colors[3], -50),
+            }
+            self.widget_colors.desktop_fs = {
+                fg = cs.colors[8 + 4],
+                bg = reduce_contrast(cs.colors[4], -50),
+            }
+            self.widget_colors.desktop_bat = {
+                fg = cs.colors[8 + 5],
+                bg = reduce_contrast(cs.colors[5], -50),
+            }
+        else
+            self.widget_colors.desktop_cpu = {
+                fg = cs.colors[8 + 2],
+                bg = reduce_contrast(cs.colors[2], 70),
+            }
+            self.widget_colors.desktop_mem = {
+                fg = cs.colors[8 + 3],
+                bg = reduce_contrast(cs.colors[3], 70),
+            }
+            self.widget_colors.desktop_fs = {
+                fg = cs.colors[8 + 4],
+                bg = reduce_contrast(cs.colors[4], 70),
+            }
+            self.widget_colors.desktop_bat = {
+                fg = cs.colors[8 + 5],
+                bg = reduce_contrast(cs.colors[5], 70),
+            }
+        end
         
         -- generate buttons
         self.titlebar_close_button_normal = self:close_button(self.button_size, self.button_radius, false)

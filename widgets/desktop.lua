@@ -18,48 +18,70 @@ local dpi = xresources.apply_dpi
 
 local util = require("themes.ayu.util")
 
+local cpu = require("themes.ayu.widgets.cpu")
+local memory = require("themes.ayu.widgets.memory")
+local fs = require("themes.ayu.widgets.fs")
+local battery = require("themes.ayu.widgets.battery")
+
 local city_id = 2658372
 
 local module = {}
 
 -- [ clock ] -------------------------------------------------------------------
-local deskop_clock = wibox.widget.textclock(
-                         markup.fontfg(beautiful.font_name .. dpi(48),
-                                       beautiful.bg_normal, " %H:%M "))
-local deskop_clock_box = util.create_boxed_widget(deskop_clock, 500, 200,
-                                                  beautiful.widget_colors
-                                                      .desktop_clock)
+local gen_deskop_clock_box = function()
+    local deskop_clock = wibox.widget.textclock(
+                             markup.fontfg(beautiful.font_name .. dpi(48),
+                                           beautiful.bg_normal, " %H:%M "))
+    return util.create_boxed_widget(deskop_clock, 500, 200,
+                                    beautiful.widget_colors.desktop_clock)
+end
 
-local desktop_clock_date = wibox.widget.textclock(
-                               markup.fontfg(beautiful.font_name .. dpi(18),
-                                             beautiful.fg_normal, "Today is ") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.widget_colors
-                                                     .desktop_day, "%A") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.fg_normal, ", the ") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.widget_colors
-                                                     .desktop_date, "%d.") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.fg_normal, " of ") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.widget_colors
-                                                     .desktop_month, "%B") ..
-                                   markup.fontfg(beautiful.font_name .. dpi(18),
-                                                 beautiful.fg_normal, "."))
+local gen_desktop_clock_date = function()
+    return wibox.widget.textclock(markup.fontfg(beautiful.font_name .. dpi(18),
+                                                beautiful.fg_normal, "Today is ") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.widget_colors.desktop_day,
+                                          "%A") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.fg_normal, ", the ") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.widget_colors.desktop_date,
+                                          "%d.") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.fg_normal, " of ") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.widget_colors.desktop_month,
+                                          "%B") ..
+                                      markup.fontfg(
+                                          beautiful.font_name .. dpi(18),
+                                          beautiful.fg_normal, "."))
+end
 
-module.clock = wibox.widget{
-    {
+module.clock = function()
+    return wibox.widget{
         nil,
-        deskop_clock_box,
+        {
+
+            {
+                nil,
+                gen_deskop_clock_box(),
+                nil,
+                expand = "none",
+                layout = wibox.layout.align.horizontal
+            },
+            gen_desktop_clock_date(),
+            layout = wibox.layout.fixed.vertical
+        },
+        expand = 'outside',
         nil,
-        expand = "none",
         layout = wibox.layout.align.horizontal
-    },
-    desktop_clock_date,
-    layout = wibox.layout.fixed.vertical
-}
+    }
+end
 
 -- [ weather ] -----------------------------------------------------------------
 local markup_color_size = function(size, color, text)
@@ -94,6 +116,7 @@ local gen_weather_box = function(color)
 
     weather_temp.align = "center"
     weather_descr.align = "center"
+    weather_descr.forced_width = dpi(280)
 
     local weather_box = wibox.widget{
         {
@@ -127,9 +150,10 @@ local gen_weather_box = function(color)
             spaceing = dpi(15),
             layout = wibox.layout.fixed.vertical
         },
-        strategy = "min",
-        width = dpi(280),
-        layout = wibox.container.constraint
+        margins = dpi(50),
+        color = "#FF000000",
+        widget = wibox.container.margin
+
     }
 
     return weather_box, widget
@@ -138,11 +162,39 @@ end
 wb, weather_widget = gen_weather_box(beautiful.fg_normal)
 beautiful.desktop_weather = weather_widget
 
-module.weather = wibox.widget{
-    nil,
-    {nil, wb, nil, expand = "none", layout = wibox.layout.align.vertical},
-    nil,
-    expand = "none",
-    layout = wibox.layout.align.horizontal
-}
+module.weather = function()
+    return wibox.widget{
+        nil,
+        {nil, wb, nil, expand = "none", layout = wibox.layout.align.vertical},
+        nil,
+        expand = "none",
+        layout = wibox.layout.align.horizontal
+    }
+end
+
+module.cpu = function()
+    return wibox.widget{
+        nil,
+        {
+            nil,
+            {
+                cpu.gen_arc_widget(beautiful.widget_colors.desktop_cpu.bg,
+                                   beautiful.widget_colors.desktop_cpu.fg),
+                memory.gen_arc_widget(beautiful.widget_colors.desktop_mem.bg,
+                                      beautiful.widget_colors.desktop_mem.fg),
+                fs.gen_arc_widget(beautiful.widget_colors.desktop_fs.bg,
+                                  beautiful.widget_colors.desktop_fs.fg),
+                battery.gen_arc_widget(beautiful.widget_colors.desktop_bat.bg,
+                                       beautiful.widget_colors.desktop_bat.fg),
+                layout = wibox.layout.fixed.horizontal
+            },
+            nil,
+            expand = "none",
+            layout = wibox.layout.align.horizontal
+        },
+        nil,
+        expand = "none",
+        layout = wibox.layout.align.vertical
+    }
+end
 return module

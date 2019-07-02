@@ -23,7 +23,7 @@ module.fa_ico = function(col, ico, size, width)
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = width or dpi(20)
+        forced_width = width or dpi(22)
     }
 end
 
@@ -79,7 +79,7 @@ module.create_boxed_widget = function(widget_to_be_boxed, width, height,
     local box_container = wibox.container.background()
     box_container.bg = bg_color
     box_container.shape = function(c, h, w)
-        gears.shape.rounded_rect(c, h, w, 30)
+        gears.shape.rounded_rect(c, h, w, dpi(15))
     end
     box_container.forced_height = height
     box_container.forced_width = width
@@ -143,14 +143,18 @@ module.create_wibar_widget = function(color, icon, widget)
     return wibox_widget
 end
 
+module.gen_arc_icon = function(fg, icon, size)
+    return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
+end
+
 module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
                                  thickness)
+    size = size or dpi(100)
     local icon_widget
     if type(icon) == "table" then
         icon_widget = icon
     else
-        icon_widget = module.fa_ico(fg, icon, math.floor(size / 8),
-                                    math.floor(size / 3))
+        icon_widget = module.gen_arc_icon(fg, icon, size)
     end
     widget.align = "center"
     local arc_container = wibox.widget{
@@ -172,8 +176,8 @@ module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
         min_value = min,
         max_value = max,
         thickness = thickness or size / 12,
-        forced_width = size or dpi(100),
-        forced_height = size or dpi(100),
+        forced_width = size,
+        forced_height = size,
         start_angle = 0,
         widget = wibox.container.arcchart
     }

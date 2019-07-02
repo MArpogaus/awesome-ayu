@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-06-30 18:57:13
+-- @Last Modified time: 2019-07-02 10:23:31
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -33,7 +33,7 @@ module.gen_wibar_widget = function(color_date, color_time)
     local clock_icon = util.fa_ico(color_date, '')
     local clock_widget = wibox.widget.textclock(
                              markup(color_date, "%A %d %B") ..
-                                 markup(beautiful.fg_normal, " > ") ..
+                                 markup(beautiful.fg_normal, " | ") ..
                                  markup(color_time, "%H:%M"))
     clock_widget.font = beautiful.font
     local clock_wibox_widget = util.create_wibar_widget(color_date, clock_icon,
@@ -50,6 +50,63 @@ module.gen_wibar_widget = function(color_date, color_time)
     }
 
     return clock_wibox_widget
+end
+
+module.gen_desktop_widget = function()
+    local gen_deskop_clock_box = function()
+        local deskop_clock = wibox.widget.textclock(
+                                 markup.fontfg(beautiful.font_name .. dpi(38),
+                                               beautiful.bg_normal, " %H:%M "))
+        deskop_clock.align = 'center'
+        return util.create_boxed_widget(deskop_clock, 500, 200,
+                                        beautiful.widget_colors.desktop_clock)
+    end
+
+    local gen_desktop_clock_date = function()
+        return wibox.widget.textclock(markup.fontfg(
+                                          beautiful.font_name .. dpi(14),
+                                          beautiful.fg_normal, "Today is ") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.widget_colors
+                                                  .desktop_day, "%A") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.fg_normal, ", the ") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.widget_colors
+                                                  .desktop_date, "%d.") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.fg_normal, " of ") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.widget_colors
+                                                  .desktop_month, "%B") ..
+                                          markup.fontfg(
+                                              beautiful.font_name .. dpi(14),
+                                              beautiful.fg_normal, "."))
+    end
+
+    return wibox.widget{
+        nil,
+        {
+
+            {
+                nil,
+                gen_deskop_clock_box(),
+                nil,
+                expand = "none",
+                layout = wibox.layout.align.horizontal
+            },
+            gen_desktop_clock_date(),
+            layout = wibox.layout.fixed.vertical
+        },
+        expand = 'outside',
+        nil,
+        layout = wibox.layout.align.horizontal
+    }
 end
 
 -- [ return module objects ] ---------------------------------------------------

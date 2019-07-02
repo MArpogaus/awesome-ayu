@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-06-30 18:57:01
+-- @Last Modified time: 2019-07-02 09:43:15
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -34,6 +34,14 @@ local fa_bat_icons = {
     '' -- fa-battery-4 (alias) [&#xf240;]
 }
 -- [ function definitions ] ----------------------------------------------------
+function batt_icon()
+    if bat_now.ac_status == 1 then
+        icon = ''
+    else
+        icon = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
+    end
+    return icon
+end
 module.gen_wibar_widget = function(color)
     local bat_icon = util.fa_ico(color, fa_bat_icons[1])
     local bat_widget = lain.widget.bat({
@@ -43,12 +51,8 @@ module.gen_wibar_widget = function(color)
 
             widget:set_markup(markup.fontfg(beautiful.font, color, perc))
 
-            if bat_now.ac_status == 1 then
-                ico = ''
-            else
-                ico = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
-            end
-            bat_icon:set_markup(util.fa_markup(color, ico))
+            icon = batt_icon()
+            bat_icon:set_markup(util.fa_markup(color, icon))
         end
     })
 
@@ -56,24 +60,18 @@ module.gen_wibar_widget = function(color)
 end
 
 module.gen_arc_widget = function(bg, fg)
-    local bat_icon = util.fa_ico(fg, fa_bat_icons[1], math.floor(dpi(150) / 8),
-                                 0)
+    local bat_icon = util.gen_arc_icon(fg, fa_bat_icons[1], dpi(150))
     local bat_widget = lain.widget.bat({
         settings = function()
             local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
                              bat_now.perc
 
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(12), fg,
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
                                             perc))
 
-            if bat_now.ac_status == 1 then
-                ico = ''
-            else
-                ico = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
-            end
+            icon = batt_icon()
             bat_icon:set_markup(
-                util.fa_markup(fg, ico, math.floor(dpi(150) / 8)))
-            widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
+                util.fa_markup(fg, icon, math.floor(dpi(150) / 8)))            widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
         end
     })
     return util.gen_arc_widget(bat_icon, bat_widget, bg, fg, 0, 100, dpi(150))

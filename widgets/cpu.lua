@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-06-30 18:57:09
+-- @Last Modified time: 2019-07-02 09:19:20
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -56,7 +56,7 @@ module.gen_arc_widget = function(bg, fg)
     }
     local cpu_widget = lain.widget.cpu({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(12), fg,
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
                                             cpu_now.usage .. "%"))
             widget:emit_signal_recursive("widget::value_changed", cpu_now.usage)
             cpu_graph:clear()

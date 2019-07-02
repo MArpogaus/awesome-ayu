@@ -29,10 +29,11 @@ local net = require("themes.ayu.widgets.net")
 local memory = require("themes.ayu.widgets.memory")
 local mpd = require("themes.ayu.widgets.mpd")
 
-local city_id = 2658372
+-- user config
+local config = require("themes.ayu.config")
 
 local module = {
-    weather = weather.gen_wibar_widget(beautiful.widget_colors.weather, city_id),
+    weather = weather.gen_wibar_widget(beautiful.widget_colors.weather, config.city_id),
     netdown = net.gen_wibar_widget(beautiful.widget_colors.netdown, "received"),
     netup = net.gen_wibar_widget(beautiful.widget_colors.netup, "sent",
                                  {beautiful.weather, beautiful.desktop_weather}),

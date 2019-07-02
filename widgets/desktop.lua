@@ -18,183 +18,47 @@ local dpi = xresources.apply_dpi
 
 local util = require("themes.ayu.util")
 
+-- widgets
+local date_time = require("themes.ayu.widgets.date_time")
+local weather = require("themes.ayu.widgets.weather")
 local cpu = require("themes.ayu.widgets.cpu")
 local memory = require("themes.ayu.widgets.memory")
 local fs = require("themes.ayu.widgets.fs")
 local battery = require("themes.ayu.widgets.battery")
 
-local city_id = 2658372
+-- user config
+local config = require("themes.ayu.config")
 
 local module = {}
 
 -- [ clock ] -------------------------------------------------------------------
-local gen_deskop_clock_box = function()
-    local deskop_clock = wibox.widget.textclock(
-                             markup.fontfg(beautiful.font_name .. dpi(48),
-                                           beautiful.bg_normal, " %H:%M "))
-    return util.create_boxed_widget(deskop_clock, 500, 200,
-                                    beautiful.widget_colors.desktop_clock)
-end
-
-local gen_desktop_clock_date = function()
-    return wibox.widget.textclock(markup.fontfg(beautiful.font_name .. dpi(18),
-                                                beautiful.fg_normal, "Today is ") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.widget_colors.desktop_day,
-                                          "%A") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.fg_normal, ", the ") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.widget_colors.desktop_date,
-                                          "%d.") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.fg_normal, " of ") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.widget_colors.desktop_month,
-                                          "%B") ..
-                                      markup.fontfg(
-                                          beautiful.font_name .. dpi(18),
-                                          beautiful.fg_normal, "."))
-end
-
-module.clock = function()
-    return wibox.widget{
-        nil,
-        {
-
-            {
-                nil,
-                gen_deskop_clock_box(),
-                nil,
-                expand = "none",
-                layout = wibox.layout.align.horizontal
-            },
-            gen_desktop_clock_date(),
-            layout = wibox.layout.fixed.vertical
-        },
-        expand = 'outside',
-        nil,
-        layout = wibox.layout.align.horizontal
-    }
-end
+module.clock = date_time.gen_desktop_widget()
 
 -- [ weather ] -----------------------------------------------------------------
-local markup_color_size = function(size, color, text)
-    return markup.fontfg(beautiful.font_name .. dpi(size), color, text)
-end
-local gen_weather_box = function(color)
-    local weather_icon = wibox.widget.textbox()
-    local weather_temp = wibox.widget.textbox()
-    local weather_temp_min = wibox.widget.textbox()
-    local weather_temp_max = wibox.widget.textbox()
-    local weather_descr = wibox.widget.textbox()
-    local weather_unit = wibox.widget.textbox(
-                             markup_color_size(42, color, "°C"))
+module.weather = weather.gen_desktop_widget(beautiful.fg_normal, config.city_id)
 
-    local widget = lain.widget.weather({
-        city_id = city_id,
-        weather_na_markup = markup.fontfg(beautiful.font, color, "N/A "),
-        settings = function()
-            descr = weather_now["weather"][1]["description"]:lower()
-            temp = math.floor(weather_now["main"]["temp"])
-            temp_min = math.floor(weather_now["main"]["temp_min"])
-            temp_max = math.floor(weather_now["main"]["temp_max"])
-
-            weather_icon:set_markup(util.owf_markup(color, weather_now, dpi(55)))
-            weather_temp:set_markup(markup_color_size(30, color, temp))
-            weather_temp_min:set_markup(markup_color_size(8, color,
-                                                          temp_min .. ' - '))
-            weather_temp_max:set_markup(markup_color_size(8, color, temp_max))
-            weather_descr:set_markup(markup_color_size(14, color, descr))
-        end
-    })
-
-    weather_temp.align = "center"
-    weather_descr.align = "center"
-    weather_descr.forced_width = dpi(280)
-
-    local weather_box = wibox.widget{
-        {
-            {
-                weather_icon,
-                nil,
-                {
-                    {
-                        weather_temp,
-                        {
-                            nil,
-                            {
-                                weather_temp_min,
-                                weather_temp_max,
-                                spaceing = dpi(5),
-                                layout = wibox.layout.fixed.horizontal
-                            },
-                            nil,
-                            expand = 'outside',
-                            layout = wibox.layout.align.horizontal
-                        },
-                        layout = wibox.layout.fixed.vertical
-                    },
-                    weather_unit,
-                    spaceing = dpi(10),
-                    layout = wibox.layout.fixed.horizontal
-                },
-                layout = wibox.layout.align.horizontal
-            },
-            weather_descr,
-            spaceing = dpi(15),
-            layout = wibox.layout.fixed.vertical
-        },
-        margins = dpi(50),
-        color = "#FF000000",
-        widget = wibox.container.margin
-
-    }
-
-    return weather_box, widget
-end
-
-wb, weather_widget = gen_weather_box(beautiful.fg_normal)
-beautiful.desktop_weather = weather_widget
-
-module.weather = function()
-    return wibox.widget{
+-- [ arcs ] --------------------------------------------------------------------
+module.arcs = wibox.widget{
+    nil,
+    {
         nil,
-        {nil, wb, nil, expand = "none", layout = wibox.layout.align.vertical},
+        {
+            cpu.gen_arc_widget(beautiful.widget_colors.desktop_cpu.bg,
+                               beautiful.widget_colors.desktop_cpu.fg),
+            memory.gen_arc_widget(beautiful.widget_colors.desktop_mem.bg,
+                                  beautiful.widget_colors.desktop_mem.fg),
+            fs.gen_arc_widget(beautiful.widget_colors.desktop_fs.bg,
+                              beautiful.widget_colors.desktop_fs.fg),
+            battery.gen_arc_widget(beautiful.widget_colors.desktop_bat.bg,
+                                   beautiful.widget_colors.desktop_bat.fg),
+            layout = wibox.layout.fixed.horizontal
+        },
         nil,
         expand = "none",
         layout = wibox.layout.align.horizontal
-    }
-end
-
-module.cpu = function()
-    return wibox.widget{
-        nil,
-        {
-            nil,
-            {
-                cpu.gen_arc_widget(beautiful.widget_colors.desktop_cpu.bg,
-                                   beautiful.widget_colors.desktop_cpu.fg),
-                memory.gen_arc_widget(beautiful.widget_colors.desktop_mem.bg,
-                                      beautiful.widget_colors.desktop_mem.fg),
-                fs.gen_arc_widget(beautiful.widget_colors.desktop_fs.bg,
-                                  beautiful.widget_colors.desktop_fs.fg),
-                battery.gen_arc_widget(beautiful.widget_colors.desktop_bat.bg,
-                                       beautiful.widget_colors.desktop_bat.fg),
-                layout = wibox.layout.fixed.horizontal
-            },
-            nil,
-            expand = "none",
-            layout = wibox.layout.align.horizontal
-        },
-        nil,
-        expand = "none",
-        layout = wibox.layout.align.vertical
-    }
-end
+    },
+    nil,
+    expand = "none",
+    layout = wibox.layout.align.vertical
+}
 return module

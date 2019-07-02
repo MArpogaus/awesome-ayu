@@ -1,9 +1,20 @@
---[[
-     AYU Awesome WM theme 0.1
-
-     inspired by Multicolor Awesome WM theme 2.0
-     github.com/lcpz
---]] local gears = require("gears")
+--------------------------------------------------------------------------------
+-- @File:   theme.lua
+-- @Author: Marcel Arpogaus
+-- @Date:   2019-06-30 20:36:28
+-- [ description ] -------------------------------------------------------------
+--   AYU Awesome WM theme 0.1
+--
+--   inspired by Multicolor Awesome WM theme 2.0
+--   github.com/lcpz
+-- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-06-30 20:58:16
+-- @Changes: 
+--      - newly written
+--      - ...
+--------------------------------------------------------------------------------
+local gears = require("gears")
 local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
@@ -148,9 +159,9 @@ function theme.at_screen_connect(s)
         {
             -- Center widgets horizontally
             --nil,
-            desktop_widgets.cpu(),
-            desktop_widgets.clock(),
-            desktop_widgets.weather(),
+            desktop_widgets.arcs,
+            desktop_widgets.clock,
+            desktop_widgets.weather,
             expand = "outside",
             layout = wibox.layout.align.vertical
         },

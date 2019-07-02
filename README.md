@@ -30,11 +30,18 @@ Install [Awesome WM Copycats][awesome-copycats]
 git clone --recursive https://github.com/lcpz/awesome-copycats.git ~/.config/awesome
 ```
 
+Install [Font Awesome 4](https://github.com/FortAwesome/Font-Awesome)
+```shell
+apt install fonts-font-awesome
+```
+
 Clone this repo to `~/.config/awesome/themes`
 ```shell
 git clone https://github.com/MArpogaus/awesome-ayu.git ~/.config/awesome/themes/ayu
 ```
 
+Set Your City Id in the module `themes.ayu.config`.
+For more info see https://github.com/lcpz/awesome-copycats#notes
 # Usage
 
 To activate the theme set `chosen_theme = "ayu"` in `~/.config/rc.lua`.

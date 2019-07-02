@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-06-30 18:57:22
+-- @Last Modified time: 2019-07-02 09:20:39
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -50,13 +50,14 @@ end
 module.gen_arc_widget = function(bg, fg)
     local fs_widget = lain.widget.fs({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(12), fg,
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
                                             string.format("%.1f", fs_now["/"]
                                                               .percentage) ..
                                                 "%"))
             widget:emit_signal_recursive("widget::value_changed",
                                          fs_now["/"].percentage)
-        end
+        end,
+        showpopup = "off"
     })
     return util.gen_arc_widget(fs_icon, fs_widget, bg, fg, 0, 100, dpi(150))
 end

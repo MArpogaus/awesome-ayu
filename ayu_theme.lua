@@ -10,8 +10,35 @@ local themes_path = gfs.get_themes_dir()
 local config_path = gfs.get_configuration_dir()
 
 local ayu_colors = require("themes.ayu.ayu_colors")
+local config = require("themes.ayu.config")
 
-local color_scheme = ayu_colors.light
+if config.use_xresources then
+    local xrdb = xresources.get_current_theme()
+    color_scheme = {
+        bg = xrdb.background,
+        fg = xrdb.foreground,
+        colors = {
+            xrdb.color0,
+            xrdb.color1,
+            xrdb.color2,
+            xrdb.color3,
+            xrdb.color4,
+            xrdb.color5,
+            xrdb.color6,
+            xrdb.color7,
+            xrdb.color8,
+            xrdb.color9,
+            xrdb.color10,
+            xrdb.color11,
+            xrdb.color12,
+            xrdb.color13,
+            xrdb.color14,
+            xrdb.color15
+        }
+    }
+else
+    color_scheme = ayu_colors.light
+end
 
 -- Helper functions for modifying hex colors:
 --
@@ -46,7 +73,11 @@ local function is_dark(color_value)
 end
 local function reduce_contrast(color, ratio)
     ratio = ratio or 50
-    return darker(color, is_dark(color) and - ratio or ratio)
+    if is_dark(color) then
+        return darker(color, -ratio)
+    else
+        return darker(color, ratio)
+    end
 end
 
 -- create titlebar_button
@@ -83,7 +114,7 @@ local theme = {
         -- configure theme parameters
         self.confdir = config_path .. "/themes/ayu"
         self.font_name = "Monospace "
-        self.font_size = dpi(8)
+        self.font_size = dpi(6)
         self.font = self.font_name .. self.font_size
         self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
@@ -116,25 +147,17 @@ local theme = {
         self.menu_bg_focus = cs.bg
         
         -- set colors for buttons and widgets
-        self.close_button_fg_color = cs.colors[2] --"#F07171"
-        self.maximized_button_fg_color = cs.colors[11] --"#86B300"
-        self.minimize_button_fg_color = cs.colors[4] --"#FF9940"
-        self.ontop_button_fg_color = cs.colors[13] --"#399EE6"
-        self.sticky_button_fg_color = cs.colors[8] --"#ABB0B6"
+        self.close_button_bg_color = cs.colors[2] --"#F07171"
+        self.maximized_button_bg_color = cs.colors[3] --"#91B362"
+        self.minimize_button_bg_color = cs.colors[4] --"#E6B450"
+        self.ontop_button_bg_color = cs.colors[7] --"#399EE6"
+        self.sticky_button_bg_color = cs.colors[8] --"#ABB0B6"
         
-        if cs == ayu_colors.light then
-            self.close_button_bg_color = reduce_contrast(self.close_button_fg_color, -70)
-            self.maximized_button_bg_color = reduce_contrast(self.maximized_button_fg_color, 70)
-            self.minimize_button_bg_color = reduce_contrast(self.minimize_button_fg_color, -70)
-            self.ontop_button_bg_color = reduce_contrast(self.ontop_button_fg_color, -70)
-            self.sticky_button_bg_color = reduce_contrast(self.sticky_button_fg_color, -50)
-        else
-            self.close_button_bg_color = reduce_contrast(self.close_button_fg_color, 70)
-            self.maximized_button_bg_color = reduce_contrast(self.maximized_button_fg_color, 70)
-            self.minimize_button_bg_color = reduce_contrast(self.minimize_button_fg_color, 70)
-            self.ontop_button_bg_color = reduce_contrast(self.ontop_button_fg_color, 70)
-            self.sticky_button_bg_color = reduce_contrast(self.sticky_button_fg_color, 70)
-        end
+        self.close_button_fg_color = reduce_contrast(self.close_button_bg_color, 50)
+        self.maximized_button_fg_color = reduce_contrast(self.maximized_button_bg_color, 50)
+        self.minimize_button_fg_color = reduce_contrast(self.minimize_button_bg_color, 50)
+        self.ontop_button_fg_color = reduce_contrast(self.ontop_button_bg_color, 50)
+        self.sticky_button_fg_color = reduce_contrast(self.sticky_button_bg_color, 50)
         
         self.widget_colors = {
             netdown = cs.colors[2],
@@ -152,43 +175,24 @@ local theme = {
             desktop_day = cs.colors[4],
             desktop_date = cs.colors[2],
             desktop_month = cs.colors[3],
+            desktop_cpu = {
+                fg = reduce_contrast(cs.colors[2], 50),
+                bg = cs.colors[2],
+            },
+            desktop_mem = {
+                fg = reduce_contrast(cs.colors[3], 50),
+                bg = cs.colors[3],
+            },
+            desktop_fs = {
+                fg = reduce_contrast(cs.colors[4], 50),
+                bg = cs.colors[4],
+            },
+            desktop_bat = {
+                fg = reduce_contrast(cs.colors[5], 50),
+                bg = cs.colors[5],
+            }
         }
 
-        if cs == ayu_colors.light then
-            self.widget_colors.desktop_cpu = {
-                fg = cs.colors[8 + 2],
-                bg = reduce_contrast(cs.colors[2], -50),
-            }
-            self.widget_colors.desktop_mem = {
-                fg = cs.colors[8 + 3],
-                bg = reduce_contrast(cs.colors[3], -50),
-            }
-            self.widget_colors.desktop_fs = {
-                fg = cs.colors[8 + 4],
-                bg = reduce_contrast(cs.colors[4], -50),
-            }
-            self.widget_colors.desktop_bat = {
-                fg = cs.colors[8 + 5],
-                bg = reduce_contrast(cs.colors[5], -50),
-            }
-        else
-            self.widget_colors.desktop_cpu = {
-                fg = cs.colors[8 + 2],
-                bg = reduce_contrast(cs.colors[2], 70),
-            }
-            self.widget_colors.desktop_mem = {
-                fg = cs.colors[8 + 3],
-                bg = reduce_contrast(cs.colors[3], 70),
-            }
-            self.widget_colors.desktop_fs = {
-                fg = cs.colors[8 + 4],
-                bg = reduce_contrast(cs.colors[4], 70),
-            }
-            self.widget_colors.desktop_bat = {
-                fg = cs.colors[8 + 5],
-                bg = reduce_contrast(cs.colors[5], 70),
-            }
-        end
         
         -- generate buttons
         self.titlebar_close_button_normal = self:close_button(self.button_size, self.button_radius, false)
@@ -237,38 +241,12 @@ local theme = {
             taglist_square_size, self.fg_normal
         )
         
-        -- Define the image to load
-        if cs == ayu_colors.light then
-            self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
-            self.titlebar_floating_button_focus_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
-            self.titlebar_floating_button_normal_active = themes_path.."default/titlebar/floating_focus_active.png"
-            self.titlebar_floating_button_focus_active = themes_path.."default/titlebar/floating_focus_active.png"
-        else
+        if is_dark(cs.bg) then
             self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
             self.titlebar_floating_button_focus_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
             self.titlebar_floating_button_normal_active = themes_path.."default/titlebar/floating_normal_active.png"
             self.titlebar_floating_button_focus_active = themes_path.."default/titlebar/floating_normal_active.png"
-        end
-        
-        -- load layout icons
-        if cs == ayu_colors.light then
-            self.layout_fairh = themes_path.."default/layouts/fairh.png"
-            self.layout_fairv = themes_path.."default/layouts/fairv.png"
-            self.layout_floating = themes_path.."default/layouts/floating.png"
-            self.layout_magnifier = themes_path.."default/layouts/magnifier.png"
-            self.layout_max = themes_path.."default/layouts/max.png"
-            self.layout_fullscreen = themes_path.."default/layouts/fullscreen.png"
-            self.layout_tilebottom = themes_path.."default/layouts/tilebottom.png"
-            self.layout_tileleft = themes_path.."default/layouts/tileleft.png"
-            self.layout_tile = themes_path.."default/layouts/tile.png"
-            self.layout_tiletop = themes_path.."default/layouts/tiletop.png"
-            self.layout_spiral = themes_path.."default/layouts/spiral.png"
-            self.layout_dwindle = themes_path.."default/layouts/dwindle.png"
-            self.layout_cornernw = themes_path.."default/layouts/cornernw.png"
-            self.layout_cornerne = themes_path.."default/layouts/cornerne.png"
-            self.layout_cornersw = themes_path.."default/layouts/cornersw.png"
-            self.layout_cornerse = themes_path.."default/layouts/cornerse.png"
-        else
+
             self.layout_fairh = themes_path.."default/layouts/fairhw.png"
             self.layout_fairv = themes_path.."default/layouts/fairvw.png"
             self.layout_floating = themes_path.."default/layouts/floatingw.png"
@@ -285,6 +263,28 @@ local theme = {
             self.layout_cornerne = themes_path.."default/layouts/cornernew.png"
             self.layout_cornersw = themes_path.."default/layouts/cornersww.png"
             self.layout_cornerse = themes_path.."default/layouts/cornersew.png"
+        else
+            self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
+            self.titlebar_floating_button_focus_inactive = themes_path.."default/titlebar/floating_focus_inactive.png"
+            self.titlebar_floating_button_normal_active = themes_path.."default/titlebar/floating_focus_active.png"
+            self.titlebar_floating_button_focus_active = themes_path.."default/titlebar/floating_focus_active.png"
+
+            self.layout_fairh = themes_path.."default/layouts/fairh.png"
+            self.layout_fairv = themes_path.."default/layouts/fairv.png"
+            self.layout_floating = themes_path.."default/layouts/floating.png"
+            self.layout_magnifier = themes_path.."default/layouts/magnifier.png"
+            self.layout_max = themes_path.."default/layouts/max.png"
+            self.layout_fullscreen = themes_path.."default/layouts/fullscreen.png"
+            self.layout_tilebottom = themes_path.."default/layouts/tilebottom.png"
+            self.layout_tileleft = themes_path.."default/layouts/tileleft.png"
+            self.layout_tile = themes_path.."default/layouts/tile.png"
+            self.layout_tiletop = themes_path.."default/layouts/tiletop.png"
+            self.layout_spiral = themes_path.."default/layouts/spiral.png"
+            self.layout_dwindle = themes_path.."default/layouts/dwindle.png"
+            self.layout_cornernw = themes_path.."default/layouts/cornernw.png"
+            self.layout_cornerne = themes_path.."default/layouts/cornerne.png"
+            self.layout_cornersw = themes_path.."default/layouts/cornersw.png"
+            self.layout_cornerse = themes_path.."default/layouts/cornerse.png"
         end
         
         -- Generate Awesome icon:

@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-02 09:48:54
+-- @Last Modified time: 2019-07-02 10:50:17
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -63,7 +63,7 @@ module.gen_desktop_widget = function(color, city_id)
     local weather_temp_max = wibox.widget.textbox()
     local weather_descr = wibox.widget.textbox()
     local weather_unit = wibox.widget.textbox(
-                             markup_color_size(42, color, "°C"))
+                             markup_color_size(38, color, "°C"))
 
     local widget = lain.widget.weather({
         city_id = city_id,
@@ -74,12 +74,12 @@ module.gen_desktop_widget = function(color, city_id)
             temp_min = math.floor(weather_now["main"]["temp_min"])
             temp_max = math.floor(weather_now["main"]["temp_max"])
 
-            weather_icon:set_markup(util.owf_markup(color, weather_now, dpi(55)))
-            weather_temp:set_markup(markup_color_size(30, color, temp))
-            weather_temp_min:set_markup(markup_color_size(8, color,
+            weather_icon:set_markup(util.owf_markup(color, weather_now, dpi(38)))
+            weather_temp:set_markup(markup_color_size(28, color, temp))
+            weather_temp_min:set_markup(markup_color_size(6, color,
                                                           temp_min .. ' - '))
-            weather_temp_max:set_markup(markup_color_size(8, color, temp_max))
-            weather_descr:set_markup(markup_color_size(14, color, descr))
+            weather_temp_max:set_markup(markup_color_size(6, color, temp_max))
+            weather_descr:set_markup(markup_color_size(12, color, descr))
         end
     })
 

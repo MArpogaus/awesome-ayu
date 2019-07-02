@@ -42,6 +42,7 @@ git clone https://github.com/MArpogaus/awesome-ayu.git ~/.config/awesome/themes/
 
 Set Your City Id in the module `themes.ayu.config`.
 For more info see https://github.com/lcpz/awesome-copycats#notes
+
 # Usage
 
 To activate the theme set `chosen_theme = "ayu"` in `~/.config/rc.lua`.

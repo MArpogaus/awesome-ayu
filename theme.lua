@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-06-30 20:58:16
+-- @Last Modified time: 2019-07-15 08:53:14
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -23,12 +23,15 @@ local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme = require("themes.ayu.ayu_theme")
-local ayu_colors = require("themes.ayu.ayu_colors")
+local color_schemes = require("themes.ayu.color_schemes")
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = "HighContrast"
 -- theme.icon_theme = "flattrcolor"
+
+-- user config
+local config = require("themes.ayu.config")
 
 function theme.at_screen_connect(s)
     -- load custom wibox widgets
@@ -52,15 +55,12 @@ function theme.at_screen_connect(s)
     if not s.mylayoutbox then
         s.mylayoutbox = awful.widget.layoutbox(s)
         s.mylayoutbox:buttons(my_table.join(
-                                  awful.button({}, 1,
-                                               function()
+                                  awful.button({}, 1, function()
                 awful.layout.inc(1)
-            end), awful.button({}, 2,
-                               function()
+            end), awful.button({}, 2, function()
                 awful.layout.set(awful.layout.layouts[1])
             end), awful.button({}, 3, function() awful.layout.inc(-1) end),
-                                  awful.button({}, 4,
-                                               function()
+                                  awful.button({}, 4, function()
                 awful.layout.inc(1)
             end), awful.button({}, 5, function() awful.layout.inc(-1) end)))
     end
@@ -72,8 +72,7 @@ function theme.at_screen_connect(s)
     end
     -- Create a tasklist widget
     if not s.mytasklist then
-        s.mytasklist = awful.widget.tasklist(s,
-                                             awful.widget.tasklist.filter
+        s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter
                                                  .currenttags,
                                              awful.util.tasklist_buttons)
     end
@@ -96,23 +95,24 @@ function theme.at_screen_connect(s)
             -- s.mylayoutbox,
             s.mytaglist,
             s.mypromptbox,
-            wibox_widgets.mpd
+            wibox_widgets.mpd()
         },
         -- Middle widgets
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
-            wibox_widgets.netdown,
-            wibox_widgets.netup,
-            wibox_widgets.vol,
-            wibox_widgets.mem,
-            wibox_widgets.cpu,
-            wibox_widgets.fs,
-            wibox_widgets.weather,
-            wibox_widgets.temp,
-            wibox_widgets.bat,
-            wibox_widgets.datetime
+            wibox_widgets.net(theme.widget_colors.netdown, "received"),
+            wibox_widgets.net(theme.widget_colors.netup, "sent",
+                              {theme.weather, theme.desktop_weather}),
+            wibox_widgets.vol(),
+            wibox_widgets.mem(),
+            wibox_widgets.cpu(),
+            wibox_widgets.fs(),
+            wibox_widgets.weather(config.city_id),
+            wibox_widgets.temp(),
+            wibox_widgets.bat(),
+            wibox_widgets.datetime()
         }
     }
 
@@ -149,7 +149,6 @@ function theme.at_screen_connect(s)
         ontop = false,
         width = s.workarea.width,
         height = s.workarea.height
-        -- fg = theme.fg_normal
     })
 
     -- Add widgets to desktop wibox
@@ -158,10 +157,9 @@ function theme.at_screen_connect(s)
         nil,
         {
             -- Center widgets horizontally
-            --nil,
-            desktop_widgets.arcs,
-            desktop_widgets.clock,
-            desktop_widgets.weather,
+            desktop_widgets.arcs(),
+            desktop_widgets.clock(),
+            desktop_widgets.weather(),
             expand = "outside",
             layout = wibox.layout.align.vertical
         },
@@ -171,10 +169,11 @@ function theme.at_screen_connect(s)
     }
 end
 
-theme.set_dark = function(self) self:set_color_scheme(ayu_colors.dark) end
+theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end
 
-theme.set_light = function(self) self:set_color_scheme(ayu_colors.light) end
+theme.set_light = function(self) self:set_color_scheme(color_schemes.light) end
 
-theme.set_mirage = function(self) self:set_color_scheme(ayu_colors.mirage) end
+theme.set_mirage =
+    function(self) self:set_color_scheme(color_schemes.mirage) end
 
 return theme

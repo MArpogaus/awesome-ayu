@@ -1,9 +1,15 @@
---[[ ---------------------------------------------------------------------------
-     AYU Awesome WM wibar widgets
-
-     inspired by Multicolor Awesome WM beutiful 2.0
-     github.com/lcpz
---]] ---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- @File:   wibox.lua
+-- @Author: Marcel Arpogaus
+-- @Date:   2019-07-15 08:12:41
+-- [ description ] -------------------------------------------------------------
+-- wibar widgets
+-- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:51:52
+-- @Changes: 
+--      - added header
+--------------------------------------------------------------------------------
 local os = os
 
 local gears = require("gears")
@@ -29,23 +35,17 @@ local net = require("themes.ayu.widgets.net")
 local memory = require("themes.ayu.widgets.memory")
 local mpd = require("themes.ayu.widgets.mpd")
 
--- user config
-local config = require("themes.ayu.config")
-
 local module = {
-    weather = weather.gen_wibar_widget(beautiful.widget_colors.weather, config.city_id),
-    netdown = net.gen_wibar_widget(beautiful.widget_colors.netdown, "received"),
-    netup = net.gen_wibar_widget(beautiful.widget_colors.netup, "sent",
-                                 {beautiful.weather, beautiful.desktop_weather}),
-    vol = alsa.gen_wibar_widget(beautiful.widget_colors.volume),
-    mem = memory.gen_wibar_widget(beautiful.widget_colors.memory),
-    cpu = cpu.gen_wibar_widget(beautiful.widget_colors.cpu),
-    temp = temp.gen_wibar_widget(beautiful.widget_colors.temp),
-    bat = battery.gen_wibar_widget(beautiful.widget_colors.bat),
-    fs = fs.gen_wibar_widget(beautiful.widget_colors.fs),
-    mpd = mpd.gen_wibar_widget(beautiful.widget_colors.mpd),
-    datetime = date_time.gen_wibar_widget(beautiful.widget_colors.cal,
-                                          beautiful.widget_colors.clock)
+    weather = weather.gen_wibar_widget,
+    net = net.gen_wibar_widget,
+    vol = alsa.gen_wibar_widget,
+    mem = memory.gen_wibar_widget,
+    cpu = cpu.gen_wibar_widget,
+    temp = temp.gen_wibar_widget,
+    bat = battery.gen_wibar_widget,
+    fs = fs.gen_wibar_widget,
+    mpd = mpd.gen_wibar_widget,
+    datetime = date_time.gen_wibar_widget
 }
 
 return module

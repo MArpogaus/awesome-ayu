@@ -1,0 +1,9 @@
+{
+    "name": "ayu dark",
+    "background": "#0A0E14",
+    "foreground": "#B3B1AD",
+    "color": [
+        "#0A0E14", "#F07178", "#91B362", "#E6B450", "#39BAE6", "#F29668", "#6994BF", "#626A73",
+        "#3D424D", "#D96C75", "#C2D94C", "#FFB454", "#59C2FF", "#FF8F40", "#95E6CB", "#B3B1AD"
+    ]
+}

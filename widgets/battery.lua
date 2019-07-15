@@ -3,13 +3,16 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- ...
+-- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:31:41
+-- @Changes: 
+--      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-02 09:43:15
 -- @Changes: 
 --      - newly written
---      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local os = os
@@ -42,39 +45,49 @@ function batt_icon()
     end
     return icon
 end
-module.gen_wibar_widget = function(color)
-    local bat_icon = util.fa_ico(color, fa_bat_icons[1])
+module.gen_wibar_widget = function()
+    local bat_icon = util.fa_ico(beautiful.widget_colors.bat, fa_bat_icons[1])
     local bat_widget = lain.widget.bat({
         settings = function()
             local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
                              bat_now.perc
 
-            widget:set_markup(markup.fontfg(beautiful.font, color, perc))
-
-            icon = batt_icon()
-            bat_icon:set_markup(util.fa_markup(color, icon))
-        end
-    })
-
-    return util.create_wibar_widget(color, bat_icon, bat_widget)
-end
-
-module.gen_arc_widget = function(bg, fg)
-    local bat_icon = util.gen_arc_icon(fg, fa_bat_icons[1], dpi(150))
-    local bat_widget = lain.widget.bat({
-        settings = function()
-            local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
-                             bat_now.perc
-
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
-                                            perc))
+            widget:set_markup(markup.fontfg(beautiful.font,
+                                            beautiful.widget_colors.bat, perc))
 
             icon = batt_icon()
             bat_icon:set_markup(
-                util.fa_markup(fg, icon, math.floor(dpi(150) / 8)))            widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
+                util.fa_markup(beautiful.widget_colors.bat, icon))
         end
     })
-    return util.gen_arc_widget(bat_icon, bat_widget, bg, fg, 0, 100, dpi(150))
+
+    return util.create_wibar_widget(beautiful.widget_colors.bat, bat_icon,
+                                    bat_widget)
+end
+
+module.gen_arc_widget = function()
+    local bat_icon = util.gen_arc_icon(beautiful.widget_colors.desktop_bat.fg,
+                                       fa_bat_icons[1], dpi(150))
+    local bat_widget = lain.widget.bat({
+        settings = function()
+            local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
+                             bat_now.perc
+
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
+                                            beautiful.widget_colors.desktop_bat
+                                                .fg, perc))
+
+            icon = batt_icon()
+            bat_icon:set_markup(util.fa_markup(
+                                    beautiful.widget_colors.desktop_bat.fg,
+                                    icon, math.floor(dpi(150) / 8)))
+            widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
+        end
+    })
+    return util.gen_arc_widget(bat_icon, bat_widget,
+                               beautiful.widget_colors.desktop_bat.bg,
+                               beautiful.widget_colors.desktop_bat.fg, 0, 100,
+                               dpi(150))
 end
 
 -- [ return module objects ] ---------------------------------------------------

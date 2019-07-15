@@ -1,4 +1,7 @@
--- taken from https://github.com/ayu-theme/ayu-colors
+-- colors taken from https://github.com/ayu-theme/ayu-colors
+local xresources = require("beautiful.xresources")
+local xrdb = xresources.get_current_theme()
+
 local module = {
     light = {
         bg = "#FAFAFA",
@@ -23,7 +26,19 @@ local module = {
             "#0A0E14", "#F07178", "#91B362", "#E6B450", "#39BAE6", "#F29668", "#6994BF", "#626A73",
             "#3D424D", "#D96C75", "#C2D94C", "#FFB454", "#59C2FF", "#FF8F40", "#95E6CB", "#B3B1AD"
         }
-    }
+    },
+    xrdb = function()
+        return {
+            bg = xrdb.background,
+            fg = xrdb.foreground,
+            colors = {
+                xrdb.color0, xrdb.color1, xrdb.color2, xrdb.color3, xrdb.color4,
+                xrdb.color5, xrdb.color6, xrdb.color7, xrdb.color8, xrdb.color9,
+                xrdb.color10, xrdb.color11, xrdb.color12, xrdb.color13,
+                xrdb.color14, xrdb.color15
+            }
+        }
+    end
 }
 
 return module

@@ -1,0 +1,9 @@
+{
+    "name": "ayu mirage",
+    "background": "#1F2430",
+    "foreground": "#CBCCC6",
+    "color": [
+        "#1F2430", "#F28779", "#A6CC70", "#FFCC66", "#5CCFE6", "#F29E74", "#77A8D9", "#5C6773",
+        "#707A8C", "#F27983", "#BAE67E", "#FFD580", "#73D0FF", "#FFA759", "#95E6CB", "#CBCCC6"
+    ]
+}

@@ -1,4 +1,17 @@
+--------------------------------------------------------------------------------
+-- @File:   util.lua
+-- @Author: Marcel Arpogaus
+-- @Date:   2019-07-15 07:46:40
+-- [ description ] -------------------------------------------------------------
+-- collection of utility functions
+-- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:00:02
+-- @Changes: 
+--      - added header
+--------------------------------------------------------------------------------
 local gears = require("gears")
+local cairo = require("lgi").cairo
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
@@ -11,6 +24,75 @@ local owfont = require("themes.ayu.owfont")
 
 local module = {}
 
+-- Helper functions for modifying hex colors -----------------------------------
+local hex_color_match = "[a-fA-F0-9][a-fA-F0-9]"
+module.darker = function (color_value, darker_n)
+    local result = "#"
+    local channel_counter = 1
+    for s in color_value:gmatch(hex_color_match) do
+        local bg_numeric_value = tonumber("0x"..s)
+        if channel_counter <= 3 then
+            bg_numeric_value = bg_numeric_value - darker_n
+        end
+        if bg_numeric_value < 0 then bg_numeric_value = 0 end
+        if bg_numeric_value > 255 then bg_numeric_value = 255 end
+        result = result .. string.format("%02x", bg_numeric_value)
+        channel_counter = channel_counter + 1
+    end
+    return result
+end
+module.is_dark = function (color_value)
+    local bg_numeric_value = 0;
+    local channel_counter = 1
+    for s in color_value:gmatch(hex_color_match) do
+        bg_numeric_value = bg_numeric_value + tonumber("0x"..s);
+        if channel_counter == 3 then
+            break
+        end
+        channel_counter = channel_counter + 1
+    end
+    local is_dark_bg = (bg_numeric_value < 383)
+    return is_dark_bg
+end
+module.reduce_contrast = function (color, ratio)
+    ratio = ratio or 50
+    if module.is_dark(color) then
+        return module.darker(color, -ratio)
+    else
+        return module.darker(color, ratio)
+    end
+end
+
+-- create titlebar_button ------------------------------------------------------
+module.titlebar_button = function(size, radius, bg_color, fg_color)
+    -- Create a surface
+    local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
+    
+    -- Create a context
+    local cr = cairo.Context(img)
+    
+    -- paint transparent bg
+    cr:set_source(gears.color("#00000000"))
+    cr:paint()
+    
+    -- draw boarder
+    cr:set_source(gears.color(fg_color or "#00000000"))
+    cr:move_to(size / 2 + radius, size / 2)
+    cr:arc(size / 2, size / 2, radius + 1, 0, 2 * math.pi)
+    cr:close_path()
+    cr:fill()
+    
+    -- draw circle
+    cr:set_source(gears.color(bg_color))
+    cr:move_to(size / 2 + radius, size / 2)
+    cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
+    cr:close_path()
+    cr:fill()
+    
+    return img, cr
+end
+
+-- FontAwesome icons -----------------------------------------------------------
 module.fa_markup = function(col, ico, size)
     local font_size = size or beautiful.font_size
     local fa_font = "FontAwesome " .. font_size
@@ -27,6 +109,7 @@ module.fa_ico = function(col, ico, size, width)
     }
 end
 
+-- owfont icons ----------------------------------------------------------------
 module.owf_markup = function(col, weather_now, size)
     -- ref.: https://github.com/lcpz/lain/blob/master/widget/weather.lua
     local loc_now = os.time() -- local time
@@ -59,7 +142,6 @@ module.owf_markup = function(col, weather_now, size)
     local owf_font = "owf-regular " .. font_size
     return markup.fontfg(owf_font, col, icon)
 end
-
 module.owf_ico = function(col, weather_now, size)
     return wibox.widget{
         markup = module.owf_markup(col, weather_now, size),
@@ -146,7 +228,6 @@ end
 module.gen_arc_icon = function(fg, icon, size)
     return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
 end
-
 module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
                                  thickness)
     size = size or dpi(100)

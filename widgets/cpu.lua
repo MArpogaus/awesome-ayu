@@ -3,13 +3,16 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- ...
+-- cup utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:55:24
+-- @Changes: 
+--      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-02 09:19:20
 -- @Changes: 
 --      - newly written
---      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local os = os
@@ -28,18 +31,20 @@ local util = require("themes.ayu.util")
 local module = {}
 
 -- [ function definitions ] ----------------------------------------------------
-module.gen_wibar_widget = function(color)
+module.gen_wibar_widget = function()
     local cpu_icon = ''
     local cpu_widget = lain.widget.cpu({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font, color,
+            widget:set_markup(markup.fontfg(beautiful.font,
+                                            beautiful.widget_colors.cpu,
                                             cpu_now.usage .. "%"))
         end
     })
-    return util.create_wibar_widget(color, cpu_icon, cpu_widget)
+    return util.create_wibar_widget(beautiful.widget_colors.cpu, cpu_icon,
+                                    cpu_widget)
 end
 
-module.gen_arc_widget = function(bg, fg)
+module.gen_arc_widget = function()
     local num_cpus = 8
     local step_width = dpi(8)
     local step_spacing = dpi(4)
@@ -50,14 +55,15 @@ module.gen_arc_widget = function(bg, fg)
         step_spacing = step_spacing,
         forced_width = (num_cpus + 1) * (step_width + step_spacing),
         forced_height = dpi(50),
-        color = fg,
+        color = beautiful.widget_colors.desktop_cpu.fg,
         background_color = "#00000000",
         widget = wibox.widget.graph
     }
     local cpu_widget = lain.widget.cpu({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
-                                            cpu_now.usage .. "%"))
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
+                                            beautiful.widget_colors.desktop_cpu
+                                                .fg, cpu_now.usage .. "%"))
             widget:emit_signal_recursive("widget::value_changed", cpu_now.usage)
             cpu_graph:clear()
             for i, v in ipairs(cpu_now) do
@@ -68,7 +74,10 @@ module.gen_arc_widget = function(bg, fg)
     })
     cpu_widget.align = "center"
 
-    return util.gen_arc_widget(cpu_graph, cpu_widget, bg, fg, 0, 100, dpi(150))
+    return util.gen_arc_widget(cpu_graph, cpu_widget,
+                               beautiful.widget_colors.desktop_cpu.bg,
+                               beautiful.widget_colors.desktop_cpu.fg, 0, 100,
+                               dpi(150))
 end
 
 -- [ return module objects ] ---------------------------------------------------

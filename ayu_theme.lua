@@ -1,5 +1,4 @@
 local gears = require("gears")
-local cairo = require("lgi").cairo
 
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
@@ -9,104 +8,14 @@ local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 local config_path = gfs.get_configuration_dir()
 
-local ayu_colors = require("themes.ayu.ayu_colors")
+local color_schemes = require("themes.ayu.color_schemes")
 local config = require("themes.ayu.config")
+local util = require("themes.ayu.util")
 
 if config.use_xresources then
-    local xrdb = xresources.get_current_theme()
-    color_scheme = {
-        bg = xrdb.background,
-        fg = xrdb.foreground,
-        colors = {
-            xrdb.color0,
-            xrdb.color1,
-            xrdb.color2,
-            xrdb.color3,
-            xrdb.color4,
-            xrdb.color5,
-            xrdb.color6,
-            xrdb.color7,
-            xrdb.color8,
-            xrdb.color9,
-            xrdb.color10,
-            xrdb.color11,
-            xrdb.color12,
-            xrdb.color13,
-            xrdb.color14,
-            xrdb.color15
-        }
-    }
+    color_scheme = color_schemes.xrdb()
 else
-    color_scheme = ayu_colors.light
-end
-
--- Helper functions for modifying hex colors:
---
-local hex_color_match = "[a-fA-F0-9][a-fA-F0-9]"
-local function darker(color_value, darker_n)
-    local result = "#"
-    local channel_counter = 1
-    for s in color_value:gmatch(hex_color_match) do
-        local bg_numeric_value = tonumber("0x"..s)
-        if channel_counter <= 3 then
-            bg_numeric_value = bg_numeric_value - darker_n
-        end
-        if bg_numeric_value < 0 then bg_numeric_value = 0 end
-        if bg_numeric_value > 255 then bg_numeric_value = 255 end
-        result = result .. string.format("%02x", bg_numeric_value)
-        channel_counter = channel_counter + 1
-    end
-    return result
-end
-local function is_dark(color_value)
-    local bg_numeric_value = 0;
-    local channel_counter = 1
-    for s in color_value:gmatch(hex_color_match) do
-        bg_numeric_value = bg_numeric_value + tonumber("0x"..s);
-        if channel_counter == 3 then
-            break
-        end
-        channel_counter = channel_counter + 1
-    end
-    local is_dark_bg = (bg_numeric_value < 383)
-    return is_dark_bg
-end
-local function reduce_contrast(color, ratio)
-    ratio = ratio or 50
-    if is_dark(color) then
-        return darker(color, -ratio)
-    else
-        return darker(color, ratio)
-    end
-end
-
--- create titlebar_button
-local titlebar_button = function(size, radius, bg_color, fg_color)
-    -- Create a surface
-    local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
-    
-    -- Create a context
-    local cr = cairo.Context(img)
-    
-    -- paint transparent bg
-    cr:set_source(gears.color("#00000000"))
-    cr:paint()
-    
-    -- draw boarder
-    cr:set_source(gears.color(fg_color or "#00000000"))
-    cr:move_to(size / 2 + radius, size / 2)
-    cr:arc(size / 2, size / 2, radius + 1, 0, 2 * math.pi)
-    cr:close_path()
-    cr:fill()
-    
-    -- draw circle
-    cr:set_source(gears.color(bg_color))
-    cr:move_to(size / 2 + radius, size / 2)
-    cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
-    cr:close_path()
-    cr:fill()
-    
-    return img, cr
+    color_scheme = color_schemes.light
 end
 
 local theme = {
@@ -153,11 +62,11 @@ local theme = {
         self.ontop_button_bg_color = cs.colors[7] --"#399EE6"
         self.sticky_button_bg_color = cs.colors[8] --"#ABB0B6"
         
-        self.close_button_fg_color = reduce_contrast(self.close_button_bg_color, 50)
-        self.maximized_button_fg_color = reduce_contrast(self.maximized_button_bg_color, 50)
-        self.minimize_button_fg_color = reduce_contrast(self.minimize_button_bg_color, 50)
-        self.ontop_button_fg_color = reduce_contrast(self.ontop_button_bg_color, 50)
-        self.sticky_button_fg_color = reduce_contrast(self.sticky_button_bg_color, 50)
+        self.close_button_fg_color = util.reduce_contrast(self.close_button_bg_color, 50)
+        self.maximized_button_fg_color = util.reduce_contrast(self.maximized_button_bg_color, 50)
+        self.minimize_button_fg_color = util.reduce_contrast(self.minimize_button_bg_color, 50)
+        self.ontop_button_fg_color = util.reduce_contrast(self.ontop_button_bg_color, 50)
+        self.sticky_button_fg_color = util.reduce_contrast(self.sticky_button_bg_color, 50)
         
         self.widget_colors = {
             netdown = cs.colors[2],
@@ -176,19 +85,19 @@ local theme = {
             desktop_date = cs.colors[2],
             desktop_month = cs.colors[3],
             desktop_cpu = {
-                fg = reduce_contrast(cs.colors[2], 50),
+                fg = util.reduce_contrast(cs.colors[2], 50),
                 bg = cs.colors[2],
             },
             desktop_mem = {
-                fg = reduce_contrast(cs.colors[3], 50),
+                fg = util.reduce_contrast(cs.colors[3], 50),
                 bg = cs.colors[3],
             },
             desktop_fs = {
-                fg = reduce_contrast(cs.colors[4], 50),
+                fg = util.reduce_contrast(cs.colors[4], 50),
                 bg = cs.colors[4],
             },
             desktop_bat = {
-                fg = reduce_contrast(cs.colors[5], 50),
+                fg = util.reduce_contrast(cs.colors[5], 50),
                 bg = cs.colors[5],
             }
         }
@@ -241,7 +150,7 @@ local theme = {
             taglist_square_size, self.fg_normal
         )
         
-        if is_dark(cs.bg) then
+        if util.is_dark(cs.bg) then
             self.titlebar_floating_button_normal_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
             self.titlebar_floating_button_focus_inactive = themes_path.."default/titlebar/floating_normal_inactive.png"
             self.titlebar_floating_button_normal_active = themes_path.."default/titlebar/floating_normal_active.png"
@@ -302,7 +211,7 @@ local theme = {
         else
             fg_color = self.close_button_bg_color
         end
-        img, cr = titlebar_button(size, radius, bg_color, fg_color)
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
         
         -- draw content
         if active or hover then
@@ -328,7 +237,7 @@ local theme = {
         else
             fg_color = self.maximized_button_bg_color
         end
-        img, cr = titlebar_button(size, radius, bg_color, fg_color)
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
         
         -- draw content
         if active or hover then
@@ -356,7 +265,7 @@ local theme = {
         else
             fg_color = self.minimize_button_bg_color
         end
-        img, cr = titlebar_button(size, radius, bg_color, fg_color)
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
         
         -- draw content
         if active or hover then
@@ -383,7 +292,7 @@ local theme = {
         else
             fg_color = self.ontop_button_bg_color
         end
-        img, cr = titlebar_button(size, radius, bg_color, fg_color)
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
         
         -- draw content
         if active or hover then
@@ -410,7 +319,7 @@ local theme = {
         else
             fg_color = self.sticky_button_bg_color
         end
-        img, cr = titlebar_button(size, radius, bg_color, fg_color)
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
         
         -- draw content
         if active or hover then

@@ -3,13 +3,16 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- ...
+-- mpd widgets
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:33:06
+-- @Changes: 
+--      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-06-30 18:57:29
 -- @Changes: 
 --      - newly written
---      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local os = os
@@ -25,7 +28,7 @@ local util = require("themes.ayu.util")
 local module = {}
 
 -- [ function definitions ] ----------------------------------------------------
-module.gen_wibar_widget = function(color)
+module.gen_wibar_widget = function()
     local mpd_icon = wibox.widget.textbox()
     mpd_widget = lain.widget.mpd({
         settings = function()
@@ -37,11 +40,13 @@ module.gen_wibar_widget = function(color)
             if mpd_now.state == "play" then
                 artist = mpd_now.artist .. " > "
                 title = mpd_now.title
-                mpd_icon:set_markup(util.fa_markup(color, ''))
+                mpd_icon:set_markup(util.fa_markup(beautiful.widget_colors.mpd,
+                                                   ''))
             elseif mpd_now.state == "pause" then
                 artist = "mpd "
                 title = "paused"
-                mpd_icon:set_markup(util.fa_markup(color, ''))
+                mpd_icon:set_markup(util.fa_markup(beautiful.widget_colors.mpd,
+                                                   ''))
             else
                 artist = ""
                 title = ""

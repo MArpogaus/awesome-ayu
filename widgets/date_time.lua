@@ -6,6 +6,10 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:26:26
+-- @Changes: 
+--      - remove color as function argument
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-02 10:23:31
 -- @Changes: 
 --      - newly written
@@ -29,15 +33,16 @@ local module = {}
 
 -- [ function definitions ] ----------------------------------------------------
 os.setlocale(os.getenv("LANG")) -- to localize the clock
-module.gen_wibar_widget = function(color_date, color_time)
-    local clock_icon = util.fa_ico(color_date, '')
+module.gen_wibar_widget = function()
+    local clock_icon = util.fa_ico(beautiful.widget_colors.cal, '')
     local clock_widget = wibox.widget.textclock(
-                             markup(color_date, "%A %d %B") ..
+                             markup(beautiful.widget_colors.cal, "%A %d %B") ..
                                  markup(beautiful.fg_normal, " | ") ..
-                                 markup(color_time, "%H:%M"))
+                                 markup(beautiful.widget_colors.clock, "%H:%M"))
     clock_widget.font = beautiful.font
-    local clock_wibox_widget = util.create_wibar_widget(color_date, clock_icon,
-                                                        clock_widget)
+    local clock_wibox_widget = util.create_wibar_widget(
+                                   beautiful.widget_colors.cal, clock_icon,
+                                   clock_widget)
 
     -- popup calendar
     beautiful.cal = lain.widget.cal{

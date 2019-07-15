@@ -3,13 +3,16 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- ...
+-- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-07-15 08:29:16
+-- @Changes: 
+--      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-02 09:20:39
 -- @Changes: 
 --      - newly written
---      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local os = os
@@ -29,14 +32,15 @@ local module = {}
 local fs_icon = ""
 
 -- [ function definitions ] ----------------------------------------------------
-module.gen_wibar_widget = function(color)
+module.gen_wibar_widget = function()
     fs_widget = lain.widget.fs({
         notification_preset = {
             font = beautiful.font_name .. dpi(10),
             fg = beautiful.fg_normal
         },
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font, color,
+            widget:set_markup(markup.fontfg(beautiful.font,
+                                            beautiful.widget_colors.fs,
                                             string.format("%.1f", fs_now["/"]
                                                               .percentage) ..
                                                 "%"))
@@ -44,22 +48,28 @@ module.gen_wibar_widget = function(color)
     })
     beautiful.fs = fs_widget
 
-    return util.create_wibar_widget(color, fs_icon, fs_widget)
+    return util.create_wibar_widget(beautiful.widget_colors.fs, fs_icon,
+                                    fs_widget)
 end
 
-module.gen_arc_widget = function(bg, fg)
+module.gen_arc_widget = function()
     local fs_widget = lain.widget.fs({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8), fg,
-                                            string.format("%.1f", fs_now["/"]
-                                                              .percentage) ..
+            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
+                                            beautiful.widget_colors.desktop_fs
+                                                .fg, string.format("%.1f",
+                                                                   fs_now["/"]
+                                                                       .percentage) ..
                                                 "%"))
             widget:emit_signal_recursive("widget::value_changed",
                                          fs_now["/"].percentage)
         end,
         showpopup = "off"
     })
-    return util.gen_arc_widget(fs_icon, fs_widget, bg, fg, 0, 100, dpi(150))
+    return util.gen_arc_widget(fs_icon, fs_widget,
+                               beautiful.widget_colors.desktop_fs.bg,
+                               beautiful.widget_colors.desktop_fs.fg, 0, 100,
+                               dpi(150))
 end
 
 -- [ return module objects ] ---------------------------------------------------

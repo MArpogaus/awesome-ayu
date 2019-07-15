@@ -1,0 +1,9 @@
+{
+    "name": "ayu light",
+    "background": "#FAFAFA",
+    "foreground": "#6C7680",
+    "color": [
+        "#FAFAFA", "#F07171", "#99BF4D", "#FF9940", "#55B4D4", "#ED9366", "#709ECC", "#ABB0B6",
+        "#959DA6", "#F27983", "#86B300", "#F2AE49", "#399EE6", "#FA8D3E", "#4CBF99", "#6C7680"
+    ]
+}

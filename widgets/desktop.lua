@@ -32,33 +32,32 @@ local config = require("themes.ayu.config")
 local module = {}
 
 -- [ clock ] -------------------------------------------------------------------
-module.clock = date_time.gen_desktop_widget()
+module.clock = function() return date_time.gen_desktop_widget() end
 
 -- [ weather ] -----------------------------------------------------------------
-module.weather = weather.gen_desktop_widget(beautiful.fg_normal, config.city_id)
+module.weather =
+    function() return weather.gen_desktop_widget(config.city_id) end
 
 -- [ arcs ] --------------------------------------------------------------------
-module.arcs = wibox.widget{
-    nil,
-    {
+module.arcs = function()
+    return wibox.widget{
         nil,
         {
-            cpu.gen_arc_widget(beautiful.widget_colors.desktop_cpu.bg,
-                               beautiful.widget_colors.desktop_cpu.fg),
-            memory.gen_arc_widget(beautiful.widget_colors.desktop_mem.bg,
-                                  beautiful.widget_colors.desktop_mem.fg),
-            fs.gen_arc_widget(beautiful.widget_colors.desktop_fs.bg,
-                              beautiful.widget_colors.desktop_fs.fg),
-            battery.gen_arc_widget(beautiful.widget_colors.desktop_bat.bg,
-                                   beautiful.widget_colors.desktop_bat.fg),
-            layout = wibox.layout.fixed.horizontal
+            nil,
+            {
+                cpu.gen_arc_widget(),
+                memory.gen_arc_widget(),
+                fs.gen_arc_widget(),
+                battery.gen_arc_widget(),
+                layout = wibox.layout.fixed.horizontal
+            },
+            nil,
+            expand = "none",
+            layout = wibox.layout.align.horizontal
         },
         nil,
         expand = "none",
-        layout = wibox.layout.align.horizontal
-    },
-    nil,
-    expand = "none",
-    layout = wibox.layout.align.vertical
-}
+        layout = wibox.layout.align.vertical
+    }
+end
 return module

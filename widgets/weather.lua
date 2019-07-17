@@ -6,7 +6,7 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-15 08:58:04
+-- @Last Modified time: 2019-07-17 14:01:03
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
@@ -59,10 +59,9 @@ module.gen_wibar_widget = function(city_id)
                                             weather_now))
             end
         })
-    beautiful.weather = weather_widget
 
     return util.create_wibar_widget(beautiful.widget_colors.weather,
-                                    weather_icon, weather_widget)
+                                    weather_icon, weather_widget), weather_widget
 end
 
 module.gen_desktop_widget = function(city_id)
@@ -74,7 +73,7 @@ module.gen_desktop_widget = function(city_id)
     local weather_unit = wibox.widget.textbox(
                              markup_color_size(38, beautiful.fg_normal, "°C"))
 
-    local widget = lain.widget.weather({
+    local weather_widget = lain.widget.weather({
         city_id = city_id,
         weather_na_markup = markup.fontfg(beautiful.font, beautiful.fg_normal,
                                           "N/A "),
@@ -97,8 +96,6 @@ module.gen_desktop_widget = function(city_id)
                                                        descr))
         end
     })
-
-    beautiful.desktop_weather = widget
 
     weather_temp.align = "center"
     weather_descr.align = "center"
@@ -154,7 +151,7 @@ module.gen_desktop_widget = function(city_id)
         nil,
         expand = "none",
         layout = wibox.layout.align.horizontal
-    }
+    }, weather_widget
 end
 
 -- [ return module objects ] ---------------------------------------------------

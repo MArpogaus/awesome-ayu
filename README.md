@@ -1,6 +1,6 @@
 ![](img/ayu.png)
 
-> [ayu](https://github.com/dempfi/ayu/blob/master/README.md) is a simple theme with bright colors and comes in three versions — dark, mirage and light for all day long comfortable work.
+> [ayu][] is a simple theme with bright colors and comes in three versions — dark, mirage and light for all day long comfortable work.
 
 This is a modified version of the multicolor theme from [Awesome WM Copycats][awesome-copycats] using the gorgeous [ayu color palette][ayu-colors].
 
@@ -25,23 +25,32 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
 
 # Installation
 
-Install [Awesome WM Copycats][awesome-copycats]
-```shell
-git clone --recursive https://github.com/lcpz/awesome-copycats.git ~/.config/awesome
-```
+## Dependecies
 
-Install [Font Awesome 4](https://github.com/FortAwesome/Font-Awesome)
-```shell
-apt install fonts-font-awesome
-```
+ * [lain][lain]
+ * [owfont - symbol font for Open Weather Map API][owfont]
+ * [Font Awesome 4][FontAwesome4]
 
-Clone this repo to `~/.config/awesome/themes`
-```shell
-git clone https://github.com/MArpogaus/awesome-ayu.git ~/.config/awesome/themes/ayu
-```
+## Quick installation example
 
-Set Your City Id in the module `themes.ayu.config`.
-For more info see https://github.com/lcpz/awesome-copycats#notes
+ 1. Install [Awesome WM Copycats][awesome-copycats]
+    ```shell
+    git clone --recursive https://github.com/lcpz/awesome-copycats.git ~/.config/awesome
+    ```
+
+ 2. Install [Font Awesome 4][FontAwesome4]
+    ```shell
+    apt install fonts-font-awesome
+    ```
+ 
+ 3. Download and install [owfont][owfont]
+
+ 4. Clone this repo to `~/.config/awesome/themes`
+    ```shell
+    git clone https://github.com/MArpogaus/awesome-ayu.git ~/.config/awesome/themes/ayu
+    ```
+
+ 5. Set Your City Id in `themes.ayu.config`. For more info see https://github.com/lcpz/awesome-copycats#notes
 
 # Usage
 
@@ -76,3 +85,7 @@ end
 
 [awesome-copycats]: https://github.com/lcpz/awesome-copycats
 [ayu-colors]: https://github.com/ayu-theme/ayu-colors
+[ayu]: https://github.com/dempfi/ayu/blob/master/README.md
+[FontAwesome4]: https://github.com/FortAwesome/Font-Awesome
+[owfont]: http://websygen.github.io/owfont/
+[lain]: https://github.com/lcpz/lain

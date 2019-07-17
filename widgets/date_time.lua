@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-15 08:26:26
+-- @Last Modified time: 2019-07-17 14:41:55
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
@@ -63,7 +63,7 @@ module.gen_desktop_widget = function()
                                  markup.fontfg(beautiful.font_name .. dpi(38),
                                                beautiful.bg_normal, " %H:%M "))
         deskop_clock.align = 'center'
-        return util.create_boxed_widget(deskop_clock, 500, 200,
+        return util.create_boxed_widget(deskop_clock, 4*dpi(38),
                                         beautiful.widget_colors.desktop_clock)
     end
 

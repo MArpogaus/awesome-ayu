@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-15 08:00:02
+-- @Last Modified time: 2019-07-17 14:40:40
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget = function(widget_to_be_boxed, width, height,
+module.create_boxed_widget = function(widget_to_be_boxed, height,
                                       bg_color)
     local box_container = wibox.container.background()
     box_container.bg = bg_color
@@ -164,7 +164,6 @@ module.create_boxed_widget = function(widget_to_be_boxed, width, height,
         gears.shape.rounded_rect(c, h, w, dpi(15))
     end
     box_container.forced_height = height
-    box_container.forced_width = width
 
     local boxed_widget = wibox.widget{
         -- add margins
@@ -176,14 +175,8 @@ module.create_boxed_widget = function(widget_to_be_boxed, width, height,
                 {
                     -- Center widget_to_be_boxed vertically
                     nil,
-                    {
-                        -- The actual widget goes here
-                        widget_to_be_boxed,
-                        height = height,
-                        width = width,
-                        strategy = "min",
-                        layout = wibox.container.constraint
-                    },
+                    -- The actual widget goes here
+                    widget_to_be_boxed,
                     nil,
                     layout = wibox.layout.align.vertical,
                     expand = "none"

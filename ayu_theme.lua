@@ -32,6 +32,7 @@ local theme = {
         self.tasklist_disable_icon = true
         self.useless_gap = 0
         self.ico_width = dpi(20)
+        self.titlebar_size = dpi(20)
         self.button_size = dpi(32)
         self.button_radius = dpi(10)
         self.menu_bg_normal = cs.bg

@@ -6,7 +6,7 @@
 -- cup utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-15 08:55:24
+-- @Last Modified time: 2019-08-16 12:08:52
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus

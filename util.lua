@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-17 14:40:40
+-- @Last Modified time: 2019-08-16 11:53:06
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
@@ -26,11 +26,11 @@ local module = {}
 
 -- Helper functions for modifying hex colors -----------------------------------
 local hex_color_match = "[a-fA-F0-9][a-fA-F0-9]"
-module.darker = function (color_value, darker_n)
+module.darker = function(color_value, darker_n)
     local result = "#"
     local channel_counter = 1
     for s in color_value:gmatch(hex_color_match) do
-        local bg_numeric_value = tonumber("0x"..s)
+        local bg_numeric_value = tonumber("0x" .. s)
         if channel_counter <= 3 then
             bg_numeric_value = bg_numeric_value - darker_n
         end
@@ -41,20 +41,18 @@ module.darker = function (color_value, darker_n)
     end
     return result
 end
-module.is_dark = function (color_value)
-    local bg_numeric_value = 0;
+module.is_dark = function(color_value)
+    local bg_numeric_value = 0
     local channel_counter = 1
     for s in color_value:gmatch(hex_color_match) do
-        bg_numeric_value = bg_numeric_value + tonumber("0x"..s);
-        if channel_counter == 3 then
-            break
-        end
+        bg_numeric_value = bg_numeric_value + tonumber("0x" .. s)
+        if channel_counter == 3 then break end
         channel_counter = channel_counter + 1
     end
     local is_dark_bg = (bg_numeric_value < 383)
     return is_dark_bg
 end
-module.reduce_contrast = function (color, ratio)
+module.reduce_contrast = function(color, ratio)
     ratio = ratio or 50
     if module.is_dark(color) then
         return module.darker(color, -ratio)
@@ -67,28 +65,28 @@ end
 module.titlebar_button = function(size, radius, bg_color, fg_color)
     -- Create a surface
     local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
-    
+
     -- Create a context
     local cr = cairo.Context(img)
-    
+
     -- paint transparent bg
     cr:set_source(gears.color("#00000000"))
     cr:paint()
-    
+
     -- draw boarder
     cr:set_source(gears.color(fg_color or "#00000000"))
     cr:move_to(size / 2 + radius, size / 2)
     cr:arc(size / 2, size / 2, radius + 1, 0, 2 * math.pi)
     cr:close_path()
     cr:fill()
-    
+
     -- draw circle
     cr:set_source(gears.color(bg_color))
     cr:move_to(size / 2 + radius, size / 2)
     cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
     cr:close_path()
     cr:fill()
-    
+
     return img, cr
 end
 
@@ -156,8 +154,7 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget = function(widget_to_be_boxed, height,
-                                      bg_color)
+module.create_boxed_widget = function(widget_to_be_boxed, height, bg_color)
     local box_container = wibox.container.background()
     box_container.bg = bg_color
     box_container.shape = function(c, h, w)
@@ -236,13 +233,18 @@ module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
             nil,
             {
                 nil,
-                icon_widget,
-                widget,
+                {
+                    icon_widget,
+                    widget,
+                    spacing = dpi(10),
+                    layout = wibox.layout.fixed.vertical
+                },
+                nil,
                 expand = "outside",
                 layout = wibox.layout.align.vertical
             },
             nil,
-            expand = 'outside',
+            expand = "outside",
             layout = wibox.layout.align.horizontal
         },
         bg = bg,

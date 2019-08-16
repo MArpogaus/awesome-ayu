@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 11:53:06
+-- @Last Modified time: 2019-08-16 13:04:16
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
@@ -154,43 +154,29 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget = function(widget_to_be_boxed, height, bg_color)
-    local box_container = wibox.container.background()
-    box_container.bg = bg_color
-    box_container.shape = function(c, h, w)
-        gears.shape.rounded_rect(c, h, w, dpi(15))
-    end
-    box_container.forced_height = height
+module.create_boxed_widget =
+    function(widget_to_be_boxed, inner_margin, bg_color)
+        local box_container = wibox.container.background()
+        box_container.bg = bg_color
+        box_container.shape = function(c, h, w)
+            gears.shape.rounded_rect(c, h, w, dpi(15))
+        end
 
-    local boxed_widget = wibox.widget{
-        -- add margins
-        {
-            -- Add background color
+        local boxed_widget = wibox.widget{
             {
-                -- Center widget_to_be_boxed horizontally
-                nil,
                 {
-                    -- Center widget_to_be_boxed vertically
-                    nil,
-                    -- The actual widget goes here
                     widget_to_be_boxed,
-                    nil,
-                    layout = wibox.layout.align.vertical,
-                    expand = "none"
+                    margins = dpi(inner_margin),
+                    widget = wibox.container.margin
                 },
-                nil,
-                layout = wibox.layout.align.horizontal,
-                expand = "none"
+                widget = box_container
             },
-            widget = box_container
-        },
-        margins = dpi(24),
-        color = "#FF000000",
-        widget = wibox.container.margin
-    }
+            margins = dpi(24),
+            widget = wibox.container.margin
+        }
 
-    return boxed_widget
-end
+        return boxed_widget
+    end
 
 module.create_wibar_widget = function(color, icon, widget)
     local icon_widget
@@ -251,22 +237,16 @@ module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
         colors = {fg},
         min_value = min,
         max_value = max,
-        thickness = thickness or size / 12,
+        thickness = thickness or math.sqrt(size),
         forced_width = size,
         forced_height = size,
         start_angle = 0,
         widget = wibox.container.arcchart
     }
-    local margin_container = wibox.widget{
-        arc_container,
-        margins = margin or size / 2,
-        color = "#FF000000",
-        layout = wibox.container.margin
-    }
     arc_container:connect_signal("widget::value_changed", function(_, usage)
         arc_container.value = usage
     end)
-    return margin_container
+    return arc_container
 end
 
 return module

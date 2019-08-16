@@ -6,7 +6,7 @@
 -- cup utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 12:08:52
+-- @Last Modified time: 2019-08-16 12:17:19
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
@@ -44,8 +44,7 @@ module.gen_wibar_widget = function()
                                     cpu_widget)
 end
 
-module.gen_arc_widget = function()
-    local num_cpus = 8
+module.gen_arc_widget = function(num_cpus)
     local step_width = dpi(8)
     local step_spacing = dpi(4)
     local cpu_graph = wibox.widget{

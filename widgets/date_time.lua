@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 10:29:12
+-- @Last Modified time: 2019-08-16 12:38:35
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus
@@ -58,12 +58,12 @@ module.gen_wibar_widget = function()
 end
 
 module.gen_desktop_widget = function()
+    local font_size = 38
     local gen_deskop_clock_box = function()
         local deskop_clock = wibox.widget.textclock(
-                                 markup.fontfg(beautiful.font_name .. dpi(38),
+                                 markup.fontfg(beautiful.font_name .. dpi(font_size),
                                                beautiful.bg_normal, " %H:%M "))
-        deskop_clock.align = 'center'
-        return util.create_boxed_widget(deskop_clock, dpi(4*38),
+        return util.create_boxed_widget(deskop_clock, dpi(font_size*1.3/2),
                                         beautiful.widget_colors.desktop_clock)
     end
 
@@ -102,14 +102,14 @@ module.gen_desktop_widget = function()
                 nil,
                 gen_deskop_clock_box(),
                 nil,
-                expand = "none",
+                expand = "outside",
                 layout = wibox.layout.align.horizontal
             },
             gen_desktop_clock_date(),
             layout = wibox.layout.fixed.vertical
         },
-        expand = 'outside',
         nil,
+        expand = 'outside',
         layout = wibox.layout.align.horizontal
     }
 end

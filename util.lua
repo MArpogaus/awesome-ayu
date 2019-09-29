@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 13:04:16
+-- @Last Modified time: 2019-08-19 16:07:04
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
@@ -220,13 +220,14 @@ module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
             {
                 nil,
                 {
+                    nil,
                     icon_widget,
                     widget,
-                    spacing = dpi(10),
-                    layout = wibox.layout.fixed.vertical
+                    expand = "outside",
+                    layout = wibox.layout.align.vertical
                 },
                 nil,
-                expand = "outside",
+                expand = "inside",
                 layout = wibox.layout.align.vertical
             },
             nil,

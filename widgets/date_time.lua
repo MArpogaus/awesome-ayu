@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 12:38:35
+-- @Last Modified time: 2019-08-16 13:30:06
 -- @Changes: 
 --      - remove color as function argument
 -- @Last Modified by:   Marcel Arpogaus

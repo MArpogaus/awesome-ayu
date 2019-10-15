@@ -25,7 +25,7 @@ local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
         self.confdir = config_path .. "/themes/ayu"
-        self.font_name = "Monospace "
+        self.font_name = "mononoki "
         self.font_size = dpi(6)
         self.font = self.font_name .. self.font_size
         self.tasklist_plain_task_name = true
@@ -44,7 +44,7 @@ local theme = {
         self.fg_focus = cs.colors[4]
         self.fg_urgent = cs.colors[2]
         self.fg_minimize = cs.fg
-        self.border_width = dpi(1)
+        self.border_width = 1
         self.border_normal = cs.fg
         self.border_focus = cs.fg
         self.border_marked = cs.colors[4]

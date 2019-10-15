@@ -86,6 +86,7 @@ function theme.at_screen_connect(s)
     s.mywibox = awful.wibar({
         position = "top",
         screen = s,
+        ontop = true,
         height = theme.top_bar_height,
         bg = theme.bg_normal,
         fg = theme.fg_normal
@@ -108,7 +109,6 @@ function theme.at_screen_connect(s)
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            wibox.widget.systray(),
             wibox_widgets.net(theme.widget_colors.netdown, "received"),
             wibox_widgets.net(theme.widget_colors.netup, "sent",
                               {wibox_weather_wdiget, desktop_weather_wdiget}),
@@ -133,6 +133,7 @@ function theme.at_screen_connect(s)
         position = "bottom",
         screen = s,
         border_width = 0,
+        ontop = true,
         height = theme.bottom_bar_height,
         bg = theme.bg_normal,
         fg = theme.fg_normal
@@ -146,8 +147,9 @@ function theme.at_screen_connect(s)
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            s.mylayoutbox
+            wibox.widget.systray(),
+            s.mylayoutbox,
+            layout = wibox.layout.fixed.horizontal
         }
     }
 
@@ -156,14 +158,14 @@ function theme.at_screen_connect(s)
         s.desktop_weather = nil
     end
     s.desktop_widget = wibox({
-        x = s.workarea.x,
-        y = s.workarea.y,
+        x = 0,
+        y = 0,
         screen = s,
         visible = true,
         ontop = false,
         type = 'dock',
-        width = s.workarea.width,
-        height = s.workarea.height
+        width = s.geometry.width,
+        height = s.geometry.height
     })
 
     -- Add widgets to desktop wibox

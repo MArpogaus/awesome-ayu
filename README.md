@@ -30,15 +30,15 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
  * [lain][lain]
  * [owfont - symbol font for Open Weather Map API][owfont]
  * [Font Awesome 4][FontAwesome4]
+ * [mononoki][mononoki]
 
 ## Quick installation example
 
- 1. Clone awesome dependencies and theme to `~/.config/awesome/`
+ 1. Clone [lain][lain] and theme to `~/.config/awesome/`
     ```shell
     cd .config/awesome
     mkdir themes
     git clone https://github.com/MArpogaus/awesome-ayu.git themes/ayu
-    git clone https://github.com/lcpz/awesome-freedesktop.git freedesktop
     git clone https://github.com/lcpz/lain.git lain
     ```
 

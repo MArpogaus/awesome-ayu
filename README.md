@@ -104,7 +104,7 @@ local set_light = function()
 end
 ```
 
-**Note:** Using `awful.screen.connect_for_each_screen(beautiful.at_screen_connect)` to update colors inside awesome, seams to cause with significant performance impacts. Probably because old resources aren't freed properly. if you know a better way please let me know :)
+**Note:** Using `awful.screen.connect_for_each_screen(beautiful.at_screen_connect)` to update colors inside awesome, seams to cause significant performance issues when heavily used. Probably because old resources aren't freed properly. if you know a better way please let me know :)
 
 I use the following function to switch colorschemes using wpgtk.
 ```lua

@@ -19,6 +19,11 @@ local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 
+local beautiful = require("beautiful")
+local xresources = require("beautiful.xresources")
+
+local dpi = xresources.apply_dpi
+
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
@@ -32,7 +37,6 @@ local config = require("themes.ayu.config")
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = config.icon_theme or "HighContrast"
 
-
 function theme.at_screen_connect(s)
     -- load custom wibox widgets
     local wibox_widgets = require("themes.ayu.widgets.wibox")
@@ -44,9 +48,9 @@ function theme.at_screen_connect(s)
     end
 
     -- If wallpaper is a function, call it with the screen
-    --local wallpaper = theme.wallpaper
-    --if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
-    --gears.wallpaper.maximized(wallpaper, s, true)
+    -- local wallpaper = theme.wallpaper
+    -- if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
+    -- gears.wallpaper.maximized(wallpaper, s, true)
 
     -- Create a promptbox for each screen
     if s.promptbox == nil then s.mypromptbox = awful.widget.prompt() end
@@ -92,8 +96,10 @@ function theme.at_screen_connect(s)
         fg = theme.fg_normal
     })
 
-    local wibox_weather, wibox_weather_wdiget = wibox_widgets.weather(config.city_id)
-    local desktop_weather, desktop_weather_wdiget = desktop_widgets.weather(config.city_id)
+    local wibox_weather, wibox_weather_wdiget =
+        wibox_widgets.weather(config.city_id)
+    local desktop_weather, desktop_weather_wdiget =
+        desktop_widgets.weather(config.city_id)
 
     -- Add widgets to the wibox
     s.mywibox:setup{
@@ -101,6 +107,7 @@ function theme.at_screen_connect(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             -- s.mylayoutbox,
+            -- awful.util.mylauncher,
             s.mytaglist,
             s.mypromptbox,
             wibox_widgets.mpd()
@@ -119,7 +126,14 @@ function theme.at_screen_connect(s)
             wibox_weather,
             wibox_widgets.temp(),
             wibox_widgets.bat(),
-            wibox_widgets.datetime()
+            wibox_widgets.datetime(),
+            {
+                -- add margins
+                awful.util.myexitmenu,
+                left = dpi(8),
+                color = "#FF000000",
+                widget = wibox.container.margin
+            }
         }
     }
 
@@ -154,9 +168,7 @@ function theme.at_screen_connect(s)
     }
 
     -- Create the desktop wibox
-    if s.desktop_widget ~= nil then
-        s.desktop_weather = nil
-    end
+    if s.desktop_widget ~= nil then s.desktop_weather = nil end
     s.desktop_widget = wibox({
         x = 0,
         y = 0,

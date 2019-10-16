@@ -62,33 +62,35 @@ module.reduce_contrast = function(color, ratio)
 end
 
 -- create titlebar_button ------------------------------------------------------
-module.titlebar_button = function(size, radius, bg_color, fg_color)
-    -- Create a surface
-    local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
+module.titlebar_button =
+    function(size, radius, bg_color, fg_color, border_width)
+        local border_width = border_width or 1
+        -- Create a surface
+        local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
 
-    -- Create a context
-    local cr = cairo.Context(img)
+        -- Create a context
+        local cr = cairo.Context(img)
 
-    -- paint transparent bg
-    cr:set_source(gears.color("#00000000"))
-    cr:paint()
+        -- paint transparent bg
+        cr:set_source(gears.color("#00000000"))
+        cr:paint()
 
-    -- draw boarder
-    cr:set_source(gears.color(fg_color or "#00000000"))
-    cr:move_to(size / 2 + radius, size / 2)
-    cr:arc(size / 2, size / 2, radius + 1, 0, 2 * math.pi)
-    cr:close_path()
-    cr:fill()
+        -- draw border
+        cr:set_source(gears.color(fg_color or "#00000000"))
+        cr:move_to(size / 2 + radius, size / 2)
+        cr:arc(size / 2, size / 2, radius + border_width, 0, 2 * math.pi)
+        cr:close_path()
+        cr:fill()
 
-    -- draw circle
-    cr:set_source(gears.color(bg_color))
-    cr:move_to(size / 2 + radius, size / 2)
-    cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
-    cr:close_path()
-    cr:fill()
+        -- draw circle
+        cr:set_source(gears.color(bg_color))
+        cr:move_to(size / 2 + radius, size / 2)
+        cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
+        cr:close_path()
+        cr:fill()
 
-    return img, cr
-end
+        return img, cr
+    end
 
 -- FontAwesome icons -----------------------------------------------------------
 module.fa_markup = function(col, ico, size)
@@ -189,8 +191,8 @@ module.create_wibar_widget = function(color, icon, widget)
         {
             -- add margins
             icon_widget,
-            left = dpi(8),
-            right = dpi(2),
+            left = beautiful.icon_margin_left,
+            right = beautiful.icon_margin_right,
             color = "#FF000000",
             widget = wibox.container.margin
         },
@@ -201,17 +203,17 @@ module.create_wibar_widget = function(color, icon, widget)
     return wibox_widget
 end
 
-module.gen_arc_icon = function(fg, icon, size)
+module.create_arc_icon = function(fg, icon, size)
     return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
 end
-module.gen_arc_widget = function(icon, widget, bg, fg, min, max, size, margin,
-                                 thickness)
+module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
+                                    margin, thickness)
     size = size or dpi(100)
     local icon_widget
     if type(icon) == "table" then
         icon_widget = icon
     else
-        icon_widget = module.gen_arc_icon(fg, icon, size)
+        icon_widget = module.create_arc_icon(fg, icon, size)
     end
     widget.align = "center"
     local arc_container = wibox.widget{

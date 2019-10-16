@@ -43,10 +43,10 @@ module.arcs = function()
     return wibox.widget{
         nil,
         {
-            cpu.gen_arc_widget(config.num_cpus),
-            memory.gen_arc_widget(),
-            fs.gen_arc_widget(),
-            battery.gen_arc_widget(),
+            cpu.create_arc_widget(config.num_cpus),
+            memory.create_arc_widget(),
+            fs.create_arc_widget(),
+            battery.create_arc_widget(),
             spacing = dpi(100),
             layout = wibox.layout.fixed.horizontal
         },

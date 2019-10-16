@@ -52,7 +52,7 @@ module.gen_wibar_widget = function()
                                     fs_widget)
 end
 
-module.gen_arc_widget = function()
+module.create_arc_widget = function()
     local fs_widget = lain.widget.fs({
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
@@ -66,7 +66,7 @@ module.gen_arc_widget = function()
         end,
         showpopup = "off"
     })
-    return util.gen_arc_widget(fs_icon, fs_widget,
+    return util.create_arc_widget(fs_icon, fs_widget,
                                beautiful.widget_colors.desktop_fs.bg,
                                beautiful.widget_colors.desktop_fs.fg, 0, 100,
                                dpi(150))

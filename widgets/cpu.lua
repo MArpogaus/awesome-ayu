@@ -44,7 +44,7 @@ module.gen_wibar_widget = function()
                                     cpu_widget)
 end
 
-module.gen_arc_widget = function(num_cpus)
+module.create_arc_widget = function(num_cpus)
     local step_width = dpi(8)
     local step_spacing = dpi(4)
     local cpu_graph = wibox.widget{
@@ -73,7 +73,7 @@ module.gen_arc_widget = function(num_cpus)
     })
     cpu_widget.align = "center"
 
-    return util.gen_arc_widget(cpu_graph, cpu_widget,
+    return util.create_arc_widget(cpu_graph, cpu_widget,
                                beautiful.widget_colors.desktop_cpu.bg,
                                beautiful.widget_colors.desktop_cpu.fg, 0, 100,
                                dpi(150))

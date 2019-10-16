@@ -32,6 +32,8 @@ local theme = {
         self.tasklist_disable_icon = true
         self.useless_gap = 0
         self.ico_width = dpi(20)
+        self.icon_margin_left = dpi(10)
+        self.icon_margin_right = dpi(2)
         self.titlebar_size = dpi(20)
         self.button_size = dpi(32)
         self.button_radius = dpi(10)
@@ -48,10 +50,9 @@ local theme = {
         self.border_normal = cs.fg
         self.border_focus = cs.fg
         self.border_marked = cs.colors[4]
-        self.top_bar_height = dpi(20)
-        self.bottom_bar_height = dpi(20)
+        self.top_bar_height = dpi(28)
+        self.bottom_bar_height = dpi(28)
         self.menu_border_width = 0
-        self.menu_submenu_icon = themes_path .. "default/submenu.png"
         self.menu_height = dpi(15)
         self.menu_width = dpi(150)
         self.menu_fg_normal = cs.fg
@@ -60,12 +61,15 @@ local theme = {
         self.menu_bg_focus = cs.bg
 
         -- set colors for buttons and widgets
+        self.exit_icon_bg_color = cs.bg -- "#F07171"
         self.close_button_bg_color = cs.colors[2] -- "#F07171"
         self.maximized_button_bg_color = cs.colors[3] -- "#91B362"
         self.minimize_button_bg_color = cs.colors[4] -- "#E6B450"
         self.ontop_button_bg_color = cs.colors[7] -- "#399EE6"
         self.sticky_button_bg_color = cs.colors[8] -- "#ABB0B6"
 
+        self.exit_icon_fg_color = util.reduce_contrast(
+                                         self.exit_icon_bg_color, 50)
         self.close_button_fg_color = util.reduce_contrast(
                                          self.close_button_bg_color, 50)
         self.maximized_button_fg_color =
@@ -272,8 +276,9 @@ local theme = {
 
         -- Generate Awesome icon:
         self.awesome_icon = theme_assets.awesome_icon(self.menu_height,
-                                                      self.bg_normal,
-                                                      self.fg_normal)
+                                                      self.fg_normal,
+                                                      self.bg_normal)
+        self.exitmenu_icon = self:exit_icon(self.menu_height * 2, self.button_radius)
 
         -- wallpaper
         self.wallpaper = function(s)
@@ -281,6 +286,25 @@ local theme = {
                                                  s.workarea.height,
                                                  gears.shape.rectangle, cs.bg)
         end
+    end,
+    exit_icon = function(self, size, radius)
+        bg_color = self.exit_icon_bg_color
+        fg_color = self.exit_icon_fg_color
+        img, cr = util.titlebar_button(size, radius, bg_color, fg_color, 2)
+
+        -- draw content
+        active_color = self.exit_icon_fg_color
+        cr:set_source(gears.color(active_color))
+        local width = radius/4
+        local height = radius
+        local x = (size - width) / 2
+        local y = (size - height) / 2
+        local shape = gears.shape.transform(gears.shape.rectangle):translate(x,
+                                                                             y)
+        shape(cr, width, height)
+        cr:fill()
+
+        return img
     end,
     close_button = function(self, size, radius, hover, active)
         bg_color = self.close_button_bg_color

@@ -45,7 +45,7 @@ module.gen_wibar_widget = function()
                                     mem_widget)
 end
 
-module.gen_arc_widget = function()
+module.create_arc_widget = function()
     local mem_widget = lain.widget.mem({
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
@@ -54,7 +54,7 @@ module.gen_arc_widget = function()
             widget:emit_signal_recursive("widget::value_changed", mem_now.perc)
         end
     })
-    return util.gen_arc_widget(mem_icon, mem_widget,
+    return util.create_arc_widget(mem_icon, mem_widget,
                                beautiful.widget_colors.desktop_mem.bg,
                                beautiful.widget_colors.desktop_mem.fg, 0, 100,
                                dpi(150))

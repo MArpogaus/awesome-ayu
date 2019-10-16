@@ -65,8 +65,8 @@ module.gen_wibar_widget = function()
                                     bat_widget)
 end
 
-module.gen_arc_widget = function()
-    local bat_icon = util.gen_arc_icon(beautiful.widget_colors.desktop_bat.fg,
+module.create_arc_widget = function()
+    local bat_icon = util.create_arc_icon(beautiful.widget_colors.desktop_bat.fg,
                                        fa_bat_icons[1], dpi(150))
     local bat_widget = lain.widget.bat({
         settings = function()
@@ -84,7 +84,7 @@ module.gen_arc_widget = function()
             widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
         end
     })
-    return util.gen_arc_widget(bat_icon, bat_widget,
+    return util.create_arc_widget(bat_icon, bat_widget,
                                beautiful.widget_colors.desktop_bat.bg,
                                beautiful.widget_colors.desktop_bat.fg, 0, 100,
                                dpi(150))

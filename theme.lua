@@ -38,6 +38,35 @@ local config = require("themes.ayu.config")
 theme.icon_theme = config.icon_theme or "HighContrast"
 
 function theme.at_screen_connect(s)
+
+    if s.desktop_popup then
+        s.desktop_popup.widget:reset()
+        s.mytopwibar.desktop_popup = nil
+    end
+    if s.mytopwibar then
+        s.mytopwibar.widget:reset()
+        s.mytopwibar:remove()
+        s.mytopwibar = nil
+    end
+    if s.mybottomwibar then
+        s.mybottomwibar.widget:reset()
+        s.mybottomwibar:remove()
+        s.mybottomwibar = nil
+    end
+    if s.promptbox then
+        s.promptbox:reset()
+        s.promptbox:remove()
+        s.promptbox = nil
+    end
+    if s.mytaglist then
+        s.mytaglist:reset()
+        s.mytaglist:remove()
+        s.mytaglist = nil
+    else
+        -- Each screen has its own tag table.
+        awful.tag(awful.util.tagnames, s, awful.layout.layouts[2])
+    end
+
     -- load custom wibox widgets
     local wibox_widgets = require("themes.ayu.widgets.wibox")
     local desktop_widgets = require("themes.ayu.widgets.desktop")
@@ -47,35 +76,32 @@ function theme.at_screen_connect(s)
     if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
     gears.wallpaper.maximized(wallpaper, s, true)
 
+
     -- Create a promptbox for each screen
-    if s.promptbox == nil then s.mypromptbox = awful.widget.prompt() end
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
+    s.mypromptbox = awful.widget.prompt()
+
+    -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    if s.mylayoutbox == nil then
-        s.mylayoutbox = awful.widget.layoutbox(s)
-        s.mylayoutbox:buttons(my_table.join(
-                                  awful.button({}, 1, function()
-                awful.layout.inc(1)
-            end), awful.button({}, 2, function()
-                awful.layout.set(awful.layout.layouts[1])
-            end), awful.button({}, 3, function() awful.layout.inc(-1) end),
-                                  awful.button({}, 4, function()
-                awful.layout.inc(1)
-            end), awful.button({}, 5, function() awful.layout.inc(-1) end)))
-    end
+    s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox:buttons(gears.table.join(
+                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
+                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
 
     -- Create a taglist widget
-    if s.mytaglist == nil then
-        awful.tag(awful.util.tagnames, s, awful.layout.layouts)
-        s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all,
-                                           awful.util.taglist_buttons)
-    end
+    s.mytaglist = awful.widget.taglist {
+        screen  = s,
+        filter  = awful.widget.taglist.filter.all,
+        buttons = awful.util.taglist_buttons
+    }
+
     -- Create a tasklist widget
-    if s.mytasklist == nil then
-        s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter
-                                                 .currenttags,
-                                             awful.util.tasklist_buttons)
-    end
+    s.mytasklist = awful.widget.tasklist {
+        screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = awful.util.tasklist_buttons
+    }
 
     -- Create a weather widgets
     local wibox_weather, wibox_weather_wdiget =
@@ -105,21 +131,15 @@ function theme.at_screen_connect(s)
             forced_width = s.workarea.width * 0.8,
             forced_height = s.workarea.height * 0.8
         },
-        type= "desktop",
+        type = "desktop",
         placement = awful.placement.centered,
         visible = true,
-        bg= "#00000000",
-        input_passthrough=true
+        bg = "#00000000",
+        input_passthrough = true
     }
-    s.desktop_popup:buttons(root.buttons())
 
     -- Create the wibox
-    if s.mywibox then
-        s.mywibox:remove()
-        s.mywibox = nil
-    end
-
-    s.mywibox = awful.wibar({
+    s.mytopwibar = awful.wibar({
         position = "top",
         screen = s,
         height = theme.top_bar_height,
@@ -128,7 +148,17 @@ function theme.at_screen_connect(s)
     })
 
     -- Add widgets to the wibox
-    s.mywibox:setup{
+    local myexitmenu = nil
+    if awful.util.myexitmenu then
+        awful.util.myexitmenu.image=theme.exitmenu_icon
+        myexitmenu = {
+            -- add margins
+            awful.util.myexitmenu,
+            left = theme.icon_margin_left,
+            widget = wibox.container.margin
+        }
+    end
+    s.mytopwibar:setup{
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
@@ -153,32 +183,21 @@ function theme.at_screen_connect(s)
             wibox_widgets.temp(),
             wibox_widgets.bat(),
             wibox_widgets.datetime(),
-            {
-                -- add margins
-                awful.util.myexitmenu,
-                left = dpi(8),
-                widget = wibox.container.margin
-            }
+            myexitmenu
         }
     }
 
     -- Create the bottom wibox
-    if s.mybottomwibox then
-        s.mybottomwibox:remove()
-        s.mybottomwibox = nil
-    end
-
-    s.mybottomwibox = awful.wibar({
+    s.mybottomwibar = awful.wibar({
         position = "bottom",
         screen = s,
-        border_width = 0,
         height = theme.bottom_bar_height,
         bg = theme.bg_normal,
         fg = theme.fg_normal
     })
 
     -- Add widgets to the bottom wibox
-    s.mybottomwibox:setup{
+    s.mybottomwibar:setup{
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal
@@ -187,6 +206,7 @@ function theme.at_screen_connect(s)
         { -- Right widgets
             wibox.widget.systray(),
             s.mylayoutbox,
+            spacing= theme.icon_margin_left,
             layout = wibox.layout.fixed.horizontal
         }
     }

@@ -28,6 +28,7 @@ local theme = {
         self.ico_width = self.titlebar_size
         self.icon_margin_left = self.ico_width / 2
         self.icon_margin_right = self.ico_width / 8
+        self.systray_icon_spacing = self.ico_width / 2
         self.confdir = config_path .. "/themes/ayu"
         self.font_name = "mononoki "
         self.font_size = dpi(6)

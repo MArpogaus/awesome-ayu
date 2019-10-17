@@ -24,17 +24,17 @@ end
 local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
+        self.titlebar_size = dpi(20)
+        self.ico_width = self.titlebar_size
+        self.icon_margin_left = self.ico_width / 2
+        self.icon_margin_right = self.ico_width / 8
         self.confdir = config_path .. "/themes/ayu"
         self.font_name = "mononoki "
         self.font_size = dpi(6)
         self.font = self.font_name .. self.font_size
-        self.tasklist_plain_task_name = true
+        --self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
-        self.ico_width = dpi(20)
-        self.icon_margin_left = dpi(10)
-        self.icon_margin_right = dpi(2)
-        self.titlebar_size = dpi(20)
         self.button_size = dpi(32)
         self.button_radius = dpi(10)
         self.menu_bg_normal = cs.bg
@@ -68,8 +68,7 @@ local theme = {
         self.ontop_button_bg_color = cs.colors[7] -- "#399EE6"
         self.sticky_button_bg_color = cs.colors[8] -- "#ABB0B6"
 
-        self.exit_icon_fg_color = util.reduce_contrast(
-                                         self.exit_icon_bg_color, 50)
+        self.exit_icon_fg_color = cs.fg
         self.close_button_fg_color = util.reduce_contrast(
                                          self.close_button_bg_color, 50)
         self.maximized_button_fg_color =
@@ -278,12 +277,12 @@ local theme = {
         self.awesome_icon = theme_assets.awesome_icon(self.menu_height,
                                                       self.fg_normal,
                                                       self.bg_normal)
-        self.exitmenu_icon = self:exit_icon(self.menu_height * 2, self.button_radius)
+        self.exitmenu_icon = self:exit_icon(self.menu_height * 2, self.menu_height / 2)
 
         -- wallpaper
         self.wallpaper = function(s)
-            return gears.surface.load_from_shape(s.workarea.width,
-                                                 s.workarea.height,
+            return gears.surface.load_from_shape(s.geometry.width,
+                                                 s.geometry.height,
                                                  gears.shape.rectangle, cs.bg)
         end
     end,

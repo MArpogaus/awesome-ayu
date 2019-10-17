@@ -42,15 +42,10 @@ function theme.at_screen_connect(s)
     local wibox_widgets = require("themes.ayu.widgets.wibox")
     local desktop_widgets = require("themes.ayu.widgets.desktop")
 
-    -- Quake application
-    if s.quake == nil then
-        s.quake = lain.util.quake({app = awful.util.terminal})
-    end
-
     -- If wallpaper is a function, call it with the screen
-    -- local wallpaper = theme.wallpaper
-    -- if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
-    -- gears.wallpaper.maximized(wallpaper, s, true)
+    local wallpaper = theme.wallpaper
+    if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
+    gears.wallpaper.maximized(wallpaper, s, true)
 
     -- Create a promptbox for each screen
     if s.promptbox == nil then s.mypromptbox = awful.widget.prompt() end
@@ -68,6 +63,7 @@ function theme.at_screen_connect(s)
                 awful.layout.inc(1)
             end), awful.button({}, 5, function() awful.layout.inc(-1) end)))
     end
+
     -- Create a taglist widget
     if s.mytaglist == nil then
         awful.tag(awful.util.tagnames, s, awful.layout.layouts)
@@ -81,6 +77,42 @@ function theme.at_screen_connect(s)
                                              awful.util.tasklist_buttons)
     end
 
+    -- Create a weather widgets
+    local wibox_weather, wibox_weather_wdiget =
+        wibox_widgets.weather(config.city_id)
+    local desktop_weather, desktop_weather_widget =
+        desktop_widgets.weather(config.city_id)
+
+    -- Create the desktop widget popup
+    s.desktop_popup = awful.popup{
+        widget = {
+            {
+                -- Center widgets vertically
+                nil,
+                {
+                    -- Center widgets horizontally
+                    desktop_widgets.arcs(),
+                    desktop_widgets.clock(),
+                    desktop_weather,
+                    expand = "outside",
+                    layout = wibox.layout.align.vertical
+                },
+                nil,
+                expand = "none",
+                layout = wibox.layout.align.horizontal
+            },
+            widget = wibox.container.constraint,
+            forced_width = s.workarea.width * 0.8,
+            forced_height = s.workarea.height * 0.8
+        },
+        type= "desktop",
+        placement = awful.placement.centered,
+        visible = true,
+        bg= "#00000000",
+        input_passthrough=true
+    }
+    s.desktop_popup:buttons(root.buttons())
+
     -- Create the wibox
     if s.mywibox then
         s.mywibox:remove()
@@ -90,16 +122,10 @@ function theme.at_screen_connect(s)
     s.mywibox = awful.wibar({
         position = "top",
         screen = s,
-        ontop = true,
         height = theme.top_bar_height,
         bg = theme.bg_normal,
         fg = theme.fg_normal
     })
-
-    local wibox_weather, wibox_weather_wdiget =
-        wibox_widgets.weather(config.city_id)
-    local desktop_weather, desktop_weather_wdiget =
-        desktop_widgets.weather(config.city_id)
 
     -- Add widgets to the wibox
     s.mywibox:setup{
@@ -118,7 +144,7 @@ function theme.at_screen_connect(s)
             layout = wibox.layout.fixed.horizontal,
             wibox_widgets.net(theme.widget_colors.netdown, "received"),
             wibox_widgets.net(theme.widget_colors.netup, "sent",
-                              {wibox_weather_wdiget, desktop_weather_wdiget}),
+                              {wibox_weather_wdiget, desktop_weather_widget}),
             wibox_widgets.vol(),
             wibox_widgets.mem(),
             wibox_widgets.cpu(),
@@ -131,7 +157,6 @@ function theme.at_screen_connect(s)
                 -- add margins
                 awful.util.myexitmenu,
                 left = dpi(8),
-                color = "#FF000000",
                 widget = wibox.container.margin
             }
         }
@@ -147,7 +172,6 @@ function theme.at_screen_connect(s)
         position = "bottom",
         screen = s,
         border_width = 0,
-        ontop = true,
         height = theme.bottom_bar_height,
         bg = theme.bg_normal,
         fg = theme.fg_normal
@@ -165,36 +189,6 @@ function theme.at_screen_connect(s)
             s.mylayoutbox,
             layout = wibox.layout.fixed.horizontal
         }
-    }
-
-    -- Create the desktop wibox
-    if s.desktop_widget ~= nil then s.desktop_weather = nil end
-    s.desktop_widget = wibox({
-        x = 0,
-        y = 0,
-        screen = s,
-        visible = true,
-        ontop = false,
-        type = 'dock',
-        width = s.geometry.width,
-        height = s.geometry.height
-    })
-
-    -- Add widgets to desktop wibox
-    s.desktop_widget:setup{
-        -- Center widgets vertically
-        nil,
-        {
-            -- Center widgets horizontally
-            desktop_widgets.arcs(),
-            desktop_widgets.clock(),
-            desktop_weather,
-            expand = "outside",
-            layout = wibox.layout.align.vertical
-        },
-        nil,
-        expand = "none",
-        layout = wibox.layout.align.horizontal
     }
 end
 

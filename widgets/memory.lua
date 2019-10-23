@@ -55,9 +55,8 @@ module.create_arc_widget = function()
         end
     })
     return util.create_arc_widget(mem_icon, mem_widget,
-                               beautiful.widget_colors.desktop_mem.bg,
-                               beautiful.widget_colors.desktop_mem.fg, 0, 100,
-                               dpi(150))
+                                  beautiful.widget_colors.desktop_mem.bg,
+                                  beautiful.widget_colors.desktop_mem.fg, 0, 100)
 end
 
 -- [ return module objects ] ---------------------------------------------------

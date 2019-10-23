@@ -1,0 +1,9 @@
+local module = {}
+
+-- Your city for the weather forcast widget
+module.city_id = 2658372
+
+-- Load color schemes from xresources
+module.use_xresources = true
+
+return module

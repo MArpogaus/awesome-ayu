@@ -82,12 +82,12 @@ module.create_arc_widget = function()
                                     beautiful.widget_colors.desktop_bat.fg,
                                     icon, math.floor(dpi(150) / 8)))
             widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
-        end
+        end,
+        notify = "off"
     })
     return util.create_arc_widget(bat_icon, bat_widget,
-                               beautiful.widget_colors.desktop_bat.bg,
-                               beautiful.widget_colors.desktop_bat.fg, 0, 100,
-                               dpi(150))
+                                  beautiful.widget_colors.desktop_bat.bg,
+                                  beautiful.widget_colors.desktop_bat.fg, 0, 100)
 end
 
 -- [ return module objects ] ---------------------------------------------------

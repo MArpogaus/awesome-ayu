@@ -34,17 +34,17 @@ local fs_icon = ""
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
     fs_widget = lain.widget.fs({
-        notification_preset = {
-            font = beautiful.font_name .. dpi(10),
-            fg = beautiful.fg_normal
-        },
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font,
                                             beautiful.widget_colors.fs,
                                             string.format("%.1f", fs_now["/"]
                                                               .percentage) ..
                                                 "%"))
-        end
+        end,
+        notification_preset = {
+            fg = beautiful.fg_normal,
+            bg = beautiful.bg_normal
+        }
     })
     beautiful.fs = fs_widget
 
@@ -67,9 +67,8 @@ module.create_arc_widget = function()
         showpopup = "off"
     })
     return util.create_arc_widget(fs_icon, fs_widget,
-                               beautiful.widget_colors.desktop_fs.bg,
-                               beautiful.widget_colors.desktop_fs.fg, 0, 100,
-                               dpi(150))
+                                  beautiful.widget_colors.desktop_fs.bg,
+                                  beautiful.widget_colors.desktop_fs.fg, 0, 100)
 end
 
 -- [ return module objects ] ---------------------------------------------------

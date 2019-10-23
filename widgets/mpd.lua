@@ -56,7 +56,11 @@ module.gen_wibar_widget = function()
             end
             widget:set_markup(markup.fontfg(beautiful.font, beautiful.fg_normal,
                                             artist .. title))
-        end
+        end,
+        notification_preset = {
+            fg = beautiful.fg_normal,
+            bg = beautiful.bg_normal
+        }
     })
     beautiful.mpd = mpd_widget
 

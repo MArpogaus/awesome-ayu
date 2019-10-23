@@ -44,7 +44,7 @@ module.gen_wibar_widget = function()
                                     cpu_widget)
 end
 
-module.create_arc_widget = function(num_cpus)
+module.create_arc_widget = function()
     local step_width = dpi(8)
     local step_spacing = dpi(4)
     local cpu_graph = wibox.widget{
@@ -52,11 +52,17 @@ module.create_arc_widget = function(num_cpus)
         min_value = 0,
         step_width = step_width,
         step_spacing = step_spacing,
-        forced_width = (num_cpus + 1) * (step_width + step_spacing),
-        forced_height = dpi(50),
+        forced_height = beautiful.desktop_widgets_arc_size / 5,
         color = beautiful.widget_colors.desktop_cpu.fg,
         background_color = "#00000000",
         widget = wibox.widget.graph
+    }
+    local cpu_graph_widget = wibox.widget{
+        nil,
+        cpu_graph,
+        nil,
+        expand = "outside",
+        layout = wibox.layout.align.horizontal
     }
     local cpu_widget = lain.widget.cpu({
         settings = function()
@@ -64,7 +70,11 @@ module.create_arc_widget = function(num_cpus)
                                             beautiful.widget_colors.desktop_cpu
                                                 .fg, cpu_now.usage .. "%"))
             widget:emit_signal_recursive("widget::value_changed", cpu_now.usage)
+            local num_cpus = #cpu_now
+            local width = (num_cpus + 1) * (step_width + step_spacing)
+            
             cpu_graph:clear()
+            cpu_graph:set_width(width)
             for i, v in ipairs(cpu_now) do
                 cpu_graph:add_value(v.usage)
             end
@@ -73,10 +83,9 @@ module.create_arc_widget = function(num_cpus)
     })
     cpu_widget.align = "center"
 
-    return util.create_arc_widget(cpu_graph, cpu_widget,
-                               beautiful.widget_colors.desktop_cpu.bg,
-                               beautiful.widget_colors.desktop_cpu.fg, 0, 100,
-                               dpi(150))
+    return util.create_arc_widget(cpu_graph_widget, cpu_widget,
+                                  beautiful.widget_colors.desktop_cpu.bg,
+                                  beautiful.widget_colors.desktop_cpu.fg, 0, 100)
 end
 
 -- [ return module objects ] ---------------------------------------------------

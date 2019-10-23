@@ -208,7 +208,7 @@ module.create_arc_icon = function(fg, icon, size)
 end
 module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
                                     margin, thickness)
-    size = size or dpi(100)
+    size = size or beautiful.desktop_widgets_arc_size
     local icon_widget
     if type(icon) == "table" then
         icon_widget = icon

@@ -15,6 +15,8 @@
 --      - ...
 --------------------------------------------------------------------------------
 local gears = require("gears")
+local gfs = require("gears.filesystem")
+
 local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
@@ -31,7 +33,24 @@ local theme = require("themes.ayu.ayu_theme")
 local color_schemes = require("themes.ayu.color_schemes")
 
 -- user config
-local config = require("themes.ayu.config")
+local config = {
+    -- Your city for the weather forcast widget
+    city_id = 2658372,
+    -- Load color schemes from xresources
+    use_xresources = false
+}
+if gfs.file_readable(gfs.get_configuration_dir() .. "config.lua") then
+    config = require("config")
+end
+local color_schemes = require("themes.ayu.color_schemes")
+
+if config.use_xresources then
+    color_scheme = color_schemes.xrdb()
+else
+    color_scheme = color_schemes.light
+end
+
+theme:set_color_scheme(color_scheme)
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
@@ -128,14 +147,14 @@ function theme.at_screen_connect(s)
                 layout = wibox.layout.align.horizontal
             },
             widget = wibox.container.constraint,
-            forced_width = s.workarea.width * 0.8,
-            forced_height = s.workarea.height * 0.8
+            forced_width = s.workarea.width,
+            forced_height = s.workarea.height
         },
         type = "desktop",
         placement = awful.placement.centered,
         visible = true,
         bg = "#00000000",
-        input_passthrough = true
+        shape_input = root.wallpaper()
     }
 
     -- Create the wibox

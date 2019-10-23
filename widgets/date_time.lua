@@ -48,7 +48,6 @@ module.gen_wibar_widget = function()
     beautiful.cal = lain.widget.cal{
         attach_to = {clock_wibox_widget},
         notification_preset = {
-            font = beautiful.font_name .. dpi(10),
             fg = beautiful.fg_normal,
             bg = beautiful.bg_normal
         }
@@ -58,39 +57,40 @@ module.gen_wibar_widget = function()
 end
 
 module.gen_desktop_widget = function()
-    local font_size = 38
+    local time_font_size = beautiful.desktop_widgets_time_font_size
+    local date_font_size = beautiful.desktop_widgets_date_font_size
     local gen_deskop_clock_box = function()
         local deskop_clock = wibox.widget.textclock(
-                                 markup.fontfg(beautiful.font_name .. dpi(font_size),
+                                 markup.fontfg(beautiful.font_name .. dpi(time_font_size),
                                                beautiful.bg_normal, " %H:%M "))
-        return util.create_boxed_widget(deskop_clock, dpi(font_size*1.3/2),
+        return util.create_boxed_widget(deskop_clock, dpi(time_font_size*1.3/2),
                                         beautiful.widget_colors.desktop_clock)
     end
 
     local gen_desktop_clock_date = function()
         return wibox.widget.textclock(markup.fontfg(
-                                          beautiful.font_name .. dpi(14),
+                                          beautiful.font_name .. date_font_size,
                                           beautiful.fg_normal, "Today is ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_day, "%A") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.fg_normal, ", the ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_date, "%d.") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.fg_normal, " of ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_month, "%B") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. dpi(14),
+                                              beautiful.font_name .. date_font_size,
                                               beautiful.fg_normal, "."))
     end
 

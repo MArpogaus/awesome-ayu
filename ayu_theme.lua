@@ -8,31 +8,30 @@ local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 local config_path = gfs.get_configuration_dir()
 
-local color_schemes = require("themes.ayu.color_schemes")
-local config = require("themes.ayu.config")
 local util = require("themes.ayu.util")
 
 local lain_icons = os.getenv("HOME") ..
                        "/.config/awesome/lain/icons/layout/default/"
 
-if config.use_xresources then
-    color_scheme = color_schemes.xrdb()
-else
-    color_scheme = color_schemes.light
-end
-
 local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
         self.titlebar_size = dpi(20)
+        self.top_bar_height = self.titlebar_size
+        self.bottom_bar_height = self.titlebar_size
+
         self.ico_width = self.titlebar_size
         self.icon_margin_left = self.ico_width / 2
         self.icon_margin_right = self.ico_width / 8
         self.systray_icon_spacing = self.ico_width / 2
-        self.confdir = config_path .. "/themes/ayu"
+
+        self.confdir = config_path .. "/themes/ayu/"
+
         self.font_name = "mononoki "
         self.font_size = dpi(6)
         self.font = self.font_name .. self.font_size
+        self.notification_font = self.font_name .. (2 * self.font_size)
+
         --self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
@@ -51,8 +50,6 @@ local theme = {
         self.border_normal = cs.fg
         self.border_focus = cs.fg
         self.border_marked = cs.colors[4]
-        self.top_bar_height = dpi(28)
-        self.bottom_bar_height = dpi(28)
         self.menu_border_width = 0
         self.menu_height = dpi(15)
         self.menu_width = dpi(150)
@@ -114,6 +111,12 @@ local theme = {
                 bg = cs.colors[5]
             }
         }
+
+        self.desktop_widgets_arc_size = dpi(140)
+        self.desktop_widgets_arc_spacing = dpi(100)
+        self.desktop_widgets_time_font_size = dpi(32)
+        self.desktop_widgets_date_font_size = dpi(16)
+        self.desktop_widgets_weather_font_size = dpi(38)
 
         -- generate buttons
         self.titlebar_close_button_normal =
@@ -442,7 +445,5 @@ local theme = {
         return img
     end
 }
-
-theme:set_color_scheme(color_scheme)
 
 return theme

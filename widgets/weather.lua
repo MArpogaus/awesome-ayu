@@ -32,7 +32,7 @@ local module = {}
 
 -- [ function definitions ] ----------------------------------------------------
 local markup_color_size = function(size, color, text)
-    return markup.fontfg(beautiful.font_name .. dpi(size), color, text)
+    return markup.fontfg(beautiful.font_name .. size,  color, text)
 end
 
 module.gen_wibar_widget = function(city_id)
@@ -40,11 +40,6 @@ module.gen_wibar_widget = function(city_id)
     local weather_widget = lain.widget.weather(
                                {
             city_id = city_id,
-            notification_preset = {
-                font = beautiful.font_name .. dpi(10),
-                fg = beautiful.fg_normal,
-                bg = beautiful.bg_normal
-            },
             weather_na_markup = markup.fontfg(beautiful.font,
                                               beautiful.widget_colors.weather,
                                               "N/A"),
@@ -57,7 +52,11 @@ module.gen_wibar_widget = function(city_id)
                 weather_icon:set_markup(util.owf_markup(
                                             beautiful.widget_colors.weather,
                                             weather_now))
-            end
+            end,
+            notification_preset = {
+                fg = beautiful.fg_normal,
+                bg = beautiful.bg_normal
+            }
         })
 
     return util.create_wibar_widget(beautiful.widget_colors.weather,
@@ -66,13 +65,19 @@ module.gen_wibar_widget = function(city_id)
 end
 
 module.gen_desktop_widget = function(city_id)
+    local font_size = beautiful.desktop_widgets_weather_font_size
+
+    local font_size_temp = 0.8 * font_size
+    local font_size_range = 0.2 * font_size
+    local font_size_descr = 0.3 * font_size
+
     local weather_icon = wibox.widget.textbox()
     local weather_temp = wibox.widget.textbox()
     local weather_temp_min = wibox.widget.textbox()
     local weather_temp_max = wibox.widget.textbox()
     local weather_descr = wibox.widget.textbox()
     local weather_unit = wibox.widget.textbox(
-                             markup_color_size(38, beautiful.fg_normal, "°C"))
+                             markup_color_size(font_size, beautiful.fg_normal, "°C"))
 
     local weather_widget = lain.widget.weather(
                                {
@@ -86,16 +91,16 @@ module.gen_desktop_widget = function(city_id)
                 temp_max = math.floor(weather_now["main"]["temp_max"])
 
                 weather_icon:set_markup(util.owf_markup(beautiful.fg_normal,
-                                                        weather_now, dpi(38)))
-                weather_temp:set_markup(markup_color_size(28,
+                                                        weather_now, font_size))
+                weather_temp:set_markup(markup_color_size(font_size_temp,
                                                           beautiful.fg_normal,
                                                           temp))
                 weather_temp_min:set_markup(
-                    markup_color_size(6, beautiful.fg_normal, temp_min .. ' - '))
+                    markup_color_size(font_size_range, beautiful.fg_normal, temp_min .. ' - '))
                 weather_temp_max:set_markup(
-                    markup_color_size(6, beautiful.fg_normal, temp_max))
+                    markup_color_size(font_size_range, beautiful.fg_normal, temp_max))
                 weather_descr:set_markup(
-                    markup_color_size(12, beautiful.fg_normal, descr))
+                    markup_color_size(font_size_descr, beautiful.fg_normal, descr))
             end
         })
 
@@ -105,43 +110,38 @@ module.gen_desktop_widget = function(city_id)
 
     local weather_box = wibox.widget{
         {
+            nil,
             {
-                nil,
+                weather_icon,
                 {
-                    weather_icon,
                     {
+                        weather_temp,
                         {
-                            weather_temp,
+                            nil,
                             {
-                                nil,
-                                {
-                                    weather_temp_min,
-                                    weather_temp_max,
-                                    layout = wibox.layout.fixed.horizontal
-                                },
-                                nil,
-                                expand = "outside",
-                                layout = wibox.layout.align.horizontal
+                                weather_temp_min,
+                                weather_temp_max,
+                                layout = wibox.layout.fixed.horizontal
                             },
-                            layout = wibox.layout.fixed.vertical
+                            nil,
+                            expand = "outside",
+                            layout = wibox.layout.align.horizontal
                         },
-                        weather_unit,
-                        layout = wibox.layout.fixed.horizontal
+                        layout = wibox.layout.fixed.vertical
                     },
-                    spacing = dpi(15),
+                    weather_unit,
                     layout = wibox.layout.fixed.horizontal
                 },
-                nil,
-                expand = 'outside',
-                layout = wibox.layout.align.horizontal
+                spacing = dpi(15),
+                layout = wibox.layout.fixed.horizontal
             },
-            weather_descr,
-            layout = wibox.layout.fixed.vertical
+            nil,
+            expand = 'outside',
+            layout = wibox.layout.align.horizontal
         },
-        margins = dpi(50),
-        color = "#FF000000",
-        widget = wibox.container.margin
-
+        weather_descr,
+        spacing = font_size_descr / 2,
+        layout = wibox.layout.fixed.vertical
     }
 
     return wibox.widget{

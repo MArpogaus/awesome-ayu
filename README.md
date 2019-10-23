@@ -55,7 +55,10 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
     wget -O /usr/share/fonts/TTF/owfont-regular.ttf 'https://github.com/websygen/owfont/blob/master/fonts/owfont-regular.ttf?raw=true'
     ```
 
- 1. Set Your City Id in `themes.ayu.config`. For more info see https://github.com/lcpz/awesome-copycats#notes
+ 1. Create your config.lua to set Your City Id (For more info see https://github.com/lcpz/awesome-copycats#notes)
+    ```shell
+    cp themes/ayu/config.lua.template config.lua
+    ```
  
  1. Load the theme in your `rc.lua`
     ```shell

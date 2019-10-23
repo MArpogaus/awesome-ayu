@@ -26,28 +26,24 @@ local memory = require("themes.ayu.widgets.memory")
 local fs = require("themes.ayu.widgets.fs")
 local battery = require("themes.ayu.widgets.battery")
 
--- user config
-local config = require("themes.ayu.config")
-
 local module = {}
 
 -- [ clock ] -------------------------------------------------------------------
-module.clock = function() return date_time.gen_desktop_widget() end
+module.clock = date_time.gen_desktop_widget
 
 -- [ weather ] -----------------------------------------------------------------
-module.weather =
-    function() return weather.gen_desktop_widget(config.city_id) end
+module.weather = weather.gen_desktop_widget
 
 -- [ arcs ] --------------------------------------------------------------------
 module.arcs = function()
     return wibox.widget{
         nil,
         {
-            cpu.create_arc_widget(config.num_cpus),
+            cpu.create_arc_widget(),
             memory.create_arc_widget(),
             fs.create_arc_widget(),
             battery.create_arc_widget(),
-            spacing = dpi(100),
+            spacing = beautiful.desktop_widgets_arc_spacing,
             layout = wibox.layout.fixed.horizontal
         },
         nil,

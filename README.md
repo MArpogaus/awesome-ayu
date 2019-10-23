@@ -46,13 +46,13 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
     ```shell
     # Debian / Ubuntu
     apt install fonts-font-awesome fonts-mononoki
-    # Manjaro / Arch
-    pamac install ttf-font-awesome-4 ttf-mononoki
+    # Manjaro
+    pamac build ttf-font-awesome-4 ttf-mononoki
     ```
  
  1. Download and install [owfont][owfont]
     ```shell
-    wget -O /usr/share/fonts/TTF/owfont-regular.ttf https://github.com/websygen/owfont/blob/master/fonts/owfont-regular.ttf?raw=true
+    wget -O /usr/share/fonts/TTF/owfont-regular.ttf 'https://github.com/websygen/owfont/blob/master/fonts/owfont-regular.ttf?raw=true'
     ```
 
  1. Set Your City Id in `themes.ayu.config`. For more info see https://github.com/lcpz/awesome-copycats#notes

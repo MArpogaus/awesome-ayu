@@ -6,6 +6,10 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-10-28 21:39:39
+-- @Changes: 
+--      - optimized boxed widget for different sizes
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-08-19 16:07:04
 -- @Changes: 
 --      - added header
@@ -142,13 +146,13 @@ module.owf_markup = function(col, weather_now, size)
     local owf_font = "owf-regular " .. font_size
     return markup.fontfg(owf_font, col, icon)
 end
-module.owf_ico = function(col, weather_now, size)
+module.owf_ico = function(col, weather_now, size, width)
     return wibox.widget{
         markup = module.owf_markup(col, weather_now, size),
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = dpi(20)
+        forced_width = width or dpi(20)
     }
 end
 
@@ -156,29 +160,32 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget =
-    function(widget_to_be_boxed, inner_margin, bg_color)
-        local box_container = wibox.container.background()
-        box_container.bg = bg_color
-        box_container.shape = function(c, h, w)
-            gears.shape.rounded_rect(c, h, w, dpi(15))
-        end
-
-        local boxed_widget = wibox.widget{
-            {
-                {
-                    widget_to_be_boxed,
-                    margins = dpi(inner_margin),
-                    widget = wibox.container.margin
-                },
-                widget = box_container
-            },
-            margins = dpi(24),
-            widget = wibox.container.margin
-        }
-
-        return boxed_widget
+module.create_boxed_widget = function(widget_to_be_boxed, bg_color, radius,
+                                      inner_margin, outer_margin)
+    local radius = radius or dpi(15)
+    local inner_margin = inner_margin or dpi(30)
+    local outer_margin = outer_margin or dpi(30)
+    local box_container = wibox.container.background()
+    box_container.bg = bg_color
+    box_container.shape = function(c, h, w)
+        gears.shape.rounded_rect(c, h, w, radius)
     end
+
+    local boxed_widget = wibox.widget{
+        {
+            {
+                widget_to_be_boxed,
+                margins = inner_margin,
+                widget = wibox.container.margin
+            },
+            widget = box_container
+        },
+        bottom = outer_margin,
+        widget = wibox.container.margin
+    }
+
+    return boxed_widget
+end
 
 module.create_wibar_widget = function(color, icon, widget)
     local icon_widget

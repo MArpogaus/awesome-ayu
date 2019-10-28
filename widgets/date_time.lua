@@ -6,6 +6,10 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-10-28 21:38:12
+-- @Changes: 
+--      - modified desktop clock widget size calculation
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-08-16 13:30:06
 -- @Changes: 
 --      - remove color as function argument
@@ -61,10 +65,13 @@ module.gen_desktop_widget = function()
     local date_font_size = beautiful.desktop_widgets_date_font_size
     local gen_deskop_clock_box = function()
         local deskop_clock = wibox.widget.textclock(
-                                 markup.fontfg(beautiful.font_name .. dpi(time_font_size),
-                                               beautiful.bg_normal, " %H:%M "))
-        return util.create_boxed_widget(deskop_clock, dpi(time_font_size*1.3/2),
-                                        beautiful.widget_colors.desktop_clock)
+                                 markup.fontfg(
+                                     beautiful.font_name .. time_font_size,
+                                     beautiful.bg_normal, "%H:%M"))
+        return util.create_boxed_widget(deskop_clock,
+                                        beautiful.widget_colors.desktop_clock,
+                                        time_font_size / 2, time_font_size,
+                                        date_font_size * 1.5)
     end
 
     local gen_desktop_clock_date = function()
@@ -72,25 +79,31 @@ module.gen_desktop_widget = function()
                                           beautiful.font_name .. date_font_size,
                                           beautiful.fg_normal, "Today is ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_day, "%A") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.fg_normal, ", the ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_date, "%d.") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.fg_normal, " of ") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_month, "%B") ..
                                           markup.fontfg(
-                                              beautiful.font_name .. date_font_size,
+                                              beautiful.font_name ..
+                                                  date_font_size,
                                               beautiful.fg_normal, "."))
     end
 

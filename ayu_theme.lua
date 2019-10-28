@@ -1,3 +1,15 @@
+--------------------------------------------------------------------------------
+-- @File:   ayu_theme.lua
+-- @Author: Marcel Arpogaus
+-- @Date:   2019-10-23 19:28:06
+-- [ description ] -------------------------------------------------------------
+-- factory to build theme based on given colorscheme
+-- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-10-28 21:40:48
+-- @Changes: 
+--      - added header
+--------------------------------------------------------------------------------
 local gears = require("gears")
 
 local theme_assets = require("beautiful.theme_assets")
@@ -114,8 +126,8 @@ local theme = {
 
         self.desktop_widgets_arc_size = dpi(140)
         self.desktop_widgets_arc_spacing = dpi(100)
-        self.desktop_widgets_time_font_size = dpi(32)
-        self.desktop_widgets_date_font_size = dpi(16)
+        self.desktop_widgets_time_font_size = dpi(38)
+        self.desktop_widgets_date_font_size = self.desktop_widgets_time_font_size / 3
         self.desktop_widgets_weather_font_size = dpi(38)
 
         -- generate buttons

@@ -9,10 +9,13 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-10-28 21:44:14
+-- @Changes: 
+--      - added tempfile as function argument to temperature widget
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-17 14:54:24
 -- @Changes: 
 --      - newly written
---      - ...
 --------------------------------------------------------------------------------
 local gears = require("gears")
 local gfs = require("gears.filesystem")
@@ -199,7 +202,7 @@ function theme.at_screen_connect(s)
             wibox_widgets.cpu(),
             wibox_widgets.fs(),
             wibox_weather,
-            wibox_widgets.temp(),
+            wibox_widgets.temp(config.tempfile),
             wibox_widgets.bat(),
             wibox_widgets.datetime(),
             myexitmenu

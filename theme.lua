@@ -154,6 +154,7 @@ function theme.at_screen_connect(s)
             forced_height = s.workarea.height
         },
         type = "desktop",
+        screen = s,
         placement = awful.placement.centered,
         visible = true,
         bg = "#00000000",

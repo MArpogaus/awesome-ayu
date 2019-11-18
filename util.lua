@@ -6,7 +6,11 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-10-28 21:39:39
+-- @Last Modified time: 2019-11-18 10:40:23
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:16
 -- @Changes: 
 --      - optimized boxed widget for different sizes
 -- @Last Modified by:   Marcel Arpogaus
@@ -19,9 +23,7 @@ local cairo = require("lgi").cairo
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local owfont = require("themes.ayu.owfont")
@@ -109,7 +111,7 @@ module.fa_ico = function(col, ico, size, width)
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = width or dpi(22)
+        forced_width = width or 22
     }
 end
 
@@ -152,7 +154,7 @@ module.owf_ico = function(col, weather_now, size, width)
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = width or dpi(20)
+        forced_width = width or 20
     }
 end
 
@@ -162,9 +164,9 @@ end
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
 module.create_boxed_widget = function(widget_to_be_boxed, bg_color, radius,
                                       inner_margin, outer_margin)
-    local radius = radius or dpi(15)
-    local inner_margin = inner_margin or dpi(30)
-    local outer_margin = outer_margin or dpi(30)
+    local radius = radius or 15
+    local inner_margin = inner_margin or 30
+    local outer_margin = outer_margin or 30
     local box_container = wibox.container.background()
     box_container.bg = bg_color
     box_container.shape = function(c, h, w)

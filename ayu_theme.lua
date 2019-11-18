@@ -6,6 +6,10 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:02
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-10-28 21:40:48
 -- @Changes: 
 --      - added header
@@ -13,8 +17,6 @@
 local gears = require("gears")
 
 local theme_assets = require("beautiful.theme_assets")
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
@@ -28,7 +30,7 @@ local lain_icons = os.getenv("HOME") ..
 local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
-        self.titlebar_size = dpi(20)
+        self.titlebar_size = 20
         self.top_bar_height = self.titlebar_size
         self.bottom_bar_height = self.titlebar_size
 
@@ -40,15 +42,15 @@ local theme = {
         self.confdir = config_path .. "/themes/ayu/"
 
         self.font_name = "mononoki "
-        self.font_size = dpi(6)
+        self.font_size = 6
         self.font = self.font_name .. self.font_size
         self.notification_font = self.font_name .. (2 * self.font_size)
 
         --self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
-        self.button_size = dpi(32)
-        self.button_radius = dpi(10)
+        self.button_size = 32
+        self.button_radius = 10
         self.menu_bg_normal = cs.bg
         self.menu_bg_focus = cs.bg
         self.bg_normal = cs.bg
@@ -63,8 +65,8 @@ local theme = {
         self.border_focus = cs.fg
         self.border_marked = cs.colors[4]
         self.menu_border_width = 0
-        self.menu_height = dpi(15)
-        self.menu_width = dpi(150)
+        self.menu_height = 15
+        self.menu_width = 150
         self.menu_fg_normal = cs.fg
         self.menu_fg_focus = cs.colors[4]
         self.menu_bg_normal = cs.bg
@@ -124,11 +126,11 @@ local theme = {
             }
         }
 
-        self.desktop_widgets_arc_size = dpi(140)
-        self.desktop_widgets_arc_spacing = dpi(100)
-        self.desktop_widgets_time_font_size = dpi(38)
+        self.desktop_widgets_arc_size = 140
+        self.desktop_widgets_arc_spacing = 100
+        self.desktop_widgets_time_font_size = 38
         self.desktop_widgets_date_font_size = self.desktop_widgets_time_font_size / 3
-        self.desktop_widgets_weather_font_size = dpi(38)
+        self.desktop_widgets_weather_font_size = 38
 
         -- generate buttons
         self.titlebar_close_button_normal =
@@ -203,7 +205,7 @@ local theme = {
             self:sticky_button(self.button_size, self.button_radius, true)
 
         -- Generate taglist squares:
-        local taglist_square_size = dpi(4)
+        local taglist_square_size = 4
         self.taglist_squares_sel = theme_assets.taglist_squares_sel(
                                        taglist_square_size, self.fg_focus)
         self.taglist_squares_unsel = theme_assets.taglist_squares_unsel(

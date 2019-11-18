@@ -6,6 +6,10 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:35
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-15 08:26:00
 -- @Changes: 
 --      - remove color as function argument
@@ -20,9 +24,7 @@ local os = os
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local util = require("themes.ayu.util")

@@ -6,6 +6,10 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:41:19
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-08-16 11:44:19
 -- @Changes: 
 --      - remove color as function argument
@@ -20,9 +24,7 @@ local os = os
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local util = require("themes.ayu.util")
@@ -132,7 +134,7 @@ module.gen_desktop_widget = function(city_id)
                     weather_unit,
                     layout = wibox.layout.fixed.horizontal
                 },
-                spacing = dpi(15),
+                spacing = 15,
                 layout = wibox.layout.fixed.horizontal
             },
             nil,

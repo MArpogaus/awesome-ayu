@@ -3,8 +3,12 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- ...
+-- date and time widgets
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:56
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-10-28 21:38:12
 -- @Changes: 
@@ -25,9 +29,7 @@ local os = os
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local util = require("themes.ayu.util")

@@ -9,6 +9,10 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:09
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-10-28 21:44:14
 -- @Changes: 
 --      - added tempfile as function argument to temperature widget
@@ -27,7 +31,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility

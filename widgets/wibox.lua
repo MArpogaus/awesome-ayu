@@ -6,24 +6,15 @@
 -- wibar widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:43:23
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-15 08:51:52
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
-local os = os
-
-local gears = require("gears")
-local lain = require("lain")
-local wibox = require("wibox")
-local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
-
-local dpi = xresources.apply_dpi
-local markup = lain.util.markup
-
-local util = require("themes.ayu.util")
-
--- widgets
+-- [ modules imports ] ---------------------------------------------------------
 local date_time = require("themes.ayu.widgets.date_time")
 local weather = require("themes.ayu.widgets.weather")
 local fs = require("themes.ayu.widgets.fs")
@@ -35,6 +26,7 @@ local net = require("themes.ayu.widgets.net")
 local memory = require("themes.ayu.widgets.memory")
 local mpd = require("themes.ayu.widgets.mpd")
 
+-- [ local objects ] -----------------------------------------------------------
 local module = {
     weather = weather.gen_wibar_widget,
     net = net.gen_wibar_widget,
@@ -48,4 +40,5 @@ local module = {
     datetime = date_time.gen_wibar_widget
 }
 
+-- [ return module objects ] ---------------------------------------------------
 return module

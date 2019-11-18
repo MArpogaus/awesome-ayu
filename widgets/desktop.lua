@@ -1,9 +1,16 @@
---[[ ---------------------------------------------------------------------------
-     AYU Awesome WM desktop widgets
-
-     inspired by Multicolor Awesome WM beutiful 2.0
-     github.com/lcpz
---]] ---------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- @File:   desktop.lua
+-- @Author: Marcel Arpogaus
+-- @Date:   2019-11-18 10:19:01
+-- [ description ] -------------------------------------------------------------
+-- AYU Awesome WM desktop widgets
+-- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:41:03
+-- @Changes: 
+--      - added header
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+----------------------------------------------------------------------------------
 -- [ libraries ]-----------------------------------------------------------------
 local os = os
 
@@ -12,9 +19,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local markup = lain.util.markup
-
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
 
 local util = require("themes.ayu.util")
 

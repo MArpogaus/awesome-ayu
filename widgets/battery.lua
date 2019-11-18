@@ -6,6 +6,10 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:40:43
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-15 08:31:41
 -- @Changes: 
 --      - remove color as function argument
@@ -20,9 +24,7 @@ local os = os
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local util = require("themes.ayu.util")
@@ -67,20 +69,20 @@ end
 
 module.create_arc_widget = function()
     local bat_icon = util.create_arc_icon(beautiful.widget_colors.desktop_bat.fg,
-                                       fa_bat_icons[1], dpi(150))
+                                       fa_bat_icons[1], 150)
     local bat_widget = lain.widget.bat({
         settings = function()
             local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
                              bat_now.perc
 
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
+            widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
                                             beautiful.widget_colors.desktop_bat
                                                 .fg, perc))
 
             icon = batt_icon()
             bat_icon:set_markup(util.fa_markup(
                                     beautiful.widget_colors.desktop_bat.fg,
-                                    icon, math.floor(dpi(150) / 8)))
+                                    icon, math.floor(150 / 8)))
             widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
         end,
         notify = "off"

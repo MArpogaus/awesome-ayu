@@ -3,8 +3,12 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
--- cup utilization widgets
+-- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-11-18 10:43:42
+-- @Changes: 
+--      - removed apply_dpi to make use of new DPI handling in v4.3
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-08-16 12:17:19
 -- @Changes: 
@@ -20,9 +24,7 @@ local os = os
 local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local xresources = require("beautiful.xresources")
 
-local dpi = xresources.apply_dpi
 local markup = lain.util.markup
 
 local util = require("themes.ayu.util")
@@ -45,8 +47,8 @@ module.gen_wibar_widget = function()
 end
 
 module.create_arc_widget = function()
-    local step_width = dpi(8)
-    local step_spacing = dpi(4)
+    local step_width = 8
+    local step_spacing = 4
     local cpu_graph = wibox.widget{
         max_value = 100,
         min_value = 0,
@@ -66,7 +68,7 @@ module.create_arc_widget = function()
     }
     local cpu_widget = lain.widget.cpu({
         settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. dpi(8),
+            widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
                                             beautiful.widget_colors.desktop_cpu
                                                 .fg, cpu_now.usage .. "%"))
             widget:emit_signal_recursive("widget::value_changed", cpu_now.usage)

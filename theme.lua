@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-12-03 15:10:19
+-- @Last Modified time: 2019-12-04 08:55:50
 -- @Changes: 
 --      - added default layout per screen
 --      - fixed: show awesome menu when desktop widget is right clicked
@@ -35,7 +35,6 @@ local wibox = require("wibox")
 
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
-
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -247,7 +246,9 @@ function theme.at_screen_connect(s)
 
     -- show systray on focused screen
     s.systray_set_screen = function()
-        s.systray:set_screen (s)
+        if s.systray then
+            s.systray:set_screen (s)
+        end
     end
 
     s.mytopwibar:connect_signal("mouse::enter", s.systray_set_screen)

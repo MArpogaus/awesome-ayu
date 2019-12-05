@@ -6,6 +6,10 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-12-05 18:30:13
+-- @Changes: 
+--      - fixed icon width
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:23
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -111,7 +115,7 @@ module.fa_ico = function(col, ico, size, width)
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = width or 22
+        forced_width = width or beautiful.ico_width
     }
 end
 
@@ -154,7 +158,7 @@ module.owf_ico = function(col, weather_now, size, width)
         widget = wibox.widget.textbox,
         align = 'center',
         valign = 'center',
-        forced_width = width or 20
+        forced_width = width or beautiful.ico_width
     }
 end
 

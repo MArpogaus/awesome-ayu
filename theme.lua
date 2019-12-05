@@ -9,6 +9,10 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-12-05 18:31:05
+-- @Changes: 
+--      - added optional custom dpi in config
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:09
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -63,6 +67,9 @@ theme:set_color_scheme(color_scheme)
 theme.icon_theme = config.icon_theme or "HighContrast"
 
 function theme.at_screen_connect(s)
+    if config.dpi then
+        s.dpi = config.dpi
+    end
 
     if s.desktop_popup then
         s.desktop_popup.widget:reset()

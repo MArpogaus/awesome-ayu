@@ -6,6 +6,10 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-12-05 18:27:57
+-- @Changes: 
+--      - resized some elements for hidpi screens
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:02
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -30,27 +34,27 @@ local lain_icons = os.getenv("HOME") ..
 local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
-        self.titlebar_size = 20
+        self.titlebar_size = 30
         self.top_bar_height = self.titlebar_size
         self.bottom_bar_height = self.titlebar_size
 
-        self.ico_width = self.titlebar_size
-        self.icon_margin_left = self.ico_width / 2
+        self.ico_width = 1.2 * self.titlebar_size
+        self.icon_margin_left = self.ico_width / 3
         self.icon_margin_right = self.ico_width / 8
-        self.systray_icon_spacing = self.ico_width / 2
+        self.systray_icon_spacing = self.ico_width / 3
 
         self.confdir = config_path .. "/themes/ayu/"
 
         self.font_name = "mononoki "
-        self.font_size = 6
+        self.font_size = 8
         self.font = self.font_name .. self.font_size
         self.notification_font = self.font_name .. (2 * self.font_size)
 
         --self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
-        self.button_size = 32
-        self.button_radius = 10
+        self.button_size = self.titlebar_size
+        self.button_radius = 0.35 * self.titlebar_size
         self.menu_bg_normal = cs.bg
         self.menu_bg_focus = cs.bg
         self.bg_normal = cs.bg
@@ -126,11 +130,11 @@ local theme = {
             }
         }
 
-        self.desktop_widgets_arc_size = 140
-        self.desktop_widgets_arc_spacing = 100
-        self.desktop_widgets_time_font_size = 38
+        self.desktop_widgets_arc_size = 220
+        self.desktop_widgets_arc_spacing = 110
+        self.desktop_widgets_time_font_size = 50
         self.desktop_widgets_date_font_size = self.desktop_widgets_time_font_size / 3
-        self.desktop_widgets_weather_font_size = 38
+        self.desktop_widgets_weather_font_size = 50
 
         -- generate buttons
         self.titlebar_close_button_normal =

@@ -9,6 +9,11 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-12-04 08:55:50
+-- @Changes: 
+--      - added default layout per screen
+--      - fixed: show awesome menu when desktop widget is right clicked
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-12-05 18:31:05
 -- @Changes: 
 --      - added optional custom dpi in config
@@ -34,7 +39,6 @@ local wibox = require("wibox")
 
 local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
-
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -96,7 +100,7 @@ function theme.at_screen_connect(s)
         s.mytaglist = nil
     else
         -- Each screen has its own tag table.
-        awful.tag(awful.util.tagnames, s, awful.layout.layouts[2])
+        awful.tag(awful.util.tagnames, s, awful.layout.default[s.index] or awful.layout.layouts[1])
     end
 
     -- load custom wibox widgets
@@ -168,7 +172,8 @@ function theme.at_screen_connect(s)
         placement = awful.placement.centered,
         visible = true,
         bg = "#00000000",
-        shape_input = root.wallpaper()
+        shape_input = root.wallpaper(),
+        input_passthrough = true
     }
 
     -- Create the wibox
@@ -230,6 +235,7 @@ function theme.at_screen_connect(s)
     })
 
     -- Add widgets to the bottom wibox
+    s.systray = wibox.widget.systray()
     s.mybottomwibar:setup{
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
@@ -237,12 +243,25 @@ function theme.at_screen_connect(s)
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
-            wibox.widget.systray(),
+            s.systray,
+            awful.widget.keyboardlayout(),
             s.mylayoutbox,
             spacing= theme.icon_margin_left,
             layout = wibox.layout.fixed.horizontal
         }
     }
+
+    -- show systray on focused screen
+    s.systray_set_screen = function()
+        if s.systray then
+            s.systray:set_screen (s)
+        end
+    end
+
+    s.mybottomwibar:connect_signal("mouse::enter", s.systray_set_screen)
+
+    focused_screen = awful.screen.focused()
+    focused_screen.systray:set_screen (focused_screen)
 end
 
 theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end

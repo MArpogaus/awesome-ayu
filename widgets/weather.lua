@@ -6,6 +6,10 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2019-12-05 19:09:52
+-- @Changes: 
+--      - changed min/max sperator from '-' to '/'
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:19
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -98,7 +102,7 @@ module.gen_desktop_widget = function(city_id)
                                                           beautiful.fg_normal,
                                                           temp))
                 weather_temp_min:set_markup(
-                    markup_color_size(font_size_range, beautiful.fg_normal, temp_min .. ' - '))
+                    markup_color_size(font_size_range, beautiful.fg_normal, temp_min .. ' / '))
                 weather_temp_max:set_markup(
                     markup_color_size(font_size_range, beautiful.fg_normal, temp_max))
                 weather_descr:set_markup(

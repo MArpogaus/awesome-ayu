@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-12-04 08:55:50
+-- @Last Modified time: 2020-03-15 10:21:16
 -- @Changes: 
 --      - added default layout per screen
 --      - fixed: show awesome menu when desktop widget is right clicked
@@ -108,7 +108,7 @@ function theme.at_screen_connect(s)
     local desktop_widgets = require("themes.ayu.widgets.desktop")
 
     -- If wallpaper is a function, call it with the screen
-    local wallpaper = theme.wallpaper
+    local wallpaper = config.wallpaper or theme.wallpaper
     if type(wallpaper) == "function" then wallpaper = wallpaper(s) end
     gears.wallpaper.maximized(wallpaper, s, true)
 

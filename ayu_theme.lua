@@ -6,6 +6,10 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-03-18 14:20:15
+-- @Changes: 
+--      - increased menu and font size
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-12-05 18:27:57
 -- @Changes: 
 --      - resized some elements for hidpi screens
@@ -46,7 +50,7 @@ local theme = {
         self.confdir = config_path .. "/themes/ayu/"
 
         self.font_name = "mononoki "
-        self.font_size = 8
+        self.font_size = 10
         self.font = self.font_name .. self.font_size
         self.notification_font = self.font_name .. (2 * self.font_size)
 
@@ -69,8 +73,8 @@ local theme = {
         self.border_focus = cs.fg
         self.border_marked = cs.colors[4]
         self.menu_border_width = 0
-        self.menu_height = 15
-        self.menu_width = 150
+        self.menu_height = 30
+        self.menu_width = 200
         self.menu_fg_normal = cs.fg
         self.menu_fg_focus = cs.colors[4]
         self.menu_bg_normal = cs.bg

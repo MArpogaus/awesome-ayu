@@ -68,7 +68,7 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
     ```
 
  1. install [wpgtk][wpgtk] to switch color schemes. (optional)
-    [JSON colorschemes][JsonColorschemes] can be found in the `wpg` folder.
+    [JSON colorschemes][JsonColorschemes] and a `Rofi` template can be found in the `wpg` folder.
 
 # Helper functions
 

@@ -6,6 +6,10 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-03-19 10:23:17
+-- @Changes: 
+--      - changed border_focus color
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-03-18 14:20:15
 -- @Changes: 
 --      - increased menu and font size
@@ -70,7 +74,7 @@ local theme = {
         self.fg_minimize = cs.fg
         self.border_width = 1
         self.border_normal = cs.fg
-        self.border_focus = cs.fg
+        self.border_focus = cs.colors[5]
         self.border_marked = cs.colors[4]
         self.menu_border_width = 0
         self.menu_height = 30

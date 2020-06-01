@@ -6,6 +6,10 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-06-01 11:14:16
+-- @Changes: 
+--      - fixes for new lain version
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:43
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -40,10 +44,13 @@ local fa_bat_icons = {
 }
 -- [ function definitions ] ----------------------------------------------------
 function batt_icon()
+    local icon = 'N/A'
     if bat_now.ac_status == 1 then
         icon = ''
     else
-        icon = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
+        if bat_now.perc ~= "N/A" then
+            icon = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
+        end
     end
     return icon
 end
@@ -57,7 +64,7 @@ module.gen_wibar_widget = function()
             widget:set_markup(markup.fontfg(beautiful.font,
                                             beautiful.widget_colors.bat, perc))
 
-            icon = batt_icon()
+            local icon = batt_icon()
             bat_icon:set_markup(
                 util.fa_markup(beautiful.widget_colors.bat, icon))
         end

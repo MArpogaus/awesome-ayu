@@ -6,6 +6,10 @@
 -- AYU Awesome WM desktop widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:32:56
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:03
 -- @Changes: 
 --      - added header
@@ -40,7 +44,7 @@ module.weather = weather.gen_desktop_widget
 
 -- [ arcs ] --------------------------------------------------------------------
 module.arcs = function()
-    return wibox.widget{
+    return wibox.widget {
         nil,
         {
             cpu.create_arc_widget(),

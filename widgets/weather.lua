@@ -6,6 +6,10 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:35:31
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-12-05 19:09:52
 -- @Changes: 
 --      - changed min/max sperator from '-' to '/'
@@ -38,32 +42,30 @@ local module = {}
 
 -- [ function definitions ] ----------------------------------------------------
 local markup_color_size = function(size, color, text)
-    return markup.fontfg(beautiful.font_name .. size,  color, text)
+    return markup.fontfg(beautiful.font_name .. size, color, text)
 end
 
 module.gen_wibar_widget = function(city_id)
     local weather_icon = util.owf_ico(beautiful.widget_colors.weather)
-    local weather_widget = lain.widget.weather(
-                               {
-            city_id = city_id,
-            weather_na_markup = markup.fontfg(beautiful.font,
-                                              beautiful.widget_colors.weather,
-                                              "N/A"),
-            settings = function()
-                descr = weather_now["weather"][1]["description"]:lower()
-                units = math.floor(weather_now["main"]["temp"])
-                widget:set_markup(markup.fontfg(beautiful.font,
-                                                beautiful.widget_colors.weather,
-                                                descr .. " @ " .. units .. "°C"))
-                weather_icon:set_markup(util.owf_markup(
+    local weather_widget = lain.widget.weather {
+        city_id = city_id,
+        weather_na_markup = markup.fontfg(beautiful.font,
+                                          beautiful.widget_colors.weather, "N/A"),
+        settings = function()
+            descr = weather_now["weather"][1]["description"]:lower()
+            units = math.floor(weather_now["main"]["temp"])
+            widget:set_markup(markup.fontfg(beautiful.font,
                                             beautiful.widget_colors.weather,
-                                            weather_now))
-            end,
-            notification_preset = {
-                fg = beautiful.fg_normal,
-                bg = beautiful.bg_normal
-            }
-        })
+                                            descr .. " @ " .. units .. "°C"))
+            weather_icon:set_markup(util.owf_markup(
+                                        beautiful.widget_colors.weather,
+                                        weather_now))
+        end,
+        notification_preset = {
+            fg = beautiful.fg_normal,
+            bg = beautiful.bg_normal
+        }
+    }
 
     return util.create_wibar_widget(beautiful.widget_colors.weather,
                                     weather_icon, weather_widget),
@@ -83,38 +85,40 @@ module.gen_desktop_widget = function(city_id)
     local weather_temp_max = wibox.widget.textbox()
     local weather_descr = wibox.widget.textbox()
     local weather_unit = wibox.widget.textbox(
-                             markup_color_size(font_size, beautiful.fg_normal, "°C"))
+                             markup_color_size(font_size, beautiful.fg_normal,
+                                               "°C"))
 
-    local weather_widget = lain.widget.weather(
-                               {
-            city_id = city_id,
-            weather_na_markup = markup.fontfg(beautiful.font,
-                                              beautiful.fg_normal, "N/A "),
-            settings = function()
-                descr = weather_now["weather"][1]["description"]:lower()
-                temp = math.floor(weather_now["main"]["temp"])
-                temp_min = math.floor(weather_now["main"]["temp_min"])
-                temp_max = math.floor(weather_now["main"]["temp_max"])
+    local weather_widget = lain.widget.weather {
+        city_id = city_id,
+        weather_na_markup = markup.fontfg(beautiful.font, beautiful.fg_normal,
+                                          "N/A "),
+        settings = function()
+            descr = weather_now["weather"][1]["description"]:lower()
+            temp = math.floor(weather_now["main"]["temp"])
+            temp_min = math.floor(weather_now["main"]["temp_min"])
+            temp_max = math.floor(weather_now["main"]["temp_max"])
 
-                weather_icon:set_markup(util.owf_markup(beautiful.fg_normal,
-                                                        weather_now, font_size))
-                weather_temp:set_markup(markup_color_size(font_size_temp,
+            weather_icon:set_markup(util.owf_markup(beautiful.fg_normal,
+                                                    weather_now, font_size))
+            weather_temp:set_markup(markup_color_size(font_size_temp,
+                                                      beautiful.fg_normal, temp))
+            weather_temp_min:set_markup(markup_color_size(font_size_range,
                                                           beautiful.fg_normal,
-                                                          temp))
-                weather_temp_min:set_markup(
-                    markup_color_size(font_size_range, beautiful.fg_normal, temp_min .. ' / '))
-                weather_temp_max:set_markup(
-                    markup_color_size(font_size_range, beautiful.fg_normal, temp_max))
-                weather_descr:set_markup(
-                    markup_color_size(font_size_descr, beautiful.fg_normal, descr))
-            end
-        })
+                                                          temp_min .. ' / '))
+            weather_temp_max:set_markup(markup_color_size(font_size_range,
+                                                          beautiful.fg_normal,
+                                                          temp_max))
+            weather_descr:set_markup(markup_color_size(font_size_descr,
+                                                       beautiful.fg_normal,
+                                                       descr))
+        end
+    }
 
     weather_temp.align = "center"
     weather_descr.align = "center"
     weather_unit.align = "center"
 
-    local weather_box = wibox.widget{
+    local weather_box = wibox.widget {
         {
             nil,
             {
@@ -150,7 +154,7 @@ module.gen_desktop_widget = function(city_id)
         layout = wibox.layout.fixed.vertical
     }
 
-    return wibox.widget{
+    return wibox.widget {
         nil,
         {
             nil,

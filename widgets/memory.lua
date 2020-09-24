@@ -6,6 +6,10 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:33:34
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:10
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -35,27 +39,27 @@ local mem_icon = ''
 
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
-    local mem_widget = lain.widget.mem({
+    local mem_widget = lain.widget.mem {
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font,
                                             beautiful.widget_colors.memory,
                                             mem_now.used .. "M"))
         end
-    })
+    }
 
     return util.create_wibar_widget(beautiful.widget_colors.memory, mem_icon,
                                     mem_widget)
 end
 
 module.create_arc_widget = function()
-    local mem_widget = lain.widget.mem({
+    local mem_widget = lain.widget.mem {
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
                                             beautiful.widget_colors.desktop_mem
                                                 .fg, mem_now.perc .. "%"))
             widget:emit_signal_recursive("widget::value_changed", mem_now.perc)
         end
-    })
+    }
     return util.create_arc_widget(mem_icon, mem_widget,
                                   beautiful.widget_colors.desktop_mem.bg,
                                   beautiful.widget_colors.desktop_mem.fg, 0, 100)

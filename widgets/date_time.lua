@@ -6,6 +6,10 @@
 -- date and time widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:32:35
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:56
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -51,7 +55,7 @@ module.gen_wibar_widget = function()
                                    clock_widget)
 
     -- popup calendar
-    beautiful.cal = lain.widget.cal{
+    beautiful.cal = lain.widget.cal {
         attach_to = {clock_wibox_widget},
         notification_preset = {
             fg = beautiful.fg_normal,
@@ -109,7 +113,7 @@ module.gen_desktop_widget = function()
                                               beautiful.fg_normal, "."))
     end
 
-    return wibox.widget{
+    return wibox.widget {
         nil,
         {
 

@@ -6,6 +6,10 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:34:19
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:16
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -39,15 +43,14 @@ local module = {}
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function(tempfile)
     local temp_icon = ''
-    local temp_widget = lain.widget.temp(
-                            {
-            tempfile = tempfile,
-            settings = function()
-                widget:set_markup(markup.fontfg(beautiful.font,
-                                                beautiful.widget_colors.temp,
-                                                coretemp_now .. "°C"))
-            end
-        })
+    local temp_widget = lain.widget.temp {
+        tempfile = tempfile,
+        settings = function()
+            widget:set_markup(markup.fontfg(beautiful.font,
+                                            beautiful.widget_colors.temp,
+                                            coretemp_now .. "°C"))
+        end
+    }
 
     return util.create_wibar_widget(beautiful.widget_colors.temp, temp_icon,
                                     temp_widget)

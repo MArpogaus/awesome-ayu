@@ -6,6 +6,10 @@
 -- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:33:13
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:07
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -35,7 +39,7 @@ local fs_icon = ""
 
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
-    fs_widget = lain.widget.fs({
+    fs_widget = lain.widget.fs {
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font,
                                             beautiful.widget_colors.fs,
@@ -47,7 +51,7 @@ module.gen_wibar_widget = function()
             fg = beautiful.fg_normal,
             bg = beautiful.bg_normal
         }
-    })
+    }
     beautiful.fs = fs_widget
 
     return util.create_wibar_widget(beautiful.widget_colors.fs, fs_icon,
@@ -55,7 +59,7 @@ module.gen_wibar_widget = function()
 end
 
 module.create_arc_widget = function()
-    local fs_widget = lain.widget.fs({
+    local fs_widget = lain.widget.fs {
         settings = function()
             widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
                                             beautiful.widget_colors.desktop_fs
@@ -67,7 +71,7 @@ module.create_arc_widget = function()
                                          fs_now["/"].percentage)
         end,
         showpopup = "off"
-    })
+    }
     return util.create_arc_widget(fs_icon, fs_widget,
                                   beautiful.widget_colors.desktop_fs.bg,
                                   beautiful.widget_colors.desktop_fs.fg, 0, 100)

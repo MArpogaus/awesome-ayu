@@ -6,6 +6,10 @@
 -- mpd widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:33:46
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-07-15 08:33:06
 -- @Changes: 
 --      - remove color as function argument
@@ -30,7 +34,7 @@ local module = {}
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
     local mpd_icon = wibox.widget.textbox()
-    mpd_widget = lain.widget.mpd({
+    mpd_widget = lain.widget.mpd{
         settings = function()
             mpd_notification_preset = {
                 text = string.format("%s [%s] - %s\n%s", mpd_now.artist,
@@ -61,7 +65,7 @@ module.gen_wibar_widget = function()
             fg = beautiful.fg_normal,
             bg = beautiful.bg_normal
         }
-    })
+    }
     beautiful.mpd = mpd_widget
 
     return util.create_wibar_widget(color, mpd_icon, mpd_widget)

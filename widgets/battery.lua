@@ -6,6 +6,10 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-24 16:31:37
+-- @Changes: 
+--      - code format
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-06-01 11:14:16
 -- @Changes: 
 --      - fixes for new lain version
@@ -56,7 +60,7 @@ function batt_icon()
 end
 module.gen_wibar_widget = function()
     local bat_icon = util.fa_ico(beautiful.widget_colors.bat, fa_bat_icons[1])
-    local bat_widget = lain.widget.bat({
+    local bat_widget = lain.widget.bat {
         settings = function()
             local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
                              bat_now.perc
@@ -68,16 +72,17 @@ module.gen_wibar_widget = function()
             bat_icon:set_markup(
                 util.fa_markup(beautiful.widget_colors.bat, icon))
         end
-    })
+    }
 
     return util.create_wibar_widget(beautiful.widget_colors.bat, bat_icon,
                                     bat_widget)
 end
 
 module.create_arc_widget = function()
-    local bat_icon = util.create_arc_icon(beautiful.widget_colors.desktop_bat.fg,
-                                       fa_bat_icons[1], 150)
-    local bat_widget = lain.widget.bat({
+    local bat_icon = util.create_arc_icon(
+                         beautiful.widget_colors.desktop_bat.fg,
+                         fa_bat_icons[1], 150)
+    local bat_widget = lain.widget.bat {
         settings = function()
             local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
                              bat_now.perc
@@ -93,7 +98,7 @@ module.create_arc_widget = function()
             widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
         end,
         notify = "off"
-    })
+    }
     return util.create_arc_widget(bat_icon, bat_widget,
                                   beautiful.widget_colors.desktop_bat.bg,
                                   beautiful.widget_colors.desktop_bat.fg, 0, 100)

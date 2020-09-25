@@ -6,7 +6,7 @@
 -- wibar widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-11-18 10:43:23
+-- @Last Modified time: 2020-09-24 20:06:33
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
 -- @Last Modified by:   Marcel Arpogaus
@@ -21,7 +21,7 @@ local fs = require("themes.ayu.widgets.fs")
 local cpu = require("themes.ayu.widgets.cpu")
 local temp = require("themes.ayu.widgets.temp")
 local battery = require("themes.ayu.widgets.battery")
-local alsa = require("themes.ayu.widgets.alsa")
+local volume = require("themes.ayu.widgets.volume")
 local net = require("themes.ayu.widgets.net")
 local memory = require("themes.ayu.widgets.memory")
 local mpd = require("themes.ayu.widgets.mpd")
@@ -30,7 +30,7 @@ local mpd = require("themes.ayu.widgets.mpd")
 local module = {
     weather = weather.gen_wibar_widget,
     net = net.gen_wibar_widget,
-    vol = alsa.gen_wibar_widget,
+    vol = volume.gen_wibar_widget,
     mem = memory.gen_wibar_widget,
     cpu = cpu.gen_wibar_widget,
     temp = temp.gen_wibar_widget,

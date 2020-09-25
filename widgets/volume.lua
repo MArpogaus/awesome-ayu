@@ -1,14 +1,14 @@
 --------------------------------------------------------------------------------
--- @File:   alsa.lua
+-- @File:   volume.lua
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
 -- [ description ] -------------------------------------------------------------
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:31:40
+-- @Last Modified time: 2020-09-24 20:03:59
 -- @Changes: 
---      - code format
+--      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:35
 -- @Changes: 
@@ -23,52 +23,37 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
-local lain = require("lain")
-local wibox = require("wibox")
 local beautiful = require("beautiful")
+local wibox = require("wibox")
 
-local markup = lain.util.markup
+local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
-local fa_vol_icons = {
-    '', -- fa-volume-off [&#xf026;]
-    '', -- fa-volume-down [&#xf027;]
-    '' -- fa-volume-up [&#xf028;] 
-}
+local fa_vol_icons = {}
+fa_vol_icons[0] = '' -- fa-mute
+fa_vol_icons[1] = '' -- fa-volume-off
+fa_vol_icons[2] = '' -- fa-volume-down
+fa_vol_icons[3] = '' -- fa-volume-up
 
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
-    local vol_icon = lain.widget.alsa {
-        settings = function()
-            if volume_now.status == "off" then
-                ico = fa_vol_icons[1]
-            else
-                ico = fa_vol_icons[math.floor(volume_now.level / 50) + 2 % 4]
-            end
-            widget:set_markup(
-                util.fa_markup(beautiful.widget_colors.volume, ico))
+    local vol_icon = util.fa_ico(beautiful.widget_colors.volume, "N/A")
+    local vol_widget = wibox.widget.textbox()
+    vicious.register(vol_widget, vicious.widgets.volume, function(widget, args)
+        if args[2] == "🔈" then
+            ico = fa_vol_icons[0]
+            vol = "M"
+        else
+            ico = fa_vol_icons[math.min(math.ceil(args[1] / 33),3)]
+            vol = args[1] .. '%'
         end
-    }
-    vol_icon.align = 'center'
-    vol_icon.valign = 'center'
-    vol_icon.forced_width = beautiful.ico_width
-    vol_widget = lain.widget.alsa {
-        settings = function()
-            if volume_now.status == "off" then volume_now.level = "M" end
-
-            widget:set_markup(markup.fontfg(beautiful.font,
-                                            beautiful.widget_colors.volume,
-                                            volume_now.level .. "%"))
-        end
-    }
-
-    beautiful.volume = vol_widget
+        vol_icon:set_markup(util.fa_markup(beautiful.widget_colors.volume, ico))
+        return util.fa_markup(beautiful.widget_colors.volume, vol)
+    end, 1, 'Master')
 
     return util.create_wibar_widget(beautiful.widget_colors.volume, vol_icon,
                                     vol_widget)

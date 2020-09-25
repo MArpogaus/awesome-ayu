@@ -6,9 +6,9 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:33:34
+-- @Last Modified time: 2020-09-24 20:04:16
 -- @Changes: 
---      - code format
+--      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:10
 -- @Changes: 
@@ -23,13 +23,10 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
-local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
-local markup = lain.util.markup
+local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
@@ -39,27 +36,23 @@ local mem_icon = ''
 
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
-    local mem_widget = lain.widget.mem {
-        settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font,
-                                            beautiful.widget_colors.memory,
-                                            mem_now.used .. "M"))
-        end
-    }
+    local mem_widget = wibox.widget.textbox()
+    vicious.register(mem_widget, vicious.widgets.mem, util.fontfg(
+                         beautiful.font, beautiful.widget_colors.memory, '$1%'),
+                     1)
 
     return util.create_wibar_widget(beautiful.widget_colors.memory, mem_icon,
                                     mem_widget)
 end
 
 module.create_arc_widget = function()
-    local mem_widget = lain.widget.mem {
-        settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
-                                            beautiful.widget_colors.desktop_mem
-                                                .fg, mem_now.perc .. "%"))
-            widget:emit_signal_recursive("widget::value_changed", mem_now.perc)
-        end
-    }
+    local mem_widget = wibox.widget.textbox()
+    vicious.register(mem_widget, vicious.widgets.mem, function(widget, args)
+        widget:emit_signal_recursive("widget::value_changed", args[1])
+        return util.fontfg(beautiful.font_name .. 8,
+                           beautiful.widget_colors.desktop_mem.fg, args[1]..'%')
+    end, 1)
+
     return util.create_arc_widget(mem_icon, mem_widget,
                                   beautiful.widget_colors.desktop_mem.bg,
                                   beautiful.widget_colors.desktop_mem.fg, 0, 100)

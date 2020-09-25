@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-03-15 10:21:16
+-- @Last Modified time: 2020-09-25 11:00:55
 -- @Changes: 
 --      - added default layout per screen
 --      - fixed: show awesome menu when desktop widget is right clicked
@@ -33,7 +33,6 @@
 local gears = require("gears")
 local gfs = require("gears.filesystem")
 
-local lain = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 
@@ -51,7 +50,9 @@ local config = {
     -- Your city for the weather forcast widget
     city_id = 2658372,
     -- Load color schemes from xresources
-    use_xresources = false
+    use_xresources = false,
+    -- Network interface
+    net_interface = 'wlp4s0b1'
 }
 if gfs.file_readable(gfs.get_configuration_dir() .. "config.lua") then
     config = require("config")
@@ -210,15 +211,14 @@ function theme.at_screen_connect(s)
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            wibox_widgets.net(theme.widget_colors.netdown, "received"),
-            wibox_widgets.net(theme.widget_colors.netup, "sent",
-                              {wibox_weather_wdiget, desktop_weather_widget}),
+            wibox_widgets.net(theme.widget_colors.netdown, config.net_interface, "down"),
+            wibox_widgets.net(theme.widget_colors.netup, config.net_interface, "up"),
             wibox_widgets.vol(),
             wibox_widgets.mem(),
             wibox_widgets.cpu(),
             wibox_widgets.fs(),
             wibox_weather,
-            wibox_widgets.temp(config.tempfile),
+            wibox_widgets.temp(config.thermal_zone),
             wibox_widgets.bat(),
             wibox_widgets.datetime(),
             myexitmenu

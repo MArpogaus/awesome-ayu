@@ -6,9 +6,9 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:31:37
+-- @Last Modified time: 2020-09-24 20:36:58
 -- @Changes: 
---      - code format
+--      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-06-01 11:14:16
 -- @Changes: 
@@ -27,13 +27,10 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
-local lain = require("lain")
-local wibox = require("wibox")
 local beautiful = require("beautiful")
+local wibox = require("wibox")
 
-local markup = lain.util.markup
+local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
@@ -47,32 +44,29 @@ local fa_bat_icons = {
     '' -- fa-battery-4 (alias) [&#xf240;]
 }
 -- [ function definitions ] ----------------------------------------------------
-function batt_icon()
+function batt_icon(status, perc)
     local icon = 'N/A'
-    if bat_now.ac_status == 1 then
-        icon = ''
-    else
-        if bat_now.perc ~= "N/A" then
-            icon = fa_bat_icons[math.floor(bat_now.perc / 25) + 1]
+    if status ~= "⌁" then
+        if status == "+" then
+            icon = ''
+        else
+            if perc ~= nil then
+                icon = fa_bat_icons[math.floor(perc / 25) + 1]
+            end
         end
     end
     return icon
 end
 module.gen_wibar_widget = function()
-    local bat_icon = util.fa_ico(beautiful.widget_colors.bat, fa_bat_icons[1])
-    local bat_widget = lain.widget.bat {
-        settings = function()
-            local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
-                             bat_now.perc
+    local bat_icon = util.fa_ico(beautiful.widget_colors.bat, "N/A")
+    local bat_widget = wibox.widget.textbox()
+    vicious.register(bat_widget, vicious.widgets.bat, function(widget, args)
+        local icon = batt_icon(args[1], args[2])
+        bat_icon:set_markup(util.fa_markup(beautiful.widget_colors.bat, icon))
 
-            widget:set_markup(markup.fontfg(beautiful.font,
-                                            beautiful.widget_colors.bat, perc))
-
-            local icon = batt_icon()
-            bat_icon:set_markup(
-                util.fa_markup(beautiful.widget_colors.bat, icon))
-        end
-    }
+        return util.fontfg(beautiful.font, beautiful.widget_colors.bat,
+                           args[2] .. '%')
+    end, 1, 'BAT0')
 
     return util.create_wibar_widget(beautiful.widget_colors.bat, bat_icon,
                                     bat_widget)
@@ -82,23 +76,20 @@ module.create_arc_widget = function()
     local bat_icon = util.create_arc_icon(
                          beautiful.widget_colors.desktop_bat.fg,
                          fa_bat_icons[1], 150)
-    local bat_widget = lain.widget.bat {
-        settings = function()
-            local perc = bat_now.perc ~= "N/A" and bat_now.perc .. "%" or
-                             bat_now.perc
+    local bat_widget = wibox.widget.textbox()
+    vicious.register(bat_widget, vicious.widgets.bat, function(widget, args)
 
-            widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
-                                            beautiful.widget_colors.desktop_bat
-                                                .fg, perc))
+        local icon = batt_icon(args[1], args[2])
+        bat_icon:set_markup(util.fa_markup(
+                                beautiful.widget_colors.desktop_bat.fg, icon,
+                                math.floor(150 / 8)))
 
-            icon = batt_icon()
-            bat_icon:set_markup(util.fa_markup(
-                                    beautiful.widget_colors.desktop_bat.fg,
-                                    icon, math.floor(150 / 8)))
-            widget:emit_signal_recursive("widget::value_changed", bat_now.perc)
-        end,
-        notify = "off"
-    }
+        widget:emit_signal_recursive("widget::value_changed", args[2])
+
+        return util.fontfg(beautiful.font_name .. 8,
+                           beautiful.widget_colors.desktop_bat.fg,
+                           args[2] .. '%')
+    end, 1, 'BAT0')
     return util.create_arc_widget(bat_icon, bat_widget,
                                   beautiful.widget_colors.desktop_bat.bg,
                                   beautiful.widget_colors.desktop_bat.fg, 0, 100)

@@ -6,9 +6,9 @@
 -- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:33:13
+-- @Last Modified time: 2020-09-24 20:42:44
 -- @Changes: 
---      - code format
+--      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:41:07
 -- @Changes: 
@@ -23,13 +23,10 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
-local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
-local markup = lain.util.markup
+local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
@@ -39,39 +36,23 @@ local fs_icon = ""
 
 -- [ function definitions ] ----------------------------------------------------
 module.gen_wibar_widget = function()
-    fs_widget = lain.widget.fs {
-        settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font,
-                                            beautiful.widget_colors.fs,
-                                            string.format("%.1f", fs_now["/"]
-                                                              .percentage) ..
-                                                "%"))
-        end,
-        notification_preset = {
-            fg = beautiful.fg_normal,
-            bg = beautiful.bg_normal
-        }
-    }
-    beautiful.fs = fs_widget
+    local fs_widget = wibox.widget.textbox()
+    vicious.register(fs_widget, vicious.widgets.fs,
+                     util.fontfg(beautiful.font,
+                                 beautiful.widget_colors.fs,
+                                 '${/ used_p}%'), 1)
 
     return util.create_wibar_widget(beautiful.widget_colors.fs, fs_icon,
                                     fs_widget)
 end
 
 module.create_arc_widget = function()
-    local fs_widget = lain.widget.fs {
-        settings = function()
-            widget:set_markup(markup.fontfg(beautiful.font_name .. 8,
-                                            beautiful.widget_colors.desktop_fs
-                                                .fg, string.format("%.1f",
-                                                                   fs_now["/"]
-                                                                       .percentage) ..
-                                                "%"))
-            widget:emit_signal_recursive("widget::value_changed",
-                                         fs_now["/"].percentage)
-        end,
-        showpopup = "off"
-    }
+    local fs_widget = wibox.widget.textbox()
+    vicious.register(fs_widget, vicious.widgets.fs,
+                     util.fontfg(beautiful.font_name .. 8,
+                                 beautiful.widget_colors.desktop_fs.fg,
+                                 '${/ used_p}%'), 1)
+
     return util.create_arc_widget(fs_icon, fs_widget,
                                   beautiful.widget_colors.desktop_fs.bg,
                                   beautiful.widget_colors.desktop_fs.fg, 0, 100)

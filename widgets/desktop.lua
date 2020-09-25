@@ -6,7 +6,7 @@
 -- AYU Awesome WM desktop widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:32:56
+-- @Last Modified time: 2020-09-25 11:01:31
 -- @Changes: 
 --      - code format
 -- @Last Modified by:   Marcel Arpogaus
@@ -16,13 +16,8 @@
 --      - removed apply_dpi to make use of new DPI handling in v4.3
 ----------------------------------------------------------------------------------
 -- [ libraries ]-----------------------------------------------------------------
-local os = os
-
-local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-
-local markup = lain.util.markup
 
 local util = require("themes.ayu.util")
 

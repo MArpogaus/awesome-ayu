@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-12-05 18:30:13
+-- @Last Modified time: 2020-09-24 18:35:27
 -- @Changes: 
 --      - fixed icon width
 -- @Last Modified by:   Marcel Arpogaus
@@ -24,11 +24,8 @@
 --------------------------------------------------------------------------------
 local gears = require("gears")
 local cairo = require("lgi").cairo
-local lain = require("lain")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-
-local markup = lain.util.markup
 
 local owfont = require("themes.ayu.owfont")
 
@@ -106,7 +103,7 @@ module.titlebar_button =
 module.fa_markup = function(col, ico, size)
     local font_size = size or beautiful.font_size
     local fa_font = "FontAwesome " .. font_size
-    return markup.fontfg(fa_font, col, ico)
+    return module.fontfg(fa_font, col, ico)
 end
 
 module.fa_ico = function(col, ico, size, width)
@@ -150,7 +147,7 @@ module.owf_markup = function(col, weather_now, size)
     end
     local font_size = size or beautiful.font_size
     local owf_font = "owf-regular " .. font_size
-    return markup.fontfg(owf_font, col, icon)
+    return module.fontfg(owf_font, col, icon)
 end
 module.owf_ico = function(col, weather_now, size, width)
     return wibox.widget{
@@ -263,6 +260,10 @@ module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
         arc_container.value = usage
     end)
     return arc_container
+end
+
+module.fontfg = function(font, fg, text)
+    return string.format("<span font='%s' foreground='%s'>%s</span>", font, fg, text)
 end
 
 return module

@@ -6,9 +6,9 @@
 -- date and time widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 16:32:35
+-- @Last Modified time: 2020-09-25 10:47:45
 -- @Changes: 
---      - code format
+--      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:56
 -- @Changes: 
@@ -28,13 +28,11 @@
 --      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
-local lain = require("lain")
 local wibox = require("wibox")
+local awful = require("awful")
 local beautiful = require("beautiful")
 
-local markup = lain.util.markup
+local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
@@ -45,25 +43,51 @@ local module = {}
 os.setlocale(os.getenv("LANG")) -- to localize the clock
 module.gen_wibar_widget = function()
     local clock_icon = util.fa_ico(beautiful.widget_colors.cal, '')
+
     local clock_widget = wibox.widget.textclock(
-                             markup(beautiful.widget_colors.cal, "%A %d %B") ..
-                                 markup(beautiful.fg_normal, " | ") ..
-                                 markup(beautiful.widget_colors.clock, "%H:%M"))
-    clock_widget.font = beautiful.font
-    local clock_wibox_widget = util.create_wibar_widget(
-                                   beautiful.widget_colors.cal, clock_icon,
-                                   clock_widget)
+                             util.fontfg(beautiful.font,
+                                         beautiful.widget_colors.cal, "%A %d %B") ..
+                                 util.fontfg(beautiful.font,
+                                             beautiful.fg_normal, " | ") ..
+                                 util.fontfg(beautiful.font,
+                                             beautiful.widget_colors.clock,
+                                             "%H:%M"))
 
     -- popup calendar
-    beautiful.cal = lain.widget.cal {
-        attach_to = {clock_wibox_widget},
-        notification_preset = {
-            fg = beautiful.fg_normal,
-            bg = beautiful.bg_normal
+    local cal_widget = awful.widget.calendar_popup.month {
+        font = beautiful.font_name .. 16,
+        week_numbers = true,
+        long_weekdays = true,
+        opacity = 0.9,
+        margin = 5,
+        style_header = {
+          border_width = 0,
+          border_color = '#00000000'
+        },
+        style_weekday = {
+          border_width = 0,
+          border_color = '#00000000'
+        },
+        style_weeknumber = {
+          border_width = 0,
+          opacity = 0.5,
+          border_color = '#00000000'
+        },
+        style_normal = {
+          border_width = 0,
+          border_color = '#00000000'
+        },
+        style_focus = {
+          border_width = 0,
+          border_color = '#00000000'
         }
     }
+    cal_widget:attach(clock_widget, 'tr')
 
-    return clock_wibox_widget
+    beautiful.cal = cal_widget
+
+    return util.create_wibar_widget(beautiful.widget_colors.cal, clock_icon,
+                                    clock_widget)
 end
 
 module.gen_desktop_widget = function()
@@ -71,7 +95,7 @@ module.gen_desktop_widget = function()
     local date_font_size = beautiful.desktop_widgets_date_font_size
     local gen_deskop_clock_box = function()
         local deskop_clock = wibox.widget.textclock(
-                                 markup.fontfg(
+                                 util.fontfg(
                                      beautiful.font_name .. time_font_size,
                                      beautiful.bg_normal, "%H:%M"))
         return util.create_boxed_widget(deskop_clock,
@@ -81,33 +105,33 @@ module.gen_desktop_widget = function()
     end
 
     local gen_desktop_clock_date = function()
-        return wibox.widget.textclock(markup.fontfg(
+        return wibox.widget.textclock(util.fontfg(
                                           beautiful.font_name .. date_font_size,
                                           beautiful.fg_normal, "Today is ") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_day, "%A") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.fg_normal, ", the ") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_date, "%d.") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.fg_normal, " of ") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.widget_colors
                                                   .desktop_month, "%B") ..
-                                          markup.fontfg(
+                                          util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.fg_normal, "."))

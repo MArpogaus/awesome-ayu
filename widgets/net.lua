@@ -6,7 +6,7 @@
 -- networking widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 19:57:01
+-- @Last Modified time: 2020-09-26 17:46:53
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -15,8 +15,6 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local os = os
-
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 
@@ -27,7 +25,8 @@ local util = require("themes.ayu.util")
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 local net_icons = {down = '', up = ''}
--- [ function definitions ] ----------------------------------------------------
+
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function(color, interface, type)
     local net_icon = net_icons[type]
     local net_widget = wibox.widget.textbox()
@@ -38,5 +37,10 @@ module.gen_wibar_widget = function(color, interface, type)
     return util.create_wibar_widget(color, net_icon, net_widget)
 end
 
--- [ return module objects ] ---------------------------------------------------
+
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+--vicious.cache(vicious.widgets.net)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

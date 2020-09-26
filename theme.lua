@@ -9,6 +9,11 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-26 15:59:41
+-- @Changes: 
+--      - ported to vicious
+--      - removed mpd widget
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-09-25 11:00:55
 -- @Changes: 
 --      - added default layout per screen
@@ -48,14 +53,16 @@ local color_schemes = require("themes.ayu.color_schemes")
 -- user config
 local config = {
     -- Your city for the weather forcast widget
-    city_id = 2658372,
+    city_id = 42,
+    app_id = 'N/A',
+
     -- Load color schemes from xresources
     use_xresources = false,
     -- Network interface
     net_interface = 'wlp4s0b1'
 }
 if gfs.file_readable(gfs.get_configuration_dir() .. "config.lua") then
-    config = require("config")
+    config = gears.table.crush(config, require("config"))
 end
 local color_schemes = require("themes.ayu.color_schemes")
 
@@ -142,9 +149,9 @@ function theme.at_screen_connect(s)
 
     -- Create a weather widgets
     local wibox_weather, wibox_weather_wdiget =
-        wibox_widgets.weather(config.city_id)
+        wibox_widgets.weather(config.city_id, config.app_id)
     local desktop_weather, desktop_weather_widget =
-        desktop_widgets.weather(config.city_id)
+        desktop_widgets.weather(config.city_id, config.app_id)
 
     -- Create the desktop widget popup
     s.desktop_popup = awful.popup{
@@ -204,8 +211,7 @@ function theme.at_screen_connect(s)
             -- s.mylayoutbox,
             -- awful.util.mylauncher,
             s.mytaglist,
-            s.mypromptbox,
-            wibox_widgets.mpd()
+            s.mypromptbox
         },
         -- Middle widgets
         nil,

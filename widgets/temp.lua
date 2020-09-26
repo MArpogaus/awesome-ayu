@@ -6,7 +6,7 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:47:23
+-- @Last Modified time: 2020-09-26 17:49:14
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -37,17 +37,22 @@ local util = require("themes.ayu.util")
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function(thermal_zone)
     local temp_icon = ''
     local temp_widget = wibox.widget.textbox()
     vicious.register(temp_widget, vicious.widgets.thermal, util.fontfg(
                          beautiful.font, beautiful.widget_colors.temp, '$1°C'),
-                     1, thermal_zone)
+                     5, thermal_zone)
 
     return util.create_wibar_widget(beautiful.widget_colors.temp, temp_icon,
                                     temp_widget)
 end
 
--- [ return module objects ] ---------------------------------------------------
+
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+--vicious.cache(vicious.widgets.temp)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

@@ -6,7 +6,7 @@
 -- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:42:44
+-- @Last Modified time: 2020-09-26 17:48:18
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -34,13 +34,13 @@ local util = require("themes.ayu.util")
 local module = {}
 local fs_icon = ""
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local fs_widget = wibox.widget.textbox()
     vicious.register(fs_widget, vicious.widgets.fs,
                      util.fontfg(beautiful.font,
                                  beautiful.widget_colors.fs,
-                                 '${/ used_p}%'), 1)
+                                 '${/ used_p}%'), 30)
 
     return util.create_wibar_widget(beautiful.widget_colors.fs, fs_icon,
                                     fs_widget)
@@ -51,12 +51,17 @@ module.create_arc_widget = function()
     vicious.register(fs_widget, vicious.widgets.fs,
                      util.fontfg(beautiful.font_name .. 8,
                                  beautiful.widget_colors.desktop_fs.fg,
-                                 '${/ used_p}%'), 1)
+                                 '${/ used_p}%'), 30)
 
     return util.create_arc_widget(fs_icon, fs_widget,
                                   beautiful.widget_colors.desktop_fs.bg,
                                   beautiful.widget_colors.desktop_fs.fg, 0, 100)
 end
 
--- [ return module objects ] ---------------------------------------------------
+
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+vicious.cache(vicious.widgets.fs)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

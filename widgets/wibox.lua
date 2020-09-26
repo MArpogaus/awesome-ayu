@@ -6,6 +6,11 @@
 -- wibar widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-26 17:40:49
+-- @Changes: 
+--      - ported to vicious
+--      - removed mpd wdiget
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-09-24 20:06:33
 -- @Changes: 
 --      - removed apply_dpi to make use of new DPI handling in v4.3
@@ -24,7 +29,6 @@ local battery = require("themes.ayu.widgets.battery")
 local volume = require("themes.ayu.widgets.volume")
 local net = require("themes.ayu.widgets.net")
 local memory = require("themes.ayu.widgets.memory")
-local mpd = require("themes.ayu.widgets.mpd")
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {
@@ -36,9 +40,8 @@ local module = {
     temp = temp.gen_wibar_widget,
     bat = battery.gen_wibar_widget,
     fs = fs.gen_wibar_widget,
-    mpd = mpd.gen_wibar_widget,
     datetime = date_time.gen_wibar_widget
 }
 
--- [ return module objects ] ---------------------------------------------------
+-- [ return module object ] -----------.----------------------------------------
 return module

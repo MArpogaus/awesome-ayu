@@ -6,7 +6,7 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:03:59
+-- @Last Modified time: 2020-09-26 17:47:22
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -39,7 +39,7 @@ fa_vol_icons[1] = '' -- fa-volume-off
 fa_vol_icons[2] = '' -- fa-volume-down
 fa_vol_icons[3] = '' -- fa-volume-up
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local vol_icon = util.fa_ico(beautiful.widget_colors.volume, "N/A")
     local vol_widget = wibox.widget.textbox()
@@ -59,5 +59,9 @@ module.gen_wibar_widget = function()
                                     vol_widget)
 end
 
--- [ return module objects ] ---------------------------------------------------
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+-- vicious.cache(vicious.widgets.volume)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

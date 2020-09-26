@@ -6,9 +6,9 @@
 -- date and time widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-25 10:47:45
+-- @Last Modified time: 2020-09-26 17:46:19
 -- @Changes: 
---      - ported to vicious
+--      - removed lain
 -- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2019-11-18 10:40:56
 -- @Changes: 
@@ -28,19 +28,20 @@
 --      - ...
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
+local os = os
+
 local wibox = require("wibox")
 local awful = require("awful")
 local beautiful = require("beautiful")
-
-local vicious = require("vicious")
 
 local util = require("themes.ayu.util")
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 os.setlocale(os.getenv("LANG")) -- to localize the clock
+
 module.gen_wibar_widget = function()
     local clock_icon = util.fa_ico(beautiful.widget_colors.cal, '')
 
@@ -61,25 +62,20 @@ module.gen_wibar_widget = function()
         opacity = 0.9,
         margin = 5,
         style_header = {
-          border_width = 0,
-          border_color = '#00000000'
+          border_width = 0
         },
         style_weekday = {
-          border_width = 0,
-          border_color = '#00000000'
+          border_width = 0
         },
         style_weeknumber = {
           border_width = 0,
-          opacity = 0.5,
-          border_color = '#00000000'
+          opacity = 0.5
         },
         style_normal = {
-          border_width = 0,
-          border_color = '#00000000'
+          border_width = 0
         },
         style_focus = {
-          border_width = 0,
-          border_color = '#00000000'
+          border_width = 0
         }
     }
     cal_widget:attach(clock_widget, 'tr')
@@ -157,5 +153,5 @@ module.gen_desktop_widget = function()
     }
 end
 
--- [ return module objects ] ---------------------------------------------------
+-- [ return module object ] ----------------------------------------------------
 return module

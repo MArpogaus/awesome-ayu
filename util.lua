@@ -6,7 +6,12 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 18:35:27
+-- @Last Modified time: 2020-09-26 17:42:14
+-- @Changes: 
+--      - added fontfg
+--      - updated owf_markup for vicious
+-- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-26 15:34:14
 -- @Changes: 
 --      - fixed icon width
 -- @Last Modified by:   Marcel Arpogaus
@@ -22,6 +27,7 @@
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
+-- [ modules imports ] ---------------------------------------------------------
 local gears = require("gears")
 local cairo = require("lgi").cairo
 local wibox = require("wibox")
@@ -29,8 +35,10 @@ local beautiful = require("beautiful")
 
 local owfont = require("themes.ayu.owfont")
 
+-- [ local objects ] -----------------------------------------------------------
 local module = {}
 
+-- [ module functions ] --------------------------------------------------------
 -- Helper functions for modifying hex colors -----------------------------------
 local hex_color_match = "[a-fA-F0-9][a-fA-F0-9]"
 module.darker = function(color_value, darker_n)
@@ -107,7 +115,7 @@ module.fa_markup = function(col, ico, size)
 end
 
 module.fa_ico = function(col, ico, size, width)
-    return wibox.widget{
+    return wibox.widget {
         markup = module.fa_markup(col, ico, size),
         widget = wibox.widget.textbox,
         align = 'center',
@@ -117,11 +125,11 @@ module.fa_ico = function(col, ico, size, width)
 end
 
 -- owfont icons ----------------------------------------------------------------
-module.owf_markup = function(col, weather_now, size)
+module.owf_markup = function(col, weather, sunrise, sunset, size)
     -- ref.: https://github.com/lcpz/lain/blob/master/widget/weather.lua
     local loc_now = os.time() -- local time
     -- local time from midnight
-    local loc_m = os.time{
+    local loc_m = os.time {
         year = os.date("%Y"),
         month = os.date("%m"),
         day = os.date("%d"),
@@ -133,14 +141,17 @@ module.owf_markup = function(col, weather_now, size)
     local utc_d = os.date("!*t", loc_now)
     -- UTC time now
     local utc_now = os.time(utc_d)
-    if weather_now then
-        local sunrise = tonumber(weather_now["sys"]["sunrise"])
-        local sunset = tonumber(weather_now["sys"]["sunset"])
-        descr = weather_now["weather"][1]["description"]:lower()
-        if sunrise <= loc_now and loc_now <= sunset then
-            icon = owfont.day[descr] or "N/A"
+
+    if weather then
+        weather = weather:lower()
+        if type(sunrise,sunset) == 'number' and sunrise + sunrise > 0 then
+            if sunrise <= loc_now and loc_now <= sunset then
+                icon = owfont.day[weather] or "N/A"
+            else
+                icon = owfont.night[weather] or "N/A"
+            end
         else
-            icon = owfont.night[descr] or "N/A"
+            icon = owfont.day[weather] or "N/A"
         end
     else
         icon = "N/A"
@@ -150,7 +161,7 @@ module.owf_markup = function(col, weather_now, size)
     return module.fontfg(owf_font, col, icon)
 end
 module.owf_ico = function(col, weather_now, size, width)
-    return wibox.widget{
+    return wibox.widget {
         markup = module.owf_markup(col, weather_now, size),
         widget = wibox.widget.textbox,
         align = 'center',
@@ -174,7 +185,7 @@ module.create_boxed_widget = function(widget_to_be_boxed, bg_color, radius,
         gears.shape.rounded_rect(c, h, w, radius)
     end
 
-    local boxed_widget = wibox.widget{
+    local boxed_widget = wibox.widget {
         {
             {
                 widget_to_be_boxed,
@@ -197,7 +208,7 @@ module.create_wibar_widget = function(color, icon, widget)
     else
         icon_widget = module.fa_ico(color, icon)
     end
-    local wibox_widget = wibox.widget{
+    local wibox_widget = wibox.widget {
         {
             -- add margins
             icon_widget,
@@ -226,7 +237,7 @@ module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
         icon_widget = module.create_arc_icon(fg, icon, size)
     end
     widget.align = "center"
-    local arc_container = wibox.widget{
+    local arc_container = wibox.widget {
         {
             nil,
             {
@@ -263,7 +274,8 @@ module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
 end
 
 module.fontfg = function(font, fg, text)
-    return string.format("<span font='%s' foreground='%s'>%s</span>", font, fg, text)
+    return string.format("<span font='%s' foreground='%s'>%s</span>", font, fg,
+                         text)
 end
 
 return module

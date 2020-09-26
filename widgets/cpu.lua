@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:04:23
+-- @Last Modified time: 2020-09-26 17:45:59
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -33,7 +33,7 @@ local util = require("themes.ayu.util")
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local cpu_icon = ''
     local cpu_widget = wibox.widget.textbox()
@@ -84,5 +84,9 @@ module.create_arc_widget = function()
                                   beautiful.widget_colors.desktop_cpu.fg, 0, 100)
 end
 
--- [ return module objects ] ---------------------------------------------------
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+vicious.cache(vicious.widgets.cpu)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

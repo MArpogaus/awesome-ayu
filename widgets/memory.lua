@@ -6,7 +6,7 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:04:16
+-- @Last Modified time: 2020-09-26 17:46:40
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -34,7 +34,7 @@ local util = require("themes.ayu.util")
 local module = {}
 local mem_icon = ''
 
--- [ function definitions ] ----------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local mem_widget = wibox.widget.textbox()
     vicious.register(mem_widget, vicious.widgets.mem, util.fontfg(
@@ -58,5 +58,9 @@ module.create_arc_widget = function()
                                   beautiful.widget_colors.desktop_mem.fg, 0, 100)
 end
 
--- [ return module objects ] ---------------------------------------------------
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+vicious.cache(vicious.widgets.mem)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

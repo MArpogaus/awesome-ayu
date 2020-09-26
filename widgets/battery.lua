@@ -6,7 +6,7 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:36:58
+-- @Last Modified time: 2020-09-26 17:48:57
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -43,8 +43,9 @@ local fa_bat_icons = {
     '', -- fa-battery-3 (alias) [&#xf241;]
     '' -- fa-battery-4 (alias) [&#xf240;]
 }
--- [ function definitions ] ----------------------------------------------------
-function batt_icon(status, perc)
+
+-- [ local functions ] ---------------------------------------------------------
+local function batt_icon(status, perc)
     local icon = 'N/A'
     if status ~= "⌁" then
         if status == "+" then
@@ -57,6 +58,8 @@ function batt_icon(status, perc)
     end
     return icon
 end
+
+-- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local bat_icon = util.fa_ico(beautiful.widget_colors.bat, "N/A")
     local bat_widget = wibox.widget.textbox()
@@ -66,7 +69,7 @@ module.gen_wibar_widget = function()
 
         return util.fontfg(beautiful.font, beautiful.widget_colors.bat,
                            args[2] .. '%')
-    end, 1, 'BAT0')
+    end, 60, 'BAT0')
 
     return util.create_wibar_widget(beautiful.widget_colors.bat, bat_icon,
                                     bat_widget)
@@ -89,11 +92,15 @@ module.create_arc_widget = function()
         return util.fontfg(beautiful.font_name .. 8,
                            beautiful.widget_colors.desktop_bat.fg,
                            args[2] .. '%')
-    end, 1, 'BAT0')
+    end, 60, 'BAT0')
     return util.create_arc_widget(bat_icon, bat_widget,
                                   beautiful.widget_colors.desktop_bat.bg,
                                   beautiful.widget_colors.desktop_bat.fg, 0, 100)
 end
 
--- [ return module objects ] ---------------------------------------------------
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+vicious.cache(vicious.widgets.bat)
+
+-- [ return module object ] -----------.----------------------------------------
 return module

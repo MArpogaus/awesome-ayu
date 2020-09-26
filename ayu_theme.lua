@@ -6,6 +6,10 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
+-- @Last Modified time: 2020-09-26 15:43:11
+-- @Changes: 
+--      - removed lain icons
+-- @Last Modified by:   Marcel Arpogaus
 -- @Last Modified time: 2020-03-22 10:23:54
 -- @Changes: 
 --      - changed border_focus color
@@ -35,9 +39,6 @@ local themes_path = gfs.get_themes_dir()
 local config_path = gfs.get_configuration_dir()
 
 local util = require("themes.ayu.util")
-
-local lain_icons = os.getenv("HOME") ..
-                       "/.config/awesome/lain/icons/layout/default/"
 
 local theme = {
     set_color_scheme = function(self, cs)
@@ -258,12 +259,6 @@ local theme = {
             self.layout_cornerse = themes_path ..
                                        "default/layouts/cornersew.png"
 
-            self.layout_termfair = lain_icons .. "termfairw.png"
-            self.layout_centerfair = lain_icons .. "centerfairw.png" -- termfair.center
-            self.layout_cascade = lain_icons .. "cascadew.png"
-            self.layout_cascadetile = lain_icons .. "cascadetilew.png" -- cascade.tile
-            self.layout_centerwork = lain_icons .. "centerworkw.png"
-            self.layout_centerworkh = lain_icons .. "centerworkhw.png" -- centerwork.horizontal
         else
             self.titlebar_floating_button_normal_inactive =
                 themes_path .. "default/titlebar/floating_focus_inactive.png"
@@ -295,12 +290,6 @@ local theme = {
             self.layout_cornerse = themes_path .. "default/layouts/cornerse.png"
 
             
-            self.layout_termfair = lain_icons .. "termfair.png"
-            self.layout_centerfair = lain_icons .. "centerfair.png" -- termfair.center
-            self.layout_cascade = lain_icons .. "cascade.png"
-            self.layout_cascadetile = lain_icons .. "cascadetile.png" -- cascade.tile
-            self.layout_centerwork = lain_icons .. "centerwork.png"
-            self.layout_centerworkh = lain_icons .. "centerworkh.png" -- centerwork.horizontal
         end
 
         -- Generate Awesome icon:

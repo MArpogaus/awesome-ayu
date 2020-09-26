@@ -27,7 +27,7 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
 
 ## Dependencies
 
- * [lain][lain]
+ * [vicious][vicious]
  * [owfont - symbol font for Open Weather Map API][owfont]
  * [Font Awesome 4][FontAwesome4]
  * [mononoki][mononoki]
@@ -135,7 +135,7 @@ end
 [ayu]: https://github.com/dempfi/ayu/blob/master/README.md
 [awesome-copycats]: https://github.com/lcpz/awesome-copycats
 [ayu-colors]: https://github.com/ayu-theme/ayu-colors
-[lain]: https://github.com/lcpz/lain
+[vicious]: https://github.com/vicious-widgets/vicious
 [owfont]: http://websygen.github.io/owfont/
 [FontAwesome4]: https://github.com/FortAwesome/Font-Awesome
 [mononoki]: https://madmalik.github.io/mononoki/

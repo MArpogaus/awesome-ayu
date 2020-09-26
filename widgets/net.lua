@@ -6,7 +6,7 @@
 -- networking widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:46:53
+-- @Last Modified time: 2020-09-26 20:15:26
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -24,12 +24,17 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 local net_icons = {down = '', up = ''}
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function(color, interface, type)
     local net_icon = net_icons[type]
     local net_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, net_widget)
+
     vicious.register(net_widget, vicious.widgets.net,
                      util.fontfg(beautiful.font, color,
                                  '${' .. interface .. ' ' .. type .. '_kb}kb'),

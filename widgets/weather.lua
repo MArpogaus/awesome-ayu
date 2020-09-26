@@ -6,7 +6,7 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:45:27
+-- @Last Modified time: 2020-09-26 20:16:32
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -39,6 +39,7 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 
 -- [ local functions ] ---------------------------------------------------------
 local markup_color_size = function(size, color, text)
@@ -49,6 +50,10 @@ end
 module.gen_wibar_widget = function(city_id, app_id)
     local weather_icon = util.owf_ico(beautiful.widget_colors.weather)
     local weather_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, weather_widget)
+
     local weather_widget_formatter = function(_, args)
         local weather = args['{weather}']
 
@@ -107,6 +112,10 @@ module.gen_desktop_widget = function(city_id, app_id)
                                                    beautiful.fg_normal, weather))
         return markup_color_size(font_size_temp, beautiful.fg_normal, temp)
     end
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, weather_widget)
+
     vicious.register(weather_widget, vicious_contrib.openweather,
                      weather_widget_formatter, 1800,
                      {city_id = city_id, app_id = app_id})

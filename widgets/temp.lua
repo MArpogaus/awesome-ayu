@@ -6,7 +6,7 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:49:14
+-- @Last Modified time: 2020-09-26 20:15:39
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -36,11 +36,16 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function(thermal_zone)
     local temp_icon = ''
     local temp_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, temp_widget)
+
     vicious.register(temp_widget, vicious.widgets.thermal, util.fontfg(
                          beautiful.font, beautiful.widget_colors.temp, '$1°C'),
                      5, thermal_zone)

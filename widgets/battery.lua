@@ -6,7 +6,7 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:43:29
+-- @Last Modified time: 2020-09-26 20:14:37
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -36,6 +36,8 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
+
 local fa_bat_icons = {
     '', -- fa-battery-0 (alias) [&#xf244;]
     '', -- fa-battery-1 (alias) [&#xf243;]
@@ -63,6 +65,8 @@ end
 module.gen_wibar_widget = function()
     local bat_icon = util.fa_ico(beautiful.widget_colors.bat, 'N/A')
     local bat_widget = wibox.widget.textbox()
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, bat_widget)
     vicious.register(bat_widget, vicious.widgets.bat, function(_, args)
         local icon = batt_icon(args[1], args[2])
         bat_icon:set_markup(util.fa_markup(beautiful.widget_colors.bat, icon))
@@ -80,6 +84,8 @@ module.create_arc_widget = function()
                          beautiful.widget_colors.desktop_bat.fg,
                          fa_bat_icons[1], 150)
     local bat_widget = wibox.widget.textbox()
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, bat_widget)
     vicious.register(bat_widget, vicious.widgets.bat, function(widget, args)
 
         local icon = batt_icon(args[1], args[2])

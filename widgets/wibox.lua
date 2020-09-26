@@ -6,7 +6,7 @@
 -- wibar widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:40:49
+-- @Last Modified time: 2020-09-26 20:19:43
 -- @Changes: 
 --      - ported to vicious
 --      - removed mpd wdiget

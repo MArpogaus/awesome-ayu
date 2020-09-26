@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:43:48
+-- @Last Modified time: 2020-09-26 20:14:49
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -32,11 +32,16 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local cpu_icon = ''
     local cpu_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, cpu_widget)
+
     vicious.register(cpu_widget, vicious.widgets.cpu, util.fontfg(
                          beautiful.font, beautiful.widget_colors.cpu,
                          '$1' .. '%'), 1)
@@ -66,6 +71,10 @@ module.create_arc_widget = function()
     }
 
     local cpu_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, cpu_widget)
+
     vicious.register(cpu_widget, vicious.widgets.cpu, function(_, args)
         local num_cpus = #args - 1
         local width = (num_cpus + 1) * (step_width + step_spacing)

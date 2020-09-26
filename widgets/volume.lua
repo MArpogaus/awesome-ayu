@@ -6,7 +6,7 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:44:46
+-- @Last Modified time: 2020-09-26 20:15:57
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -32,6 +32,7 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 
 local fa_vol_icons = {}
 fa_vol_icons[0] = '' -- fa-mute
@@ -43,6 +44,10 @@ fa_vol_icons[3] = '' -- fa-volume-up
 module.gen_wibar_widget = function()
     local vol_icon = util.fa_ico(beautiful.widget_colors.volume, 'N/A')
     local vol_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, vol_widget)
+
     vicious.register(vol_widget, vicious.widgets.volume, function(_, args)
         local ico, vol
         if args[2] == '🔈' then

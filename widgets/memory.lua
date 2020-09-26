@@ -6,7 +6,7 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:46:40
+-- @Last Modified time: 2020-09-26 20:14:23
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -32,11 +32,16 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+module.registered_widgets = {}
 local mem_icon = ''
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local mem_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, mem_widget)
+
     vicious.register(mem_widget, vicious.widgets.mem, util.fontfg(
                          beautiful.font, beautiful.widget_colors.memory, '$1%'),
                      1)
@@ -47,6 +52,10 @@ end
 
 module.create_arc_widget = function()
     local mem_widget = wibox.widget.textbox()
+
+    -- some bookkeeping to unregister when cs is changed
+    table.insert(module.registered_widgets, mem_widget)
+
     vicious.register(mem_widget, vicious.widgets.mem, function(widget, args)
         widget:emit_signal_recursive('widget::value_changed', args[1])
         return util.fontfg(beautiful.font_name .. 8,

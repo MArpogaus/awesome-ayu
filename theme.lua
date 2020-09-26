@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:39:12
+-- @Last Modified time: 2020-09-26 20:01:02
 -- @Changes: 
 --      - ported to vicious
 --      - removed mpd widget
@@ -44,6 +44,10 @@ local wibox = require('wibox')
 
 local theme = require('themes.ayu.ayu_theme')
 local color_schemes = require('themes.ayu.color_schemes')
+
+-- custom wibox widgets
+local wibox_widgets = require('themes.ayu.widgets.wibox')
+local desktop_widgets = require('themes.ayu.widgets.desktop')
 
 -- [ local objects ] -----------------------------------------------------------
 -- user config
@@ -95,10 +99,6 @@ theme.at_screen_connect = function(s)
         awful.tag(awful.util.tagnames, s,
                   awful.layout.default[s.index] or awful.layout.layouts[1])
     end
-
-    -- load custom wibox widgets
-    local wibox_widgets = require('themes.ayu.widgets.wibox')
-    local desktop_widgets = require('themes.ayu.widgets.desktop')
 
     -- If wallpaper is a function, call it with the screen
     local wallpaper = config.wallpaper or theme.wallpaper

@@ -6,7 +6,7 @@
 -- AYU Awesome WM desktop widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-25 11:01:31
+-- @Last Modified time: 2020-09-26 18:44:08
 -- @Changes: 
 --      - code format
 -- @Last Modified by:   Marcel Arpogaus
@@ -16,18 +16,16 @@
 --      - removed apply_dpi to make use of new DPI handling in v4.3
 ----------------------------------------------------------------------------------
 -- [ libraries ]-----------------------------------------------------------------
-local wibox = require("wibox")
-local beautiful = require("beautiful")
-
-local util = require("themes.ayu.util")
+local wibox = require('wibox')
+local beautiful = require('beautiful')
 
 -- widgets
-local date_time = require("themes.ayu.widgets.date_time")
-local weather = require("themes.ayu.widgets.weather")
-local cpu = require("themes.ayu.widgets.cpu")
-local memory = require("themes.ayu.widgets.memory")
-local fs = require("themes.ayu.widgets.fs")
-local battery = require("themes.ayu.widgets.battery")
+local date_time = require('themes.ayu.widgets.date_time')
+local weather = require('themes.ayu.widgets.weather')
+local cpu = require('themes.ayu.widgets.cpu')
+local memory = require('themes.ayu.widgets.memory')
+local fs = require('themes.ayu.widgets.fs')
+local battery = require('themes.ayu.widgets.battery')
 
 local module = {}
 
@@ -50,7 +48,7 @@ module.arcs = function()
             layout = wibox.layout.fixed.horizontal
         },
         nil,
-        expand = "outer",
+        expand = 'outer',
         layout = wibox.layout.align.vertical
     }
 end

@@ -23,12 +23,12 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local wibox = require("wibox")
-local beautiful = require("beautiful")
+local wibox = require('wibox')
+local beautiful = require('beautiful')
 
-local vicious = require("vicious")
+local vicious = require('vicious')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -48,14 +48,16 @@ end
 module.create_arc_widget = function()
     local mem_widget = wibox.widget.textbox()
     vicious.register(mem_widget, vicious.widgets.mem, function(widget, args)
-        widget:emit_signal_recursive("widget::value_changed", args[1])
+        widget:emit_signal_recursive('widget::value_changed', args[1])
         return util.fontfg(beautiful.font_name .. 8,
-                           beautiful.widget_colors.desktop_mem.fg, args[1]..'%')
+                           beautiful.widget_colors.desktop_mem.fg,
+                           args[1] .. '%')
     end, 1)
 
     return util.create_arc_widget(mem_icon, mem_widget,
                                   beautiful.widget_colors.desktop_mem.bg,
-                                  beautiful.widget_colors.desktop_mem.fg, 0, 100)
+                                  beautiful.widget_colors.desktop_mem.fg, 0,
+                                  100)
 end
 
 -- [ sequential code ] ---------------------------------------------------------

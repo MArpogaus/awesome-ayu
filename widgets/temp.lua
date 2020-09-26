@@ -27,12 +27,12 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local beautiful = require("beautiful")
-local wibox = require("wibox")
+local beautiful = require('beautiful')
+local wibox = require('wibox')
 
-local vicious = require("vicious")
+local vicious = require('vicious')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -49,10 +49,9 @@ module.gen_wibar_widget = function(thermal_zone)
                                     temp_widget)
 end
 
-
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
---vicious.cache(vicious.widgets.temp)
+-- vicious.cache(vicious.widgets.temp)
 
 -- [ return module object ] -----------.----------------------------------------
 return module

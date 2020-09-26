@@ -6,7 +6,7 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:47:41
+-- @Last Modified time: 2020-09-26 18:45:27
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -29,13 +29,13 @@
 -- [ modules imports ] ---------------------------------------------------------
 local math = math
 
-local wibox = require("wibox")
-local beautiful = require("beautiful")
+local wibox = require('wibox')
+local beautiful = require('beautiful')
 
-local vicious = require("vicious")
-local vicious_contrib = require("vicious.contrib")
+local vicious = require('vicious')
+local vicious_contrib = require('vicious.contrib')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -49,15 +49,16 @@ end
 module.gen_wibar_widget = function(city_id, app_id)
     local weather_icon = util.owf_ico(beautiful.widget_colors.weather)
     local weather_widget = wibox.widget.textbox()
-    local weather_widget_formatter = function(widget, args)
-        local weather = args["{weather}"]
+    local weather_widget_formatter = function(_, args)
+        local weather = args['{weather}']
 
-        local sunrise = args["{sunrise}"]
-        local sunset = args["{sunset}"]
+        local sunrise = args['{sunrise}']
+        local sunset = args['{sunset}']
 
-        weather_desc = args['{temp c}'] .. '°C'
-        weather_icon:set_markup(util.owf_markup(beautiful.widget_colors.weather,
-                                                weather, sunrise, sunset))
+        local weather_desc = args['{temp c}'] .. '°C'
+        weather_icon:set_markup(util.owf_markup(
+                                    beautiful.widget_colors.weather, weather,
+                                    sunrise, sunset))
         return util.fontfg(beautiful.font, beautiful.widget_colors.weather,
                            weather_desc)
     end
@@ -83,16 +84,16 @@ module.gen_desktop_widget = function(city_id, app_id)
     local weather_descr = wibox.widget.textbox()
     local weather_unit = wibox.widget.textbox(
                              markup_color_size(font_size, beautiful.fg_normal,
-                                               "°C"))
+                                               '°C'))
 
-    local weather_widget_formatter = function(widget, args)
-        local weather = args["{weather}"]
-        local temp = args["{temp c}"]
-        local temp_min = math.floor(tonumber(args["{temp min c}"]) or 0)
-        local temp_max = math.ceil(tonumber(args["{temp max c}"]) or 0)
+    local weather_widget_formatter = function(_, args)
+        local weather = args['{weather}']
+        local temp = args['{temp c}']
+        local temp_min = math.floor(tonumber(args['{temp min c}']) or 0)
+        local temp_max = math.ceil(tonumber(args['{temp max c}']) or 0)
 
-        local sunrise = args["{sunrise}"]
-        local sunset = args["{sunset}"]
+        local sunrise = args['{sunrise}']
+        local sunset = args['{sunset}']
 
         weather_icon:set_markup(util.owf_markup(beautiful.fg_normal, weather,
                                                 sunrise, sunset, font_size))
@@ -110,9 +111,9 @@ module.gen_desktop_widget = function(city_id, app_id)
                      weather_widget_formatter, 1800,
                      {city_id = city_id, app_id = app_id})
 
-    weather_widget.align = "center"
-    weather_descr.align = "center"
-    weather_unit.align = "center"
+    weather_widget.align = 'center'
+    weather_descr.align = 'center'
+    weather_unit.align = 'center'
 
     local weather_box = wibox.widget {
         {
@@ -130,7 +131,7 @@ module.gen_desktop_widget = function(city_id, app_id)
                                 layout = wibox.layout.fixed.horizontal
                             },
                             nil,
-                            expand = "outside",
+                            expand = 'outside',
                             layout = wibox.layout.align.horizontal
                         },
                         layout = wibox.layout.fixed.vertical
@@ -156,15 +157,14 @@ module.gen_desktop_widget = function(city_id, app_id)
             nil,
             weather_box,
             nil,
-            expand = "none",
+            expand = 'none',
             layout = wibox.layout.align.vertical
         },
         nil,
-        expand = "none",
+        expand = 'none',
         layout = wibox.layout.align.horizontal
     }, weather_widget
 end
-
 
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching

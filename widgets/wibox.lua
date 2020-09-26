@@ -20,15 +20,15 @@
 --      - added header
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local date_time = require("themes.ayu.widgets.date_time")
-local weather = require("themes.ayu.widgets.weather")
-local fs = require("themes.ayu.widgets.fs")
-local cpu = require("themes.ayu.widgets.cpu")
-local temp = require("themes.ayu.widgets.temp")
-local battery = require("themes.ayu.widgets.battery")
-local volume = require("themes.ayu.widgets.volume")
-local net = require("themes.ayu.widgets.net")
-local memory = require("themes.ayu.widgets.memory")
+local date_time = require('themes.ayu.widgets.date_time')
+local weather = require('themes.ayu.widgets.weather')
+local fs = require('themes.ayu.widgets.fs')
+local cpu = require('themes.ayu.widgets.cpu')
+local temp = require('themes.ayu.widgets.temp')
+local battery = require('themes.ayu.widgets.battery')
+local volume = require('themes.ayu.widgets.volume')
+local net = require('themes.ayu.widgets.net')
+local memory = require('themes.ayu.widgets.memory')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {

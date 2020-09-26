@@ -30,29 +30,30 @@
 -- [ modules imports ] ---------------------------------------------------------
 local os = os
 
-local wibox = require("wibox")
-local awful = require("awful")
-local beautiful = require("beautiful")
+local wibox = require('wibox')
+local awful = require('awful')
+local beautiful = require('beautiful')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
 -- [ module functions ] --------------------------------------------------------
-os.setlocale(os.getenv("LANG")) -- to localize the clock
+os.setlocale(os.getenv('LANG')) -- to localize the clock
 
 module.gen_wibar_widget = function()
     local clock_icon = util.fa_ico(beautiful.widget_colors.cal, '')
 
     local clock_widget = wibox.widget.textclock(
                              util.fontfg(beautiful.font,
-                                         beautiful.widget_colors.cal, "%A %d %B") ..
+                                         beautiful.widget_colors.cal,
+                                         '%A %d %B') ..
                                  util.fontfg(beautiful.font,
-                                             beautiful.fg_normal, " | ") ..
+                                             beautiful.fg_normal, ' | ') ..
                                  util.fontfg(beautiful.font,
                                              beautiful.widget_colors.clock,
-                                             "%H:%M"))
+                                             '%H:%M'))
 
     -- popup calendar
     local cal_widget = awful.widget.calendar_popup.month {
@@ -61,22 +62,11 @@ module.gen_wibar_widget = function()
         long_weekdays = true,
         opacity = 0.9,
         margin = 5,
-        style_header = {
-          border_width = 0
-        },
-        style_weekday = {
-          border_width = 0
-        },
-        style_weeknumber = {
-          border_width = 0,
-          opacity = 0.5
-        },
-        style_normal = {
-          border_width = 0
-        },
-        style_focus = {
-          border_width = 0
-        }
+        style_header = {border_width = 0},
+        style_weekday = {border_width = 0},
+        style_weeknumber = {border_width = 0, opacity = 0.5},
+        style_normal = {border_width = 0},
+        style_focus = {border_width = 0}
     }
     cal_widget:attach(clock_widget, 'tr')
 
@@ -93,7 +83,7 @@ module.gen_desktop_widget = function()
         local deskop_clock = wibox.widget.textclock(
                                  util.fontfg(
                                      beautiful.font_name .. time_font_size,
-                                     beautiful.bg_normal, "%H:%M"))
+                                     beautiful.bg_normal, '%H:%M'))
         return util.create_boxed_widget(deskop_clock,
                                         beautiful.widget_colors.desktop_clock,
                                         time_font_size / 2, time_font_size,
@@ -103,34 +93,34 @@ module.gen_desktop_widget = function()
     local gen_desktop_clock_date = function()
         return wibox.widget.textclock(util.fontfg(
                                           beautiful.font_name .. date_font_size,
-                                          beautiful.fg_normal, "Today is ") ..
+                                          beautiful.fg_normal, 'Today is ') ..
                                           util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.widget_colors
-                                                  .desktop_day, "%A") ..
+                                                  .desktop_day, '%A') ..
                                           util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
-                                              beautiful.fg_normal, ", the ") ..
-                                          util.fontfg(
-                                              beautiful.font_name ..
-                                                  date_font_size,
-                                              beautiful.widget_colors
-                                                  .desktop_date, "%d.") ..
-                                          util.fontfg(
-                                              beautiful.font_name ..
-                                                  date_font_size,
-                                              beautiful.fg_normal, " of ") ..
+                                              beautiful.fg_normal, ', the ') ..
                                           util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
                                               beautiful.widget_colors
-                                                  .desktop_month, "%B") ..
+                                                  .desktop_date, '%d.') ..
                                           util.fontfg(
                                               beautiful.font_name ..
                                                   date_font_size,
-                                              beautiful.fg_normal, "."))
+                                              beautiful.fg_normal, ' of ') ..
+                                          util.fontfg(
+                                              beautiful.font_name ..
+                                                  date_font_size,
+                                              beautiful.widget_colors
+                                                  .desktop_month, '%B') ..
+                                          util.fontfg(
+                                              beautiful.font_name ..
+                                                  date_font_size,
+                                              beautiful.fg_normal, '.'))
     end
 
     return wibox.widget {
@@ -141,7 +131,7 @@ module.gen_desktop_widget = function()
                 nil,
                 gen_deskop_clock_box(),
                 nil,
-                expand = "outside",
+                expand = 'outside',
                 layout = wibox.layout.align.horizontal
             },
             gen_desktop_clock_date(),

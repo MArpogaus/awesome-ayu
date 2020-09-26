@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:45:59
+-- @Last Modified time: 2020-09-26 18:43:48
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -23,12 +23,12 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local wibox = require("wibox")
-local beautiful = require("beautiful")
+local wibox = require('wibox')
+local beautiful = require('beautiful')
 
-local vicious = require("vicious")
+local vicious = require('vicious')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -54,19 +54,19 @@ module.create_arc_widget = function()
         step_spacing = step_spacing,
         forced_height = beautiful.desktop_widgets_arc_size / 5,
         color = beautiful.widget_colors.desktop_cpu.fg,
-        background_color = "#00000000",
+        background_color = '#00000000',
         widget = wibox.widget.graph
     }
     local cpu_graph_widget = wibox.widget {
         nil,
         cpu_graph,
         nil,
-        expand = "outside",
+        expand = 'outside',
         layout = wibox.layout.align.horizontal
     }
 
     local cpu_widget = wibox.widget.textbox()
-    vicious.register(cpu_widget, vicious.widgets.cpu, function(widget, args)
+    vicious.register(cpu_widget, vicious.widgets.cpu, function(_, args)
         local num_cpus = #args - 1
         local width = (num_cpus + 1) * (step_width + step_spacing)
 
@@ -81,7 +81,8 @@ module.create_arc_widget = function()
 
     return util.create_arc_widget(cpu_graph_widget, cpu_widget,
                                   beautiful.widget_colors.desktop_cpu.bg,
-                                  beautiful.widget_colors.desktop_cpu.fg, 0, 100)
+                                  beautiful.widget_colors.desktop_cpu.fg, 0,
+                                  100)
 end
 
 -- [ sequential code ] ---------------------------------------------------------

@@ -6,7 +6,7 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 15:43:11
+-- @Last Modified time: 2020-09-26 18:14:30
 -- @Changes: 
 --      - removed lain icons
 -- @Last Modified by:   Marcel Arpogaus
@@ -30,15 +30,15 @@
 -- @Changes: 
 --      - added header
 --------------------------------------------------------------------------------
-local gears = require("gears")
+local gears = require('gears')
 
-local theme_assets = require("beautiful.theme_assets")
+local theme_assets = require('beautiful.theme_assets')
 
-local gfs = require("gears.filesystem")
+local gfs = require('gears.filesystem')
 local themes_path = gfs.get_themes_dir()
 local config_path = gfs.get_configuration_dir()
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 local theme = {
     set_color_scheme = function(self, cs)
@@ -52,14 +52,14 @@ local theme = {
         self.icon_margin_right = self.ico_width / 8
         self.systray_icon_spacing = self.ico_width / 3
 
-        self.confdir = config_path .. "/themes/ayu/"
+        self.confdir = config_path .. '/themes/ayu/'
 
-        self.font_name = "mononoki "
+        self.font_name = 'mononoki '
         self.font_size = 10
         self.font = self.font_name .. self.font_size
         self.notification_font = self.font_name .. (2 * self.font_size)
 
-        --self.tasklist_plain_task_name = true
+        -- self.tasklist_plain_task_name = true
         self.tasklist_disable_icon = true
         self.useless_gap = 0
         self.button_size = self.titlebar_size
@@ -98,8 +98,8 @@ local theme = {
                                          self.close_button_bg_color, 50)
         self.maximized_button_fg_color =
             util.reduce_contrast(self.maximized_button_bg_color, 50)
-        self.minimize_button_fg_color = util.reduce_contrast(
-                                            self.minimize_button_bg_color, 50)
+        self.minimize_button_fg_color =
+            util.reduce_contrast(self.minimize_button_bg_color, 50)
         self.ontop_button_fg_color = util.reduce_contrast(
                                          self.ontop_button_bg_color, 50)
         self.sticky_button_fg_color = util.reduce_contrast(
@@ -142,7 +142,8 @@ local theme = {
         self.desktop_widgets_arc_size = 220
         self.desktop_widgets_arc_spacing = 110
         self.desktop_widgets_time_font_size = 50
-        self.desktop_widgets_date_font_size = self.desktop_widgets_time_font_size / 3
+        self.desktop_widgets_date_font_size =
+            self.desktop_widgets_time_font_size / 3
         self.desktop_widgets_weather_font_size = 50
 
         -- generate buttons
@@ -201,9 +202,11 @@ local theme = {
             self:ontop_button(self.button_size, self.button_radius, true)
 
         self.titlebar_sticky_button_normal_active =
-            self:sticky_button(self.button_size, self.button_radius, false, true)
+            self:sticky_button(self.button_size, self.button_radius, false,
+                               true)
         self.titlebar_sticky_button_focus_active =
-            self:sticky_button(self.button_size, self.button_radius, false, true)
+            self:sticky_button(self.button_size, self.button_radius, false,
+                               true)
         self.titlebar_sticky_button_normal_inactive =
             self:sticky_button(self.button_size, self.button_radius, false)
         self.titlebar_sticky_button_focus_inactive =
@@ -225,78 +228,84 @@ local theme = {
                                          taglist_square_size, self.fg_normal)
         if util.is_dark(cs.bg) then
             self.titlebar_floating_button_normal_inactive =
-                themes_path .. "default/titlebar/floating_normal_inactive.png"
+                themes_path .. 'default/titlebar/floating_normal_inactive.png'
             self.titlebar_floating_button_focus_inactive =
-                themes_path .. "default/titlebar/floating_normal_inactive.png"
+                themes_path .. 'default/titlebar/floating_normal_inactive.png'
             self.titlebar_floating_button_normal_active =
-                themes_path .. "default/titlebar/floating_normal_active.png"
+                themes_path .. 'default/titlebar/floating_normal_active.png'
             self.titlebar_floating_button_focus_active =
-                themes_path .. "default/titlebar/floating_normal_active.png"
+                themes_path .. 'default/titlebar/floating_normal_active.png'
 
-            self.layout_fairh = themes_path .. "default/layouts/fairhw.png"
-            self.layout_fairv = themes_path .. "default/layouts/fairvw.png"
+            self.layout_fairh = themes_path .. 'default/layouts/fairhw.png'
+            self.layout_fairv = themes_path .. 'default/layouts/fairvw.png'
             self.layout_floating = themes_path ..
-                                       "default/layouts/floatingw.png"
+                                       'default/layouts/floatingw.png'
             self.layout_magnifier = themes_path ..
-                                        "default/layouts/magnifierw.png"
-            self.layout_max = themes_path .. "default/layouts/maxw.png"
+                                        'default/layouts/magnifierw.png'
+            self.layout_max = themes_path .. 'default/layouts/maxw.png'
             self.layout_fullscreen = themes_path ..
-                                         "default/layouts/fullscreenw.png"
+                                         'default/layouts/fullscreenw.png'
             self.layout_tilebottom = themes_path ..
-                                         "default/layouts/tilebottomw.png"
+                                         'default/layouts/tilebottomw.png'
             self.layout_tileleft = themes_path ..
-                                       "default/layouts/tileleftw.png"
-            self.layout_tile = themes_path .. "default/layouts/tilew.png"
-            self.layout_tiletop = themes_path .. "default/layouts/tiletopw.png"
-            self.layout_spiral = themes_path .. "default/layouts/spiralw.png"
-            self.layout_dwindle = themes_path .. "default/layouts/dwindlew.png"
+                                       'default/layouts/tileleftw.png'
+            self.layout_tile = themes_path .. 'default/layouts/tilew.png'
+            self.layout_tiletop = themes_path .. 'default/layouts/tiletopw.png'
+            self.layout_spiral = themes_path .. 'default/layouts/spiralw.png'
+            self.layout_dwindle = themes_path .. 'default/layouts/dwindlew.png'
             self.layout_cornernw = themes_path ..
-                                       "default/layouts/cornernww.png"
+                                       'default/layouts/cornernww.png'
             self.layout_cornerne = themes_path ..
-                                       "default/layouts/cornernew.png"
+                                       'default/layouts/cornernew.png'
             self.layout_cornersw = themes_path ..
-                                       "default/layouts/cornersww.png"
+                                       'default/layouts/cornersww.png'
             self.layout_cornerse = themes_path ..
-                                       "default/layouts/cornersew.png"
+                                       'default/layouts/cornersew.png'
 
         else
             self.titlebar_floating_button_normal_inactive =
-                themes_path .. "default/titlebar/floating_focus_inactive.png"
+                themes_path .. 'default/titlebar/floating_focus_inactive.png'
             self.titlebar_floating_button_focus_inactive =
-                themes_path .. "default/titlebar/floating_focus_inactive.png"
+                themes_path .. 'default/titlebar/floating_focus_inactive.png'
             self.titlebar_floating_button_normal_active =
-                themes_path .. "default/titlebar/floating_focus_active.png"
+                themes_path .. 'default/titlebar/floating_focus_active.png'
             self.titlebar_floating_button_focus_active =
-                themes_path .. "default/titlebar/floating_focus_active.png"
+                themes_path .. 'default/titlebar/floating_focus_active.png'
 
-            self.layout_fairh = themes_path .. "default/layouts/fairh.png"
-            self.layout_fairv = themes_path .. "default/layouts/fairv.png"
-            self.layout_floating = themes_path .. "default/layouts/floating.png"
+            self.layout_fairh = themes_path .. 'default/layouts/fairh.png'
+            self.layout_fairv = themes_path .. 'default/layouts/fairv.png'
+            self.layout_floating = themes_path ..
+                                       'default/layouts/floating.png'
             self.layout_magnifier = themes_path ..
-                                        "default/layouts/magnifier.png"
-            self.layout_max = themes_path .. "default/layouts/max.png"
+                                        'default/layouts/magnifier.png'
+            self.layout_max = themes_path .. 'default/layouts/max.png'
             self.layout_fullscreen = themes_path ..
-                                         "default/layouts/fullscreen.png"
+                                         'default/layouts/fullscreen.png'
             self.layout_tilebottom = themes_path ..
-                                         "default/layouts/tilebottom.png"
-            self.layout_tileleft = themes_path .. "default/layouts/tileleft.png"
-            self.layout_tile = themes_path .. "default/layouts/tile.png"
-            self.layout_tiletop = themes_path .. "default/layouts/tiletop.png"
-            self.layout_spiral = themes_path .. "default/layouts/spiral.png"
-            self.layout_dwindle = themes_path .. "default/layouts/dwindle.png"
-            self.layout_cornernw = themes_path .. "default/layouts/cornernw.png"
-            self.layout_cornerne = themes_path .. "default/layouts/cornerne.png"
-            self.layout_cornersw = themes_path .. "default/layouts/cornersw.png"
-            self.layout_cornerse = themes_path .. "default/layouts/cornerse.png"
+                                         'default/layouts/tilebottom.png'
+            self.layout_tileleft = themes_path ..
+                                       'default/layouts/tileleft.png'
+            self.layout_tile = themes_path .. 'default/layouts/tile.png'
+            self.layout_tiletop = themes_path .. 'default/layouts/tiletop.png'
+            self.layout_spiral = themes_path .. 'default/layouts/spiral.png'
+            self.layout_dwindle = themes_path .. 'default/layouts/dwindle.png'
+            self.layout_cornernw = themes_path ..
+                                       'default/layouts/cornernw.png'
+            self.layout_cornerne = themes_path ..
+                                       'default/layouts/cornerne.png'
+            self.layout_cornersw = themes_path ..
+                                       'default/layouts/cornersw.png'
+            self.layout_cornerse = themes_path ..
+                                       'default/layouts/cornerse.png'
 
-            
         end
 
         -- Generate Awesome icon:
         self.awesome_icon = theme_assets.awesome_icon(self.menu_height,
                                                       self.fg_normal,
                                                       self.bg_normal)
-        self.exitmenu_icon = self:exit_icon(self.menu_height * 2, self.menu_height / 2)
+        self.exitmenu_icon = self:exit_icon(self.menu_height * 2,
+                                            self.menu_height / 2)
 
         -- wallpaper
         self.wallpaper = function(s)
@@ -306,14 +315,15 @@ local theme = {
         end
     end,
     exit_icon = function(self, size, radius)
-        bg_color = self.exit_icon_bg_color
-        fg_color = self.exit_icon_fg_color
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color, 2)
+        local bg_color = self.exit_icon_bg_color
+        local fg_color = self.exit_icon_fg_color
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color,
+                                             2)
 
         -- draw content
-        active_color = self.exit_icon_fg_color
+        local active_color = self.exit_icon_fg_color
         cr:set_source(gears.color(active_color))
-        local width = radius/4
+        local width = radius / 4
         local height = radius
         local x = (size - width) / 2
         local y = (size - height) / 2
@@ -325,13 +335,14 @@ local theme = {
         return img
     end,
     close_button = function(self, size, radius, hover, active)
-        bg_color = self.close_button_bg_color
+        local bg_color = self.close_button_bg_color
+        local fg_color
         if hover then
             fg_color = self.close_button_fg_color
         else
             fg_color = self.close_button_bg_color
         end
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
 
         -- draw content
         if active or hover then
@@ -351,15 +362,17 @@ local theme = {
         return img
     end,
     maximized_button = function(self, size, radius, hover, active)
-        bg_color = self.maximized_button_bg_color
+        local bg_color = self.maximized_button_bg_color
+        local fg_color
         if hover then
             fg_color = self.maximized_button_fg_color
         else
             fg_color = self.maximized_button_bg_color
         end
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
 
         -- draw content
+        local active_color
         if active or hover then
             active_color = self.maximized_button_fg_color
         else
@@ -378,15 +391,17 @@ local theme = {
         return img
     end,
     minimize_button = function(self, size, radius, hover, active)
-        bg_color = self.minimize_button_bg_color
+        local bg_color = self.minimize_button_bg_color
+        local fg_color
         if hover then
             fg_color = self.minimize_button_fg_color
         else
             fg_color = self.minimize_button_bg_color
         end
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
 
         -- draw content
+        local active_color
         if active or hover then
             active_color = self.minimize_button_fg_color
         else
@@ -405,15 +420,17 @@ local theme = {
         return img
     end,
     ontop_button = function(self, size, radius, hover, active)
-        bg_color = self.ontop_button_bg_color
+        local bg_color = self.ontop_button_bg_color
+        local fg_color
         if hover then
             fg_color = self.ontop_button_fg_color
         else
             fg_color = self.ontop_button_bg_color
         end
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
 
         -- draw content
+        local active_color
         if active or hover then
             active_color = self.ontop_button_fg_color
         else
@@ -425,22 +442,25 @@ local theme = {
         local x = (size - width) / 2
         local y = (size - height) / 2
         local shape =
-            gears.shape.transform(gears.shape.isosceles_triangle):translate(x, y)
+            gears.shape.transform(gears.shape.isosceles_triangle):translate(x,
+                                                                            y)
         shape(cr, width, height)
         cr:fill()
 
         return img
     end,
     sticky_button = function(self, size, radius, hover, active)
-        bg_color = self.sticky_button_bg_color
+        local bg_color = self.sticky_button_bg_color
+        local fg_color
         if hover then
             fg_color = self.sticky_button_fg_color
         else
             fg_color = self.sticky_button_bg_color
         end
-        img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
+        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color)
 
         -- draw content
+        local active_color
         if active or hover then
             active_color = self.sticky_button_fg_color
         else
@@ -452,7 +472,8 @@ local theme = {
         local x = (size + width) / 2
         local y = (size + height) / 2
         local shape =
-            gears.shape.transform(gears.shape.isosceles_triangle):translate(x, y)
+            gears.shape.transform(gears.shape.isosceles_triangle):translate(x,
+                                                                            y)
                 :rotate(math.pi)
         shape(cr, width, height)
         cr:fill()

@@ -6,7 +6,7 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:47:22
+-- @Last Modified time: 2020-09-26 18:44:46
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -23,12 +23,12 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local beautiful = require("beautiful")
-local wibox = require("wibox")
+local beautiful = require('beautiful')
+local wibox = require('wibox')
 
-local vicious = require("vicious")
+local vicious = require('vicious')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
@@ -41,14 +41,15 @@ fa_vol_icons[3] = '' -- fa-volume-up
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
-    local vol_icon = util.fa_ico(beautiful.widget_colors.volume, "N/A")
+    local vol_icon = util.fa_ico(beautiful.widget_colors.volume, 'N/A')
     local vol_widget = wibox.widget.textbox()
-    vicious.register(vol_widget, vicious.widgets.volume, function(widget, args)
-        if args[2] == "🔈" then
+    vicious.register(vol_widget, vicious.widgets.volume, function(_, args)
+        local ico, vol
+        if args[2] == '🔈' then
             ico = fa_vol_icons[0]
-            vol = "M"
+            vol = 'M'
         else
-            ico = fa_vol_icons[math.min(math.ceil(args[1] / 33),3)]
+            ico = fa_vol_icons[math.min(math.ceil(args[1] / 33), 3)]
             vol = args[1] .. '%'
         end
         vol_icon:set_markup(util.fa_markup(beautiful.widget_colors.volume, ico))

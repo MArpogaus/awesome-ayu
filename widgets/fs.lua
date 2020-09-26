@@ -23,23 +23,22 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local wibox = require("wibox")
-local beautiful = require("beautiful")
+local wibox = require('wibox')
+local beautiful = require('beautiful')
 
-local vicious = require("vicious")
+local vicious = require('vicious')
 
-local util = require("themes.ayu.util")
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-local fs_icon = ""
+local fs_icon = ''
 
 -- [ module functions ] --------------------------------------------------------
 module.gen_wibar_widget = function()
     local fs_widget = wibox.widget.textbox()
     vicious.register(fs_widget, vicious.widgets.fs,
-                     util.fontfg(beautiful.font,
-                                 beautiful.widget_colors.fs,
+                     util.fontfg(beautiful.font, beautiful.widget_colors.fs,
                                  '${/ used_p}%'), 30)
 
     return util.create_wibar_widget(beautiful.widget_colors.fs, fs_icon,
@@ -57,7 +56,6 @@ module.create_arc_widget = function()
                                   beautiful.widget_colors.desktop_fs.bg,
                                   beautiful.widget_colors.desktop_fs.fg, 0, 100)
 end
-
 
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching

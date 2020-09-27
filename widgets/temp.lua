@@ -6,7 +6,7 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:15:39
+-- @Last Modified time: 2020-09-27 23:26:29
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -36,27 +36,48 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-module.registered_widgets = {}
+
+local registered_widgets = {}
+
+local default_timeout = 7
 
 -- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(thermal_zone)
+module.gen_wibar_widget = function(thermal_zone, timeout)
+    -- define widgets
     local temp_icon = ''
     local temp_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, temp_widget)
+    -- define custom formatting function
+    local function temp_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font, beautiful.widget_colors.temp,
+                   args[1] .. '°C'
+               )
+    end
 
-    vicious.register(temp_widget, vicious.widgets.thermal, util.fontfg(
-                         beautiful.font, beautiful.widget_colors.temp, '$1°C'),
-                     5, thermal_zone)
+    -- register widgets
+    vicious.register(
+        temp_widget, vicious.widgets.thermal, temp_widget_formatter,
+        timeout or default_timeout, thermal_zone
+    )
 
-    return util.create_wibar_widget(beautiful.widget_colors.temp, temp_icon,
-                                    temp_widget)
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, temp_widget)
+
+    -- return wibar widget
+    return util.create_wibar_widget(
+               beautiful.widget_colors.temp, temp_icon, temp_widget
+           )
+end
+
+module.unregister_widgets = function()
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
--- vicious.cache(vicious.widgets.temp)
+vicious.cache(vicious.widgets.thermal)
 
 -- [ return module object ] -----------.----------------------------------------
 return module

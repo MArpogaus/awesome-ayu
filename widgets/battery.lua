@@ -6,7 +6,7 @@
 -- battery widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:14:37
+-- @Last Modified time: 2020-09-27 23:25:53
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -36,7 +36,8 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-module.registered_widgets = {}
+
+local registered_widgets = {}
 
 local fa_bat_icons = {
     '', -- fa-battery-0 (alias) [&#xf244;]
@@ -45,6 +46,8 @@ local fa_bat_icons = {
     '', -- fa-battery-3 (alias) [&#xf241;]
     '' -- fa-battery-4 (alias) [&#xf240;]
 }
+
+local default_timeout = 15
 
 -- [ local functions ] ---------------------------------------------------------
 local function batt_icon(status, perc)
@@ -62,47 +65,90 @@ local function batt_icon(status, perc)
 end
 
 -- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function()
+module.gen_wibar_widget = function(timeout)
+    -- define widgets
     local bat_icon = util.fa_ico(beautiful.widget_colors.bat, 'N/A')
     local bat_widget = wibox.widget.textbox()
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, bat_widget)
-    vicious.register(bat_widget, vicious.widgets.bat, function(_, args)
+
+    -- define custom formatting function
+    local function bat_icon_formatter(_, args)
         local icon = batt_icon(args[1], args[2])
-        bat_icon:set_markup(util.fa_markup(beautiful.widget_colors.bat, icon))
+        return util.fa_markup(beautiful.widget_colors.bat, icon)
+    end
+    local function bat_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font, beautiful.widget_colors.bat, args[2] .. '%'
+               )
+    end
 
-        return util.fontfg(beautiful.font, beautiful.widget_colors.bat,
-                           args[2] .. '%')
-    end, 60, 'BAT0')
+    -- register widgets
+    vicious.register(
+        bat_icon, vicious.widgets.bat, bat_icon_formatter,
+        timeout or default_timeout, 'BAT0'
+    )
+    vicious.register(
+        bat_widget, vicious.widgets.bat, bat_widget_formatter,
+        timeout or default_timeout, 'BAT0'
+    )
 
-    return util.create_wibar_widget(beautiful.widget_colors.bat, bat_icon,
-                                    bat_widget)
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, bat_icon)
+    table.insert(registered_widgets, bat_widget)
+
+    -- return wibar widget
+    return util.create_wibar_widget(
+               beautiful.widget_colors.bat, bat_icon, bat_widget
+           )
 end
 
-module.create_arc_widget = function()
+module.create_arc_widget = function(timeout)
+    -- define widgets
     local bat_icon = util.create_arc_icon(
                          beautiful.widget_colors.desktop_bat.fg,
-                         fa_bat_icons[1], 150)
+                         fa_bat_icons[1], 150
+                     )
     local bat_widget = wibox.widget.textbox()
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, bat_widget)
-    vicious.register(bat_widget, vicious.widgets.bat, function(widget, args)
 
+    -- define custom formatting function
+    local function bat_icon_formatter(widget, args)
         local icon = batt_icon(args[1], args[2])
-        bat_icon:set_markup(util.fa_markup(
-                                beautiful.widget_colors.desktop_bat.fg, icon,
-                                math.floor(150 / 8)))
-
         widget:emit_signal_recursive('widget::value_changed', args[2])
+        return util.fa_markup(
+                   beautiful.widget_colors.desktop_bat.fg, icon,
+                   math.floor(150 / 8)
+               )
+    end
+    local function bat_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font_name .. 8,
+                   beautiful.widget_colors.desktop_bat.fg, args[2] .. '%'
+               )
+    end
 
-        return util.fontfg(beautiful.font_name .. 8,
-                           beautiful.widget_colors.desktop_bat.fg,
-                           args[2] .. '%')
-    end, 60, 'BAT0')
-    return util.create_arc_widget(bat_icon, bat_widget,
-                                  beautiful.widget_colors.desktop_bat.bg,
-                                  beautiful.widget_colors.desktop_bat.fg, 0,
-                                  100)
+    -- register widgets
+    vicious.register(
+        bat_icon, vicious.widgets.bat, bat_icon_formatter,
+        timeout or default_timeout, 'BAT0'
+    )
+    vicious.register(
+        bat_widget, vicious.widgets.bat, bat_widget_formatter,
+        timeout or default_timeout, 'BAT0'
+    )
+
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, bat_icon)
+    table.insert(registered_widgets, bat_widget)
+
+    -- return arc widget
+    return util.create_arc_widget(
+               bat_icon, bat_widget, beautiful.widget_colors.desktop_bat.bg,
+               beautiful.widget_colors.desktop_bat.fg, 0, 100
+           )
+end
+
+module.unregister_widgets = function()
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ sequential code ] ---------------------------------------------------------

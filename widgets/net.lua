@@ -6,7 +6,7 @@
 -- networking widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:15:26
+-- @Last Modified time: 2020-09-27 23:22:49
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -24,23 +24,43 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-module.registered_widgets = {}
+
+local registered_widgets = {}
+
 local net_icons = {down = '', up = ''}
 
+local default_timeout = 3
+
 -- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(color, interface, type)
+module.gen_wibar_widget = function(color, interface, type, timeout)
+    -- define widgets
     local net_icon = net_icons[type]
     local net_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, net_widget)
+    -- define custom formatting function
+    local function net_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font, color,
+                   args['{' .. interface .. ' ' .. type .. '_kb}'] .. 'kb'
+               )
+    end
 
-    vicious.register(net_widget, vicious.widgets.net,
-                     util.fontfg(beautiful.font, color,
-                                 '${' .. interface .. ' ' .. type .. '_kb}kb'),
-                     1)
+    -- register widgets
+    vicious.register(
+        net_widget, vicious.widgets.net, net_widget_formatter,
+        timeout or default_timeout
+    )
 
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, net_widget)
+
+    -- return wibar widget
     return util.create_wibar_widget(color, net_icon, net_widget)
+end
+
+module.unregister_widgets = function()
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ sequential code ] ---------------------------------------------------------

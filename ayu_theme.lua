@@ -95,15 +95,18 @@ local theme = {
 
         self.exit_icon_fg_color = cs.fg
         self.close_button_fg_color = util.reduce_contrast(
-                                         self.close_button_bg_color, 50)
+                                         self.close_button_bg_color, 50
+                                     )
         self.maximized_button_fg_color =
             util.reduce_contrast(self.maximized_button_bg_color, 50)
         self.minimize_button_fg_color =
             util.reduce_contrast(self.minimize_button_bg_color, 50)
         self.ontop_button_fg_color = util.reduce_contrast(
-                                         self.ontop_button_bg_color, 50)
+                                         self.ontop_button_bg_color, 50
+                                     )
         self.sticky_button_fg_color = util.reduce_contrast(
-                                          self.sticky_button_bg_color, 50)
+                                          self.sticky_button_bg_color, 50
+                                      )
 
         self.widget_colors = {
             netdown = cs.colors[2],
@@ -166,11 +169,13 @@ local theme = {
             self:minimize_button(self.button_size, self.button_radius, true)
 
         self.titlebar_maximized_button_normal_active =
-            self:maximized_button(self.button_size, self.button_radius, false,
-                                  true)
+            self:maximized_button(
+                self.button_size, self.button_radius, false, true
+            )
         self.titlebar_maximized_button_focus_active =
-            self:maximized_button(self.button_size, self.button_radius, false,
-                                  true)
+            self:maximized_button(
+                self.button_size, self.button_radius, false, true
+            )
         self.titlebar_maximized_button_normal_inactive =
             self:maximized_button(self.button_size, self.button_radius, false)
         self.titlebar_maximized_button_focus_inactive =
@@ -202,11 +207,13 @@ local theme = {
             self:ontop_button(self.button_size, self.button_radius, true)
 
         self.titlebar_sticky_button_normal_active =
-            self:sticky_button(self.button_size, self.button_radius, false,
-                               true)
+            self:sticky_button(
+                self.button_size, self.button_radius, false, true
+            )
         self.titlebar_sticky_button_focus_active =
-            self:sticky_button(self.button_size, self.button_radius, false,
-                               true)
+            self:sticky_button(
+                self.button_size, self.button_radius, false, true
+            )
         self.titlebar_sticky_button_normal_inactive =
             self:sticky_button(self.button_size, self.button_radius, false)
         self.titlebar_sticky_button_focus_inactive =
@@ -223,9 +230,11 @@ local theme = {
         -- Generate taglist squares:
         local taglist_square_size = 4
         self.taglist_squares_sel = theme_assets.taglist_squares_sel(
-                                       taglist_square_size, self.fg_focus)
+                                       taglist_square_size, self.fg_focus
+                                   )
         self.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
-                                         taglist_square_size, self.fg_normal)
+                                         taglist_square_size, self.fg_normal
+                                     )
         if util.is_dark(cs.bg) then
             self.titlebar_floating_button_normal_inactive =
                 themes_path .. 'default/titlebar/floating_normal_inactive.png'
@@ -301,24 +310,28 @@ local theme = {
         end
 
         -- Generate Awesome icon:
-        self.awesome_icon = theme_assets.awesome_icon(self.menu_height,
-                                                      self.fg_normal,
-                                                      self.bg_normal)
-        self.exitmenu_icon = self:exit_icon(self.menu_height * 2,
-                                            self.menu_height / 2)
+        self.awesome_icon = theme_assets.awesome_icon(
+                                self.menu_height, self.fg_normal,
+                                self.bg_normal
+                            )
+        self.exitmenu_icon = self:exit_icon(
+                                 self.menu_height * 2, self.menu_height / 2
+                             )
 
         -- wallpaper
         self.wallpaper = function(s)
-            return gears.surface.load_from_shape(s.geometry.width,
-                                                 s.geometry.height,
-                                                 gears.shape.rectangle, cs.bg)
+            return gears.surface.load_from_shape(
+                       s.geometry.width, s.geometry.height,
+                       gears.shape.rectangle, cs.bg
+                   )
         end
     end,
     exit_icon = function(self, size, radius)
         local bg_color = self.exit_icon_bg_color
         local fg_color = self.exit_icon_fg_color
-        local img, cr = util.titlebar_button(size, radius, bg_color, fg_color,
-                                             2)
+        local img, cr = util.titlebar_button(
+                            size, radius, bg_color, fg_color, 2
+                        )
 
         -- draw content
         local active_color = self.exit_icon_fg_color
@@ -327,8 +340,9 @@ local theme = {
         local height = radius
         local x = (size - width) / 2
         local y = (size - height) / 2
-        local shape = gears.shape.transform(gears.shape.rectangle):translate(x,
-                                                                             y)
+        local shape = gears.shape.transform(gears.shape.rectangle):translate(
+                          x, y
+                      )
         shape(cr, width, height)
         cr:fill()
 
@@ -352,9 +366,9 @@ local theme = {
             local thickness = width / 4
             local x = size / 2
             local y = (size - height - width / 3) / 2
-            local shape = gears.shape.transform(gears.shape.cross):translate(x,
-                                                                             y)
-                              :rotate(math.pi / 4)
+            local shape = gears.shape.transform(gears.shape.cross):translate(
+                              x, y
+                          ):rotate(math.pi / 4)
             shape(cr, width, height, thickness)
             cr:fill()
         end
@@ -412,8 +426,9 @@ local theme = {
         local height = radius / 4
         local x = (size - width) / 2
         local y = (size - height) / 2
-        local shape = gears.shape.transform(gears.shape.rectangle):translate(x,
-                                                                             y)
+        local shape = gears.shape.transform(gears.shape.rectangle):translate(
+                          x, y
+                      )
         shape(cr, width, height)
         cr:fill()
 
@@ -442,8 +457,9 @@ local theme = {
         local x = (size - width) / 2
         local y = (size - height) / 2
         local shape =
-            gears.shape.transform(gears.shape.isosceles_triangle):translate(x,
-                                                                            y)
+            gears.shape.transform(gears.shape.isosceles_triangle):translate(
+                x, y
+            )
         shape(cr, width, height)
         cr:fill()
 
@@ -472,9 +488,9 @@ local theme = {
         local x = (size + width) / 2
         local y = (size + height) / 2
         local shape =
-            gears.shape.transform(gears.shape.isosceles_triangle):translate(x,
-                                                                            y)
-                :rotate(math.pi)
+            gears.shape.transform(gears.shape.isosceles_triangle):translate(
+                x, y
+            ):rotate(math.pi)
         shape(cr, width, height)
         cr:fill()
 

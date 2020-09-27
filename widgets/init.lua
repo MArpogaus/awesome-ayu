@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:25:28
+-- @Last Modified time: 2020-09-27 23:40:46
 -- @Changes: 
 -- 		- newly written
 -- 		- ...
@@ -40,11 +40,8 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local gears = require('gears')
-
 local battery = require('themes.ayu.widgets.battery')
 local cpu = require('themes.ayu.widgets.cpu')
-local date_time = require('themes.ayu.widgets.date_time')
 local fs = require('themes.ayu.widgets.fs')
 local memory = require('themes.ayu.widgets.memory')
 local net = require('themes.ayu.widgets.net')
@@ -56,13 +53,20 @@ local weather = require('themes.ayu.widgets.weather')
 local module = {}
 
 -- [ module functions ] --------------------------------------------------------
-module.get_registered_widgets = function()
-    return gears.table.join(date_time.registered_widgets,
-                            weather.registered_widgets, fs.registered_widgets,
-                            cpu.registered_widgets, temp.registered_widgets,
-                            battery.registered_widgets,
-                            volume.registered_widgets, net.registered_widgets,
-                            memory.registered_widgets)
+module.unregister_widgets = function()
+    local unregister_widgets_fns = {
+        weather.unregister_widgets,
+        fs.unregister_widgets,
+        cpu.unregister_widgets,
+        temp.unregister_widgets,
+        battery.unregister_widgets,
+        volume.unregister_widgets,
+        net.unregister_widgets,
+        memory.unregister_widgets
+    }
+
+    for _, uw in pairs(unregister_widgets_fns) do uw() end
+
 end
 
 -- [ return module object ] -----------.----------------------------------------

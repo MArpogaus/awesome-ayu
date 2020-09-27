@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:14:49
+-- @Last Modified time: 2020-09-27 23:25:12
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -32,24 +32,41 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-module.registered_widgets = {}
+
+local registered_widgets = {}
+
+local default_timeout = 1
 
 -- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function()
+module.gen_wibar_widget = function(timeout)
+    -- define widgets
     local cpu_icon = ''
     local cpu_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, cpu_widget)
+    -- define custom formatting function
+    local function cpu_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font, beautiful.widget_colors.cpu, args[1] .. '%'
+               )
+    end
 
-    vicious.register(cpu_widget, vicious.widgets.cpu, util.fontfg(
-                         beautiful.font, beautiful.widget_colors.cpu,
-                         '$1' .. '%'), 1)
-    return util.create_wibar_widget(beautiful.widget_colors.cpu, cpu_icon,
-                                    cpu_widget)
+    -- register widgets
+    vicious.register(
+        cpu_widget, vicious.widgets.cpu, cpu_widget_formatter,
+        timeout or default_timeout
+    )
+
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, cpu_widget)
+
+    -- return wibar widget
+    return util.create_wibar_widget(
+               beautiful.widget_colors.cpu, cpu_icon, cpu_widget
+           )
 end
 
-module.create_arc_widget = function()
+module.create_arc_widget = function(timeout)
+    -- define widgets
     local step_width = 8
     local step_spacing = 4
     local cpu_graph = wibox.widget {
@@ -62,36 +79,58 @@ module.create_arc_widget = function()
         background_color = '#00000000',
         widget = wibox.widget.graph
     }
-    local cpu_graph_widget = wibox.widget {
+    local cpu_icon = wibox.widget {
         nil,
         cpu_graph,
         nil,
         expand = 'outside',
         layout = wibox.layout.align.horizontal
     }
-
     local cpu_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, cpu_widget)
-
-    vicious.register(cpu_widget, vicious.widgets.cpu, function(_, args)
+    -- define custom formatting function
+    local function cpu_icon_formatter(widget, args)
         local num_cpus = #args - 1
         local width = (num_cpus + 1) * (step_width + step_spacing)
+
+        widget:emit_signal_recursive('widget::value_changed', args[1])
 
         cpu_graph:clear()
         cpu_graph:set_width(width)
         for c = 2, #args do cpu_graph:add_value(args[c] + 1) end
         cpu_graph:add_value(0)
-        return util.fontfg(beautiful.font_name .. 8,
-                           beautiful.widget_colors.desktop_cpu.fg,
-                           args[1] .. '%')
-    end, 1)
+    end
+    local function cpu_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font_name .. 8,
+                   beautiful.widget_colors.desktop_cpu.fg, args[1] .. '%'
+               )
+    end
 
-    return util.create_arc_widget(cpu_graph_widget, cpu_widget,
-                                  beautiful.widget_colors.desktop_cpu.bg,
-                                  beautiful.widget_colors.desktop_cpu.fg, 0,
-                                  100)
+    -- register widgets
+    vicious.register(
+        cpu_icon, vicious.widgets.cpu, cpu_icon_formatter,
+        timeout or default_timeout
+    )
+    vicious.register(
+        cpu_widget, vicious.widgets.cpu, cpu_widget_formatter,
+        timeout or default_timeout
+    )
+
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, cpu_icon)
+    table.insert(registered_widgets, cpu_widget)
+
+    -- return arc widget
+    return util.create_arc_widget(
+               cpu_icon, cpu_widget, beautiful.widget_colors.desktop_cpu.bg,
+               beautiful.widget_colors.desktop_cpu.fg, 0, 100
+           )
+end
+
+module.unregister_widgets = function()
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ sequential code ] ---------------------------------------------------------

@@ -6,7 +6,7 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:14:23
+-- @Last Modified time: 2020-09-27 23:41:14
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -32,41 +32,73 @@ local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
-module.registered_widgets = {}
+
+local registered_widgets = {}
+
 local mem_icon = ''
 
+local default_timeout = 7
+
 -- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function()
+module.gen_wibar_widget = function(timeout)
+    -- define widgets
     local mem_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, mem_widget)
+    -- define custom formatting function
+    local function mem_widget_formatter(_, args)
+        return util.fontfg(
+                   beautiful.font, beautiful.widget_colors.memory,
+                   args[1] .. '%'
+               )
+    end
 
-    vicious.register(mem_widget, vicious.widgets.mem, util.fontfg(
-                         beautiful.font, beautiful.widget_colors.memory, '$1%'),
-                     1)
+    -- register widgets
+    vicious.register(
+        mem_widget, vicious.widgets.mem, mem_widget_formatter,
+        timeout or default_timeout
+    )
 
-    return util.create_wibar_widget(beautiful.widget_colors.memory, mem_icon,
-                                    mem_widget)
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, mem_widget)
+
+    -- return wibar widget
+    return util.create_wibar_widget(
+               beautiful.widget_colors.memory, mem_icon, mem_widget
+           )
 end
 
-module.create_arc_widget = function()
+module.create_arc_widget = function(timeout)
+    -- define widgets
     local mem_widget = wibox.widget.textbox()
 
-    -- some bookkeeping to unregister when cs is changed
-    table.insert(module.registered_widgets, mem_widget)
-
-    vicious.register(mem_widget, vicious.widgets.mem, function(widget, args)
+    -- define custom formatting function
+    local function mem_widget_formatter(widget, args)
         widget:emit_signal_recursive('widget::value_changed', args[1])
-        return util.fontfg(beautiful.font_name .. 8,
-                           beautiful.widget_colors.desktop_mem.fg,
-                           args[1] .. '%')
-    end, 1)
+        return util.fontfg(
+                   beautiful.font_name .. 8,
+                   beautiful.widget_colors.desktop_mem.fg, args[1] .. '%'
+               )
+    end
 
-    return util.create_arc_widget(mem_icon, mem_widget,
-                                  beautiful.widget_colors.desktop_mem.bg,
-                                  beautiful.widget_colors.desktop_mem.fg, 0,
-                                  100)
+    -- register widgets
+    vicious.register(
+        mem_widget, vicious.widgets.mem, mem_widget_formatter,
+        timeout or default_timeout
+    )
+
+    -- bookkeeping to unregister widgets
+    table.insert(registered_widgets, mem_widget)
+
+    -- return arc widget
+    return util.create_arc_widget(
+               mem_icon, mem_widget, beautiful.widget_colors.desktop_mem.bg,
+               beautiful.widget_colors.desktop_mem.fg, 0, 100
+           )
+end
+
+module.unregister_widgets = function()
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ sequential code ] ---------------------------------------------------------

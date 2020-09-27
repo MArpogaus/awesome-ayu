@@ -115,18 +115,22 @@ local common = {
 }
 
 local module = {
-    day = my_table.join(common, {
-        ['clear sky'] = '&#60800;',
-        ['calm'] = '&#60800;',
-        ['few clouds'] = '&#60801;',
-        ['scattered clouds'] = '&#60802;'
-    }),
-    night = my_table.join(common, {
-        ['clear sky'] = '&#61800;',
-        ['calm'] = '&#61800;',
-        ['few clouds'] = '&#61801;',
-        ['scattered clouds'] = '&#61802;'
-    })
+    day = my_table.join(
+        common, {
+            ['clear sky'] = '&#60800;',
+            ['calm'] = '&#60800;',
+            ['few clouds'] = '&#60801;',
+            ['scattered clouds'] = '&#60802;'
+        }
+    ),
+    night = my_table.join(
+        common, {
+            ['clear sky'] = '&#61800;',
+            ['calm'] = '&#61800;',
+            ['few clouds'] = '&#61801;',
+            ['scattered clouds'] = '&#61802;'
+        }
+    )
 }
 
 return module

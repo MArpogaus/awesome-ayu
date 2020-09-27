@@ -79,8 +79,9 @@ module.reduce_contrast = function(color, ratio)
 end
 
 -- create titlebar_button ------------------------------------------------------
-module.titlebar_button = function(size, radius, bg_color, fg_color,
-                                  border_width)
+module.titlebar_button = function(
+    size, radius, bg_color, fg_color, border_width
+)
     border_width = border_width or 1
     -- Create a surface
     local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
@@ -162,8 +163,13 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget = function(widget_to_be_boxed, bg_color, radius,
-                                      inner_margin, outer_margin)
+module.create_boxed_widget = function(
+    widget_to_be_boxed,
+    bg_color,
+    radius,
+    inner_margin,
+    outer_margin
+)
     radius = radius or 15
     inner_margin = inner_margin or 30
     outer_margin = outer_margin or 30
@@ -215,8 +221,9 @@ end
 module.create_arc_icon = function(fg, icon, size)
     return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
 end
-module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
-                                    thickness)
+module.create_arc_widget = function(
+    icon, widget, bg, fg, min, max, size, thickness
+)
     size = size or beautiful.desktop_widgets_arc_size
     local icon_widget
     if type(icon) == 'table' then
@@ -255,15 +262,17 @@ module.create_arc_widget = function(icon, widget, bg, fg, min, max, size,
         start_angle = 0,
         widget = wibox.container.arcchart
     }
-    arc_container:connect_signal('widget::value_changed', function(_, usage)
-        arc_container.value = usage
-    end)
+    arc_container:connect_signal(
+        'widget::value_changed',
+        function(_, usage) arc_container.value = usage end
+    )
     return arc_container
 end
 
 module.fontfg = function(font, fg, text)
-    return string.format('<span font=\'%s\' foreground=\'%s\'>%s</span>', font,
-                         fg, text)
+    return string.format(
+               '<span font=\'%s\' foreground=\'%s\'>%s</span>', font, fg, text
+           )
 end
 
 return module

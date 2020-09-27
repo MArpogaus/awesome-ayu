@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:01:02
+-- @Last Modified time: 2020-09-27 23:54:50
 -- @Changes: 
 --      - ported to vicious
 --      - removed mpd widget
@@ -73,7 +73,7 @@ theme.at_screen_connect = function(s)
 
     if s.desktop_popup then
         s.desktop_popup.widget:reset()
-        s.mytopwibar.desktop_popup = nil
+        s.desktop_popup = nil
     end
     if s.mytopwibar then
         s.mytopwibar.widget:reset()
@@ -96,8 +96,10 @@ theme.at_screen_connect = function(s)
         s.mytaglist = nil
     else
         -- Each screen has its own tag table.
-        awful.tag(awful.util.tagnames, s,
-                  awful.layout.default[s.index] or awful.layout.layouts[1])
+        awful.tag(
+            awful.util.tagnames, s,
+            awful.layout.default[s.index] or awful.layout.layouts[1]
+        )
     end
 
     -- If wallpaper is a function, call it with the screen
@@ -111,15 +113,14 @@ theme.at_screen_connect = function(s)
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-                              awful.button({}, 1,
-                                           function()
-            awful.layout.inc(1)
-        end), awful.button({}, 3, function() awful.layout.inc(-1) end),
-                              awful.button({}, 4,
-                                           function()
-            awful.layout.inc(1)
-        end), awful.button({}, 5, function() awful.layout.inc(-1) end)))
+    s.mylayoutbox:buttons(
+        gears.table.join(
+            awful.button({}, 1, function() awful.layout.inc(1) end),
+            awful.button({}, 3, function() awful.layout.inc(-1) end),
+            awful.button({}, 4, function() awful.layout.inc(1) end),
+            awful.button({}, 5, function() awful.layout.inc(-1) end)
+        )
+    )
 
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
@@ -167,13 +168,15 @@ theme.at_screen_connect = function(s)
     }
 
     -- Create the wibox
-    s.mytopwibar = awful.wibar({
-        position = 'top',
-        screen = s,
-        height = theme.top_bar_height,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal
-    })
+    s.mytopwibar = awful.wibar(
+                       {
+            position = 'top',
+            screen = s,
+            height = theme.top_bar_height,
+            bg = theme.bg_normal,
+            fg = theme.fg_normal
+        }
+                   )
 
     -- Add widgets to the wibox
     local myexitmenu = nil
@@ -199,10 +202,12 @@ theme.at_screen_connect = function(s)
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            wibox_widgets.net(theme.widget_colors.netdown,
-                              config.net_interface, 'down'),
-            wibox_widgets.net(theme.widget_colors.netup, config.net_interface,
-                              'up'),
+            wibox_widgets.net(
+                theme.widget_colors.netdown, config.net_interface, 'down'
+            ),
+            wibox_widgets.net(
+                theme.widget_colors.netup, config.net_interface, 'up'
+            ),
             wibox_widgets.vol(),
             wibox_widgets.mem(),
             wibox_widgets.cpu(),
@@ -216,13 +221,15 @@ theme.at_screen_connect = function(s)
     }
 
     -- Create the bottom wibox
-    s.mybottomwibar = awful.wibar({
-        position = 'bottom',
-        screen = s,
-        height = theme.bottom_bar_height,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal
-    })
+    s.mybottomwibar = awful.wibar(
+                          {
+            position = 'bottom',
+            screen = s,
+            height = theme.bottom_bar_height,
+            bg = theme.bg_normal,
+            fg = theme.fg_normal
+        }
+                      )
 
     -- Add widgets to the bottom wibox
     s.systray = wibox.widget.systray()

@@ -6,7 +6,7 @@
 -- networking widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:22:49
+-- @Last Modified time: 2020-09-28 17:19:49
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -15,57 +15,70 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local wibox = require('wibox')
 local beautiful = require('beautiful')
 
 local vicious = require('vicious')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
-
-local registered_widgets = {}
+local widget_defs = {}
 
 local net_icons = {down = '', up = ''}
 
 local default_timeout = 3
 
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(color, interface, type, timeout)
-    -- define widgets
-    local net_icon = net_icons[type]
-    local net_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function net_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font, color,
-                   args['{' .. interface .. ' ' .. type .. '_kb}'] .. 'kb'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        net_widget, vicious.widgets.net, net_widget_formatter,
-        timeout or default_timeout
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, net_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(color, net_icon, net_widget)
-end
-
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
-
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
--- vicious.cache(vicious.widgets.net)
+vicious.cache(vicious.widgets.net)
+
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function(wargs)
+    local color, interface, value = wargs.color, wargs.interface, wargs.value
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = color},
+        widgets = {
+            icon = {widget = net_icons[value]},
+            widget = {
+                wtype = vicious.widgets.net,
+                format = function(_, args)
+                    return util.fontfg(
+                               beautiful.font, color, args['{' .. interface ..
+                                   ' ' .. value .. '_kb}'] .. 'kb'
+                           )
+                end
+            }
+        }
+    }
+end
+widget_defs.arc = function(wargs)
+    local color_bg, color_fg, interface, value = wargs.color_bg,
+                                                 wargs.color_fg,
+                                                 wargs.interface, wargs.value
+
+    return {
+        default_timeout = default_timeout,
+        container_args = {bg = color_bg, fg = color_fg},
+        widgets = {
+            icon = {widget = net_icons[value]},
+            widget = {
+                wtype = vicious.widgets.net,
+                format = function(widget, args)
+                    widget:emit_signal_recursive(
+                        'widget::value_changed',
+                        args['{' .. interface .. ' ' .. value .. '_kb}']
+                    )
+                    return util.fontfg(
+                               beautiful.font_name .. 8, color_fg, args['{' ..
+                                   interface .. ' ' .. value .. '_kb}'] .. '%'
+                           )
+                end
+            }
+        }
+    }
+end
 
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

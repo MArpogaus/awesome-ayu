@@ -6,7 +6,7 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:42:19
+-- @Last Modified time: 2020-09-28 17:20:41
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -36,144 +36,36 @@ local vicious = require('vicious')
 local vicious_contrib = require('vicious.contrib')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
-
-local registered_widgets = {}
+local widget_defs = {}
 
 local default_timeout = 1800
 
 -- [ local functions ] ---------------------------------------------------------
-local markup_color_size = function(size, color, text)
+local function markup_color_size(size, color, text)
     return util.fontfg(beautiful.font_name .. size, color, text)
 end
 
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(city_id, app_id, timeout)
+local function weather_widget_container(args)
     -- define widgets
-    local weather_icon = util.owf_ico(beautiful.widget_colors.weather)
-    local weather_widget = wibox.widget.textbox()
+    local font_size = args.font_size
+    local color = args.color
+    local spacing = args.spacing
 
-    -- define custom formatting function
-    local function weather_icon_formatter(_, args)
-        local weather = args['{weather}']
-        local sunrise = args['{sunrise}']
-        local sunset = args['{sunset}']
-
-        return util.owf_markup(
-                   beautiful.widget_colors.weather, weather, sunrise, sunset
-               )
-    end
-    local function weather_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font, beautiful.widget_colors.weather,
-                   args['{temp c}'] .. '°C'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        weather_icon, vicious_contrib.openweather, weather_icon_formatter,
-        timeout or default_timeout, {city_id = city_id, app_id = app_id}
-    )
-    vicious.register(
-        weather_widget, vicious_contrib.openweather, weather_widget_formatter,
-        timeout or default_timeout, {city_id = city_id, app_id = app_id}
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, weather_icon)
-    table.insert(registered_widgets, weather_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(
-               beautiful.widget_colors.weather, weather_icon, weather_widget
-           )
-end
-
-module.gen_desktop_widget = function(city_id, app_id, timeout)
-    -- define widgets
-    local font_size = beautiful.desktop_widgets_weather_font_size
-
-    local font_size_temp = 0.8 * font_size
-    local font_size_range = 0.2 * font_size
-    local font_size_descr = 0.3 * font_size
-
-    local weather_icon = wibox.widget.textbox()
-    local weather_widget = wibox.widget.textbox()
-    local weather_temp_min = wibox.widget.textbox()
-    local weather_temp_max = wibox.widget.textbox()
-    local weather_descr = wibox.widget.textbox()
+    local weather_icon = args.weather_icon
+    local weather_widget = args.weather_widget
+    local weather_temp_min = args.weather_temp_min
+    local weather_temp_max = args.weather_temp_max
+    local weather_descr = args.weather_descr
     local weather_unit = wibox.widget.textbox(
-                             markup_color_size(
-                                 font_size, beautiful.fg_normal, '°C'
-                             )
+                             markup_color_size(font_size, color, '°C')
                          )
+
     weather_widget.align = 'center'
     weather_descr.align = 'center'
     weather_unit.align = 'center'
-
-    -- define custom formatting function
-    local function weather_icon_formatter(_, args)
-        local weather = args['{weather}']
-        local sunrise = args['{sunrise}']
-        local sunset = args['{sunset}']
-
-        return util.owf_markup(
-                   beautiful.fg_normal, weather, sunrise, sunset, font_size
-               )
-    end
-    local function weather_widget_formatter(_, args)
-        local temp = args['{temp c}']
-        return markup_color_size(font_size_temp, beautiful.fg_normal, temp)
-    end
-    local function weather_temp_min_formatter(_, args)
-        local temp_min = math.floor(tonumber(args['{temp min c}']) or 0)
-        return markup_color_size(
-                   font_size_range, beautiful.fg_normal, temp_min .. ' / '
-               )
-    end
-    local function weather_temp_max_formatter(_, args)
-        local temp_max = math.ceil(tonumber(args['{temp max c}']) or 0)
-        return
-            markup_color_size(font_size_range, beautiful.fg_normal, temp_max)
-    end
-    local function weather_descr_formatter(_, args)
-        local weather = args['{weather}']
-        return markup_color_size(font_size_descr, beautiful.fg_normal, weather)
-    end
-
-    -- register widgets
-    vicious.register(
-        weather_icon, vicious_contrib.openweather, weather_icon_formatter,
-        timeout or default_timeout, {city_id = city_id, app_id = app_id}
-    )
-    vicious.register(
-        weather_widget, vicious_contrib.openweather, weather_widget_formatter,
-        timeout or default_timeout, {city_id = city_id, app_id = app_id}
-    )
-    vicious.register(
-        weather_temp_min, vicious_contrib.openweather,
-        weather_temp_min_formatter, timeout or default_timeout,
-        {city_id = city_id, app_id = app_id}
-    )
-    vicious.register(
-        weather_temp_max, vicious_contrib.openweather,
-        weather_temp_max_formatter, timeout or default_timeout,
-        {city_id = city_id, app_id = app_id}
-    )
-    vicious.register(
-        weather_descr, vicious_contrib.openweather, weather_descr_formatter,
-        timeout or default_timeout, {city_id = city_id, app_id = app_id}
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, weather_icon)
-    table.insert(registered_widgets, weather_widget)
-    table.insert(registered_widgets, weather_temp_min)
-    table.insert(registered_widgets, weather_temp_max)
-    table.insert(registered_widgets, weather_descr)
 
     -- define widget layout
     local weather_box = wibox.widget {
@@ -208,7 +100,7 @@ module.gen_desktop_widget = function(city_id, app_id, timeout)
             layout = wibox.layout.align.horizontal
         },
         weather_descr,
-        spacing = font_size_descr / 2,
+        spacing = spacing,
         layout = wibox.layout.fixed.vertical
     }
 
@@ -228,14 +120,126 @@ module.gen_desktop_widget = function(city_id, app_id, timeout)
     }, weather_widget
 end
 
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
-
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious_contrib.openweather)
 
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function(wargs)
+    local city_id, app_id = wargs.city_id, wargs.app_id
+
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = beautiful.widget_colors.weather},
+        widgets = {
+            icon = {
+                widget = util.owf_ico(beautiful.widget_colors.weather),
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local weather = args['{weather}']
+                    local sunrise = args['{sunrise}']
+                    local sunset = args['{sunset}']
+
+                    return util.owf_markup(
+                               beautiful.widget_colors.weather, weather,
+                               sunrise, sunset
+                           )
+                end
+            },
+            widget = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    return util.fontfg(
+                               beautiful.font, beautiful.widget_colors.weather,
+                               args['{temp c}'] .. '°C'
+                           )
+                end
+            }
+        }
+    }
+end
+widget_defs.desktop = function(wargs)
+    local city_id, app_id = wargs.city_id, wargs.app_id
+
+    local font_size = beautiful.desktop_widgets_weather_font_size
+
+    local font_size_temp = 0.8 * font_size
+    local font_size_range = 0.2 * font_size
+    local font_size_descr = 0.3 * font_size
+
+    return {
+        default_timeout = default_timeout,
+        widget_container = weather_widget_container,
+        container_args = {
+            font_size = font_size,
+            color = beautiful.fg_normal,
+            spacing = font_size_descr / 2
+        },
+        widgets = {
+            weather_icon = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local weather = args['{weather}']
+                    local sunrise = args['{sunrise}']
+                    local sunset = args['{sunset}']
+
+                    return util.owf_markup(
+                               beautiful.fg_normal, weather, sunrise, sunset,
+                               font_size
+                           )
+                end
+            },
+            weather_widget = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local temp = args['{temp c}']
+                    return markup_color_size(
+                               font_size_temp, beautiful.fg_normal, temp
+                           )
+                end
+            },
+            weather_temp_min = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local temp_min = math.floor(
+                                         tonumber(args['{temp min c}']) or 0
+                                     )
+                    return markup_color_size(
+                               font_size_range, beautiful.fg_normal,
+                               temp_min .. ' / '
+                           )
+                end
+            },
+            weather_temp_max = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local temp_max = math.ceil(
+                                         tonumber(args['{temp max c}']) or 0
+                                     )
+                    return markup_color_size(
+                               font_size_range, beautiful.fg_normal, temp_max
+                           )
+                end
+            },
+            weather_descr = {
+                wtype = vicious_contrib.openweather,
+                warg = {city_id = city_id, app_id = app_id},
+                format = function(_, args)
+                    local weather = args['{weather}']
+                    return markup_color_size(
+                               font_size_descr, beautiful.fg_normal, weather
+                           )
+                end
+            }
+        }
+    }
+end
+
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

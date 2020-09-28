@@ -6,7 +6,7 @@
 -- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:24:15
+-- @Last Modified time: 2020-09-28 17:18:52
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -23,90 +23,71 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local wibox = require('wibox')
 local beautiful = require('beautiful')
 
 local vicious = require('vicious')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
-
-local registered_widgets = {}
+local widget_defs = {}
 
 local fs_icon = ''
 local default_timeout = 60
 local default_mount_point = '{/ used_p}'
 
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(timeout, mount_point)
-    -- define widgets
-    local fs_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function fs_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font, beautiful.widget_colors.fs,
-                   args[mount_point or default_mount_point] .. '%'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        fs_widget, vicious.widgets.fs, fs_widget_formatter,
-        timeout or default_timeout
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, fs_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(
-               beautiful.widget_colors.fs, fs_icon, fs_widget
-           )
-end
-
-module.create_arc_widget = function(timeout, mount_point)
-    -- define widgets
-    local fs_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function fs_widget_formatter(widget, args)
-        widget:emit_signal_recursive(
-            'widget::value_changed', args[mount_point or default_mount_point]
-        )
-        return util.fontfg(
-                   beautiful.font_name .. 8,
-                   beautiful.widget_colors.desktop_fs.fg,
-                   args[mount_point or default_mount_point] .. '%'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        fs_widget, vicious.widgets.fs, fs_widget_formatter,
-        timeout or default_timeout
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, fs_widget)
-
-    -- return arc widget
-    return util.create_arc_widget(
-               fs_icon, fs_widget, beautiful.widget_colors.desktop_fs.bg,
-               beautiful.widget_colors.desktop_fs.fg, 0, 100
-           )
-end
-
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
-
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.fs)
 
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function()
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = beautiful.widget_colors.fs},
+        widgets = {
+            icon = {widget = fs_icon},
+            widget = {
+                wtype = vicious.widgets.fs,
+                format = function(_, args)
+                    return util.fontfg(
+                               beautiful.font, beautiful.widget_colors.fs,
+                               args[args.mount_point or default_mount_point] ..
+                                   '%'
+                           )
+                end
+            }
+        }
+    }
+end
+widget_defs.arc = function()
+    return {
+        default_timeout = default_timeout,
+        container_args = {
+            bg = beautiful.widget_colors.desktop_fs.bg,
+            fg = beautiful.widget_colors.desktop_fs.fg
+        },
+        widgets = {
+            icon = {widget = fs_icon},
+            widget = {
+                wtype = vicious.widgets.fs,
+                format = function(widget, args)
+                    widget:emit_signal_recursive(
+                        'widget::value_changed',
+                        args[args.mount_point or default_mount_point]
+                    )
+                    return util.fontfg(
+                               beautiful.font_name .. 8,
+                               beautiful.widget_colors.desktop_fs.fg,
+                               args[args.mount_point or default_mount_point] ..
+                                   '%'
+                           )
+                end
+            }
+        }
+    }
+end
+
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:25:12
+-- @Last Modified time: 2020-09-28 17:16:56
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -29,46 +29,40 @@ local beautiful = require('beautiful')
 local vicious = require('vicious')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
-
-local registered_widgets = {}
+local widget_defs = {}
 
 local default_timeout = 1
 
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(timeout)
-    -- define widgets
-    local cpu_icon = ''
-    local cpu_widget = wibox.widget.textbox()
+local step_width = 8
+local step_spacing = 4
 
-    -- define custom formatting function
-    local function cpu_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font, beautiful.widget_colors.cpu, args[1] .. '%'
-               )
-    end
+-- [ sequential code ] ---------------------------------------------------------
+-- enable caching
+vicious.cache(vicious.widgets.cpu)
 
-    -- register widgets
-    vicious.register(
-        cpu_widget, vicious.widgets.cpu, cpu_widget_formatter,
-        timeout or default_timeout
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, cpu_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(
-               beautiful.widget_colors.cpu, cpu_icon, cpu_widget
-           )
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function()
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = beautiful.widget_colors.cpu},
+        widgets = {
+            icon = {widget = ''},
+            widget = {
+                wtype = vicious.widgets.cpu,
+                format = function(_, args)
+                    return util.fontfg(
+                               beautiful.font, beautiful.widget_colors.cpu,
+                               args[1] .. '%'
+                           )
+                end
+            }
+        }
+    }
 end
-
-module.create_arc_widget = function(timeout)
-    -- define widgets
-    local step_width = 8
-    local step_spacing = 4
+widget_defs.arc = function()
     local cpu_graph = wibox.widget {
         max_value = 100,
         min_value = 0,
@@ -79,63 +73,50 @@ module.create_arc_widget = function(timeout)
         background_color = '#00000000',
         widget = wibox.widget.graph
     }
-    local cpu_icon = wibox.widget {
-        nil,
-        cpu_graph,
-        nil,
-        expand = 'outside',
-        layout = wibox.layout.align.horizontal
+    return {
+        default_timeout = default_timeout,
+        container_args = {
+            bg = beautiful.widget_colors.desktop_cpu.bg,
+            fg = beautiful.widget_colors.desktop_cpu.fg
+        },
+        widgets = {
+            icon = {
+                widget = wibox.widget {
+                    nil,
+                    cpu_graph,
+                    nil,
+                    expand = 'outside',
+                    layout = wibox.layout.align.horizontal
+                },
+                wtype = vicious.widgets.cpu,
+                format = function(_, args)
+                    local num_cpus = #args - 1
+                    local width = (num_cpus + 1) * (step_width + step_spacing)
+
+                    cpu_graph:clear()
+                    cpu_graph:set_width(width)
+                    for c = 2, #args do
+                        cpu_graph:add_value(args[c] + 1)
+                    end
+                    cpu_graph:add_value(0)
+                end
+            },
+            widget = {
+                wtype = vicious.widgets.cpu,
+                format = function(widget, args)
+                    widget:emit_signal_recursive(
+                        'widget::value_changed', args[1]
+                    )
+                    return util.fontfg(
+                               beautiful.font_name .. 8,
+                               beautiful.widget_colors.desktop_cpu.fg,
+                               args[1] .. '%'
+                           )
+                end
+            }
+        }
     }
-    local cpu_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function cpu_icon_formatter(widget, args)
-        local num_cpus = #args - 1
-        local width = (num_cpus + 1) * (step_width + step_spacing)
-
-        widget:emit_signal_recursive('widget::value_changed', args[1])
-
-        cpu_graph:clear()
-        cpu_graph:set_width(width)
-        for c = 2, #args do cpu_graph:add_value(args[c] + 1) end
-        cpu_graph:add_value(0)
-    end
-    local function cpu_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font_name .. 8,
-                   beautiful.widget_colors.desktop_cpu.fg, args[1] .. '%'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        cpu_icon, vicious.widgets.cpu, cpu_icon_formatter,
-        timeout or default_timeout
-    )
-    vicious.register(
-        cpu_widget, vicious.widgets.cpu, cpu_widget_formatter,
-        timeout or default_timeout
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, cpu_icon)
-    table.insert(registered_widgets, cpu_widget)
-
-    -- return arc widget
-    return util.create_arc_widget(
-               cpu_icon, cpu_widget, beautiful.widget_colors.desktop_cpu.bg,
-               beautiful.widget_colors.desktop_cpu.fg, 0, 100
-           )
 end
-
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
-
--- [ sequential code ] ---------------------------------------------------------
--- enable caching
-vicious.cache(vicious.widgets.cpu)
 
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

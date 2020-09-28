@@ -6,7 +6,7 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:26:29
+-- @Last Modified time: 2020-09-28 17:21:03
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -28,56 +28,70 @@
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local beautiful = require('beautiful')
-local wibox = require('wibox')
 
 local vicious = require('vicious')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
+local widget_defs = {}
 
-local registered_widgets = {}
-
+local temp_icon = ''
 local default_timeout = 7
-
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(thermal_zone, timeout)
-    -- define widgets
-    local temp_icon = ''
-    local temp_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function temp_widget_formatter(_, args)
-        return util.fontfg(
-                   beautiful.font, beautiful.widget_colors.temp,
-                   args[1] .. '°C'
-               )
-    end
-
-    -- register widgets
-    vicious.register(
-        temp_widget, vicious.widgets.thermal, temp_widget_formatter,
-        timeout or default_timeout, thermal_zone
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, temp_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(
-               beautiful.widget_colors.temp, temp_icon, temp_widget
-           )
-end
-
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
 
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.thermal)
 
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function(wargs)
+    local thermal_zone = wargs.thermal_zone
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = beautiful.widget_colors.temp},
+        widgets = {
+            icon = {widget = temp_icon},
+            widget = {
+                wtype = vicious.widgets.thermal,
+                warg = thermal_zone,
+                format = function(_, args)
+                    return util.fontfg(
+                               beautiful.font, beautiful.widget_colors.temp,
+                               args[1] .. '°C'
+                           )
+                end
+            }
+        }
+    }
+end
+widget_defs.arc = function(wargs)
+    local thermal_zone = wargs.thermal_zone
+    return {
+        default_timeout = default_timeout,
+        container_args = {
+            bg = beautiful.widget_colors.desktop_temp.bg,
+            fg = beautiful.widget_colors.desktop_temp.fg
+        },
+        widgets = {
+            icon = {widget = temp_icon},
+            widget = {
+                wtype = vicious.widgets.thermal,
+                warg = thermal_zone,
+                format = function(widget, args)
+                    widget:emit_signal_recursive(
+                        'widget::value_changed', args[1]
+                    )
+                    return util.fontfg(
+                               beautiful.font_name .. 8,
+                               beautiful.widget_colors.desktop_temp.bg,
+                               args[1] .. '°C'
+                           )
+                end
+            }
+        }
+    }
+end
+
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

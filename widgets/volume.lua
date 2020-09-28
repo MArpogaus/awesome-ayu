@@ -6,7 +6,7 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:26:20
+-- @Last Modified time: 2020-09-28 17:20:14
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -24,16 +24,14 @@
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
 local beautiful = require('beautiful')
-local wibox = require('wibox')
 
 local vicious = require('vicious')
 
 local util = require('themes.ayu.util')
+local widgets = require('themes.ayu.widgets')
 
 -- [ local objects ] -----------------------------------------------------------
-local module = {}
-
-local registered_widgets = {}
+local widget_defs = {}
 
 local fa_vol_icons = {}
 fa_vol_icons[0] = '' -- fa-volume-off
@@ -42,60 +40,94 @@ fa_vol_icons[2] = '' -- fa-volume-up
 
 local default_timeout = 1
 
--- [ module functions ] --------------------------------------------------------
-module.gen_wibar_widget = function(timeout)
-    -- define widgets
-    local vol_icon = util.fa_ico(beautiful.widget_colors.vol, 'N/A')
-    local vol_widget = wibox.widget.textbox()
-
-    -- define custom formatting function
-    local function vol_icon_formatter(_, args)
-        local ico
-        if args[1] == '🔈' then
-            ico = fa_vol_icons[0]
-        else
-            ico = fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
-        end
-        return util.fa_markup(beautiful.widget_colors.volume, ico)
-    end
-    local function vol_widget_formatter(_, args)
-        local vol
-        if args[2] == '🔈' then
-            vol = 'M'
-        else
-            vol = args[1] .. '%'
-        end
-        return util.fa_markup(beautiful.widget_colors.volume, vol)
-    end
-
-    -- register widgets
-    vicious.register(
-        vol_icon, vicious.widgets.volume, vol_icon_formatter,
-        timeout or default_timeout, 'Master'
-    )
-    vicious.register(
-        vol_widget, vicious.widgets.volume, vol_widget_formatter,
-        timeout or default_timeout, 'Master'
-    )
-
-    -- bookkeeping to unregister widgets
-    table.insert(registered_widgets, vol_icon)
-    table.insert(registered_widgets, vol_widget)
-
-    -- return wibar widget
-    return util.create_wibar_widget(
-               beautiful.widget_colors.vol, vol_icon, vol_widget
-           )
-end
-
-module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
-    registered_widgets = {}
-end
-
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.volume)
 
+-- [ define widget ] -----------------------------------------------------------
+widget_defs.wibar = function(wargs)
+    local device = wargs.device or 'Master'
+    return {
+        default_timeout = default_timeout,
+        container_args = {color = beautiful.widget_colors.volume},
+        widgets = {
+            icon = {
+                widget = util.fa_ico(beautiful.widget_colors.vol, 'N/A'),
+                wtype = vicious.widgets.volume,
+                warg = device,
+                format = function(_, args)
+                    local ico
+                    if args[2] == '🔈' then
+                        ico = fa_vol_icons[0]
+                    else
+                        ico =
+                            fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
+                    end
+                    return util.fa_markup(beautiful.widget_colors.volume, ico)
+                end
+            },
+            widget = {
+                wtype = vicious.widgets.volume,
+                warg = device,
+                format = function(_, args)
+                    local vol
+                    if args[2] == '🔈' then
+                        vol = 'M'
+                    else
+                        vol = args[1] .. '%'
+                    end
+                    return util.fa_markup(beautiful.widget_colors.volume, vol)
+                end
+            }
+        }
+    }
+end
+widget_defs.arc = function(wargs)
+    local device = wargs.device or 'Master'
+    return {
+        default_timeout = default_timeout,
+        container_args = {
+            bg = beautiful.widget_colors.volume.bg,
+            fg = beautiful.widget_colors.volume.fg
+        },
+        widgets = {
+            icon = {
+                widget = util.fa_ico(beautiful.widget_colors.vol, 'N/A'),
+                wtype = vicious.widgets.volume,
+                warg = device,
+                format = function(_, args)
+                    local ico
+                    if args[2] == '🔈' then
+                        ico = fa_vol_icons[0]
+                    else
+                        ico =
+                            fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
+                    end
+                    return util.fa_markup(
+                               beautiful.widget_colors.volume.fg, ico
+                           )
+                end
+            },
+            widget = {
+                wtype = vicious.widgets.volume,
+                warg = device,
+                format = function(widget, args)
+                    local vol
+                    if args[2] == '🔈' then
+                        vol = 'M'
+                    else
+                        vol = args[1] .. '%'
+                    end
+                    widget:emit_signal_recursive('widget::value_changed', vol)
+                    return util.fontfg(
+                               beautiful.font_name .. 8,
+                               beautiful.widget_colors.volume.fg, vol
+                           )
+                end
+            }
+        }
+    }
+end
+
 -- [ return module object ] -----------.----------------------------------------
-return module
+return widgets.new(widget_defs)

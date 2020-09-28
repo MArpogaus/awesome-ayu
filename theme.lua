@@ -9,7 +9,7 @@
 --   github.com/lcpz
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:54:50
+-- @Last Modified time: 2020-09-28 16:50:53
 -- @Changes: 
 --      - ported to vicious
 --      - removed mpd widget
@@ -146,7 +146,10 @@ theme.at_screen_connect = function(s)
                     -- Center widgets horizontally
                     desktop_widgets.arcs(),
                     desktop_widgets.clock(),
-                    desktop_widgets.weather(config.city_id, config.app_id),
+                    desktop_widgets.weather {
+                        city_id = config.city_id,
+                        app_id = config.app_id
+                    },
                     expand = 'outside',
                     layout = wibox.layout.align.vertical
                 },
@@ -202,18 +205,25 @@ theme.at_screen_connect = function(s)
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            wibox_widgets.net(
-                theme.widget_colors.netdown, config.net_interface, 'down'
-            ),
-            wibox_widgets.net(
-                theme.widget_colors.netup, config.net_interface, 'up'
-            ),
+            wibox_widgets.net {
+                color = theme.widget_colors.netdown,
+                interface = config.net_interface,
+                value = 'down'
+            },
+            wibox_widgets.net {
+                color = theme.widget_colors.netup,
+                interface = config.net_interface,
+                value = 'up'
+            },
             wibox_widgets.vol(),
             wibox_widgets.mem(),
             wibox_widgets.cpu(),
             wibox_widgets.fs(),
-            wibox_widgets.weather(config.city_id, config.app_id),
-            wibox_widgets.temp(config.thermal_zone),
+            wibox_widgets.weather {
+                city_id = config.city_id,
+                app_id = config.app_id
+            },
+            wibox_widgets.temp {thermal_zone = config.thermal_zone},
             wibox_widgets.bat(),
             wibox_widgets.datetime(),
             myexitmenu

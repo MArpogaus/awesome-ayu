@@ -6,10 +6,10 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-27 23:40:46
+-- @Last Modified time: 2020-09-28 16:54:04
 -- @Changes: 
--- 		- newly written
--- 		- ...
+--      - newly written
+--      - ...
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 -- @File:   battery.lua
@@ -40,33 +40,93 @@
 --      - newly written
 --------------------------------------------------------------------------------
 -- [ modules imports ] ---------------------------------------------------------
-local battery = require('themes.ayu.widgets.battery')
-local cpu = require('themes.ayu.widgets.cpu')
-local fs = require('themes.ayu.widgets.fs')
-local memory = require('themes.ayu.widgets.memory')
-local net = require('themes.ayu.widgets.net')
-local temp = require('themes.ayu.widgets.temp')
-local volume = require('themes.ayu.widgets.volume')
-local weather = require('themes.ayu.widgets.weather')
+local setmetatable = setmetatable
+
+local wibox = require('wibox')
+
+local vicious = require('vicious')
+
+local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
 
+local registered_widgets = {}
+
+-- [ local functions ] ---------------------------------------------------------
+local function gen_widget(widget_def, widget_container, timeout)
+    local widget_container_args = widget_def.container_args or {}
+    for key, w in pairs(widget_def.widgets) do
+        -- define widget
+        local widget
+        if w.widget then
+            widget = w.widget
+        else
+            widget = wibox.widget.textbox()
+        end
+        widget_container_args[key] = widget
+
+        -- register widget
+        if w.wtype and w.format then
+            vicious.register(widget, w.wtype, w.format, timeout, w.warg)
+            -- bookkeeping to unregister widget
+            table.insert(registered_widgets, widget)
+        end
+    end
+
+    -- return widget container
+    return widget_container(widget_container_args)
+end
+
 -- [ module functions ] --------------------------------------------------------
+module.new = function(args)
+    local widget_generator = {}
+
+    for k, wd in pairs(args) do
+        if k == 'wibar' then
+            widget_generator['gen_' .. k .. '_widget'] =
+                function(wargs)
+                    wargs = wargs or {}
+                    local widget_def = wd(wargs)
+                    local timeout = wargs.timeout or widget_def.default_timeout
+                    return gen_widget(
+                               widget_def, util.create_wibar_widget_new,
+                               timeout
+                           )
+                end
+        elseif k == 'arc' then
+            widget_generator['create_' .. k .. '_widget'] =
+                function(wargs)
+                    wargs = wargs or {}
+                    local widget_def = wd(wargs)
+                    local timeout = wargs.timeout or widget_def.default_timeout
+                    return gen_widget(
+                               widget_def, util.create_arc_widget_new, timeout
+                           )
+                end
+        else
+            widget_generator['gen_' .. k .. '_widget'] =
+                function(wargs)
+                    wargs = wargs or {}
+                    local widget_def = wd(wargs)
+                    local timeout = wargs.timeout or widget_def.default_timeout
+                    return gen_widget(
+                               widget_def, widget_def.widget_container, timeout
+                           )
+                end
+        end
+    end
+
+    -- define a metatable
+    setmetatable(widget_generator, module)
+
+    return widget_generator
+
+end
+
 module.unregister_widgets = function()
-    local unregister_widgets_fns = {
-        weather.unregister_widgets,
-        fs.unregister_widgets,
-        cpu.unregister_widgets,
-        temp.unregister_widgets,
-        battery.unregister_widgets,
-        volume.unregister_widgets,
-        net.unregister_widgets,
-        memory.unregister_widgets
-    }
-
-    for _, uw in pairs(unregister_widgets_fns) do uw() end
-
+    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    registered_widgets = {}
 end
 
 -- [ return module object ] -----------.----------------------------------------

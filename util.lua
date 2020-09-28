@@ -6,7 +6,7 @@
 -- collection of utility functions
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:43:00
+-- @Last Modified time: 2020-09-28 10:30:35
 -- @Changes: 
 --      - added fontfg
 --      - updated owf_markup for vicious
@@ -218,6 +218,29 @@ module.create_wibar_widget = function(color, icon, widget)
     return wibox_widget
 end
 
+module.create_wibar_widget_new = function(args)
+    local icon_widget
+    if type(args.icon) == 'table' then
+        icon_widget = args.icon
+    else
+        icon_widget = module.fa_ico(args.color, args.icon)
+    end
+    local wibox_widget = wibox.widget {
+        {
+            -- add margins
+            icon_widget,
+            left = beautiful.icon_margin_left,
+            right = beautiful.icon_margin_right,
+            color = '#FF000000',
+            widget = wibox.container.margin
+        },
+        args.widget,
+        layout = wibox.layout.fixed.horizontal,
+        expand = 'none'
+    }
+    return wibox_widget
+end
+
 module.create_arc_icon = function(fg, icon, size)
     return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
 end
@@ -257,6 +280,60 @@ module.create_arc_widget = function(
         min_value = min,
         max_value = max,
         thickness = thickness or math.sqrt(size),
+        forced_width = size,
+        forced_height = size,
+        start_angle = 0,
+        widget = wibox.container.arcchart
+    }
+    arc_container:connect_signal(
+        'widget::value_changed',
+        function(_, usage) arc_container.value = usage end
+    )
+    return arc_container
+end
+
+module.create_arc_widget_new = function(args)
+    local icon = args.icon
+    local widget = args.widget
+    local bg = args.bg
+    local fg = args.fg
+    local min = args.min or 0
+    local max = args.max or 100
+    local size = args.size or beautiful.desktop_widgets_arc_size
+    local thickness = args.thickness or math.sqrt(size)
+
+    local icon_widget
+    if type(icon) == 'table' then
+        icon_widget = icon
+    else
+        icon_widget = module.create_arc_icon(fg, icon, size)
+    end
+    widget.align = 'center'
+    local arc_container = wibox.widget {
+        {
+            nil,
+            {
+                nil,
+                {
+                    nil,
+                    icon_widget,
+                    widget,
+                    expand = 'outside',
+                    layout = wibox.layout.align.vertical
+                },
+                nil,
+                expand = 'inside',
+                layout = wibox.layout.align.vertical
+            },
+            nil,
+            expand = 'outside',
+            layout = wibox.layout.align.horizontal
+        },
+        bg = bg,
+        colors = {fg},
+        min_value = min,
+        max_value = max,
+        thickness = thickness,
         forced_width = size,
         forced_height = size,
         start_angle = 0,

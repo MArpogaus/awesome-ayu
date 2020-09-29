@@ -2,7 +2,7 @@
 
 > [ayu][] is a simple theme with bright colors and comes in three versions — dark, mirage and light for all day long comfortable work.
 
-This is a modified version of the multicolor theme from [Awesome WM Copycats][awesome-copycats] using the gorgeous [ayu color palette][ayu-colors].
+This theme has been inspired by the multicolor theme from [Awesome WM Copycats][awesome-copycats] and uses the gorgeous [ayu color palette][ayu-colors].
 
 # Screenshoots
 
@@ -39,7 +39,7 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
     cd .config/awesome
     mkdir themes
     git clone https://github.com/MArpogaus/awesome-ayu.git themes/ayu
-    git clone https://github.com/lcpz/lain.git lain
+    git clone https://github.com/vicious-widgets/vicious.git vicious
     ```
 
  1. Install [Font Awesome 4][FontAwesome4] and [mononoki][mononoki]
@@ -55,7 +55,7 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
     wget -O /usr/share/fonts/TTF/owfont-regular.ttf 'https://github.com/websygen/owfont/blob/master/fonts/owfont-regular.ttf?raw=true'
     ```
 
- 1. Create your config.lua to set Your City Id (For more info see https://github.com/lcpz/awesome-copycats#notes)
+ 1. Create your configuration file.
     ```shell
     cp themes/ayu/config.lua.template config.lua
     ```
@@ -69,6 +69,24 @@ This is a modified version of the multicolor theme from [Awesome WM Copycats][aw
 
  1. install [wpgtk][wpgtk] to switch color schemes. (optional)
     [JSON colorschemes][JsonColorschemes] and a `Rofi` template can be found in the `wpg` folder.
+
+# Configuration
+
+The configuration file `config.lua` allows you to adjust the following parameters according to your needs.
+
+## Widget Parameters
+
+`city_id` - OWM id of your city. Find it here: https://openweathermap.org/find?q=
+
+`app_id` - OWM API key. Sign up here: https://home.openweathermap.org/users/sign_up
+
+`thermal_zone` - resource for temperature widget: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-thermal
+
+`net_interface` - Network interface to monitor: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-net
+
+## Color scheme
+
+`use_xresources` - Generate the color scheme from xrdb
 
 # Helper functions
 

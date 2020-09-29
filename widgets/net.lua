@@ -6,7 +6,7 @@
 -- networking widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:19:49
+-- @Last Modified time: 2020-09-29 13:44:28
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -60,7 +60,7 @@ widget_defs.arc = function(wargs)
 
     return {
         default_timeout = default_timeout,
-        container_args = {bg = color_bg, fg = color_fg},
+        container_args = {bg = color_bg, fg = color_fg, max = 50 * 1024},
         widgets = {
             icon = {widget = net_icons[value]},
             widget = {
@@ -72,7 +72,7 @@ widget_defs.arc = function(wargs)
                     )
                     return util.fontfg(
                                beautiful.font_name .. 8, color_fg, args['{' ..
-                                   interface .. ' ' .. value .. '_kb}'] .. '%'
+                                   interface .. ' ' .. value .. '_kb}'] .. 'kb'
                            )
                 end
             }

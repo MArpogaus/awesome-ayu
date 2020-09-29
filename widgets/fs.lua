@@ -6,7 +6,7 @@
 -- disk usage widgets 
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:18:52
+-- @Last Modified time: 2020-09-29 13:26:52
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -65,8 +65,8 @@ widget_defs.arc = function()
     return {
         default_timeout = default_timeout,
         container_args = {
-            bg = beautiful.widget_colors.desktop_fs.bg,
-            fg = beautiful.widget_colors.desktop_fs.fg
+            bg = beautiful.widget_colors.desktop.fs.bg,
+            fg = beautiful.widget_colors.desktop.fs.fg
         },
         widgets = {
             icon = {widget = fs_icon},
@@ -79,7 +79,7 @@ widget_defs.arc = function()
                     )
                     return util.fontfg(
                                beautiful.font_name .. 8,
-                               beautiful.widget_colors.desktop_fs.fg,
+                               beautiful.widget_colors.desktop.fs.fg,
                                args[args.mount_point or default_mount_point] ..
                                    '%'
                            )

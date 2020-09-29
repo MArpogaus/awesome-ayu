@@ -6,7 +6,7 @@
 -- weather widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:20:41
+-- @Last Modified time: 2020-09-29 13:32:08
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -174,7 +174,7 @@ widget_defs.desktop = function(wargs)
         widget_container = weather_widget_container,
         container_args = {
             font_size = font_size,
-            color = beautiful.fg_normal,
+            color = beautiful.widget_colors.desktop.weather.fg,
             spacing = font_size_descr / 2
         },
         widgets = {
@@ -187,8 +187,8 @@ widget_defs.desktop = function(wargs)
                     local sunset = args['{sunset}']
 
                     return util.owf_markup(
-                               beautiful.fg_normal, weather, sunrise, sunset,
-                               font_size
+                               beautiful.widget_colors.desktop.weather.fg,
+                               weather, sunrise, sunset, font_size
                            )
                 end
             },
@@ -198,7 +198,8 @@ widget_defs.desktop = function(wargs)
                 format = function(_, args)
                     local temp = args['{temp c}']
                     return markup_color_size(
-                               font_size_temp, beautiful.fg_normal, temp
+                               font_size_temp,
+                               beautiful.widget_colors.desktop.weather.fg, temp
                            )
                 end
             },
@@ -210,7 +211,8 @@ widget_defs.desktop = function(wargs)
                                          tonumber(args['{temp min c}']) or 0
                                      )
                     return markup_color_size(
-                               font_size_range, beautiful.fg_normal,
+                               font_size_range,
+                               beautiful.widget_colors.desktop.weather.fg,
                                temp_min .. ' / '
                            )
                 end
@@ -223,7 +225,9 @@ widget_defs.desktop = function(wargs)
                                          tonumber(args['{temp max c}']) or 0
                                      )
                     return markup_color_size(
-                               font_size_range, beautiful.fg_normal, temp_max
+                               font_size_range,
+                               beautiful.widget_colors.desktop.weather.fg,
+                               temp_max
                            )
                 end
             },
@@ -233,7 +237,9 @@ widget_defs.desktop = function(wargs)
                 format = function(_, args)
                     local weather = args['{weather}']
                     return markup_color_size(
-                               font_size_descr, beautiful.fg_normal, weather
+                               font_size_descr,
+                               beautiful.widget_colors.desktop.weather.fg,
+                               weather
                            )
                 end
             }

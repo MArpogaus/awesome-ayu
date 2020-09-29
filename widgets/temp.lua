@@ -6,7 +6,7 @@
 -- cpu temperature widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:21:03
+-- @Last Modified time: 2020-09-29 13:42:43
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -46,7 +46,7 @@ vicious.cache(vicious.widgets.thermal)
 
 -- [ define widget ] -----------------------------------------------------------
 widget_defs.wibar = function(wargs)
-    local thermal_zone = wargs.thermal_zone
+    local thermal_zone = wargs.thermal_zone or 'thermal_zone0'
     return {
         default_timeout = default_timeout,
         container_args = {color = beautiful.widget_colors.temp},
@@ -66,12 +66,12 @@ widget_defs.wibar = function(wargs)
     }
 end
 widget_defs.arc = function(wargs)
-    local thermal_zone = wargs.thermal_zone
+    local thermal_zone = wargs.thermal_zone or 'thermal_zone0'
     return {
         default_timeout = default_timeout,
         container_args = {
-            bg = beautiful.widget_colors.desktop_temp.bg,
-            fg = beautiful.widget_colors.desktop_temp.fg
+            bg = beautiful.widget_colors.desktop.temp.bg,
+            fg = beautiful.widget_colors.desktop.temp.fg
         },
         widgets = {
             icon = {widget = temp_icon},
@@ -84,7 +84,7 @@ widget_defs.arc = function(wargs)
                     )
                     return util.fontfg(
                                beautiful.font_name .. 8,
-                               beautiful.widget_colors.desktop_temp.bg,
+                               beautiful.widget_colors.desktop.temp.fg,
                                args[1] .. '°C'
                            )
                 end

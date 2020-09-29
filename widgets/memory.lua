@@ -6,7 +6,7 @@
 -- memory widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:19:00
+-- @Last Modified time: 2020-09-29 13:27:12
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -64,8 +64,8 @@ widget_defs.arc = function()
     return {
         default_timeout = default_timeout,
         container_args = {
-            bg = beautiful.widget_colors.desktop_mem.bg,
-            fg = beautiful.widget_colors.desktop_mem.fg
+            bg = beautiful.widget_colors.desktop.memory.bg,
+            fg = beautiful.widget_colors.desktop.memory.fg
         },
         widgets = {
             icon = {widget = mem_icon},
@@ -77,7 +77,7 @@ widget_defs.arc = function()
                     )
                     return util.fontfg(
                                beautiful.font_name .. 8,
-                               beautiful.widget_colors.desktop_mem.fg,
+                               beautiful.widget_colors.desktop.memory.fg,
                                args[1] .. '%'
                            )
                 end

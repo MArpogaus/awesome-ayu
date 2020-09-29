@@ -6,7 +6,7 @@
 -- ...
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 16:54:04
+-- @Last Modified time: 2020-09-29 13:03:38
 -- @Changes: 
 --      - newly written
 --      - ...
@@ -83,38 +83,26 @@ module.new = function(args)
     local widget_generator = {}
 
     for k, wd in pairs(args) do
-        if k == 'wibar' then
-            widget_generator['gen_' .. k .. '_widget'] =
-                function(wargs)
-                    wargs = wargs or {}
-                    local widget_def = wd(wargs)
-                    local timeout = wargs.timeout or widget_def.default_timeout
+        widget_generator['gen_' .. k .. '_widget'] =
+            function(wargs)
+                wargs = wargs or {}
+                local widget_def = wd(wargs)
+                local timeout = wargs.timeout or widget_def.default_timeout
+                if k == 'wibar' then
                     return gen_widget(
                                widget_def, util.create_wibar_widget_new,
                                timeout
                            )
-                end
-        elseif k == 'arc' then
-            widget_generator['create_' .. k .. '_widget'] =
-                function(wargs)
-                    wargs = wargs or {}
-                    local widget_def = wd(wargs)
-                    local timeout = wargs.timeout or widget_def.default_timeout
+                elseif k == 'arc' then
                     return gen_widget(
                                widget_def, util.create_arc_widget_new, timeout
                            )
-                end
-        else
-            widget_generator['gen_' .. k .. '_widget'] =
-                function(wargs)
-                    wargs = wargs or {}
-                    local widget_def = wd(wargs)
-                    local timeout = wargs.timeout or widget_def.default_timeout
+                else
                     return gen_widget(
                                widget_def, widget_def.widget_container, timeout
                            )
                 end
-        end
+            end
     end
 
     -- define a metatable

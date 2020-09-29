@@ -6,7 +6,7 @@
 -- date and time widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 17:46:19
+-- @Last Modified time: 2020-09-29 13:52:02
 -- @Changes: 
 --      - removed lain
 -- @Last Modified by:   Marcel Arpogaus
@@ -88,11 +88,12 @@ module.gen_desktop_widget = function()
         local deskop_clock = wibox.widget.textclock(
                                  util.fontfg(
                                      beautiful.font_name .. time_font_size,
-                                     beautiful.bg_normal, '%H:%M'
+                                     beautiful.widget_colors.desktop.clock.time,
+                                     '%H:%M'
                                  )
                              )
         return util.create_boxed_widget(
-                   deskop_clock, beautiful.widget_colors.desktop_clock,
+                   deskop_clock, beautiful.widget_colors.desktop.clock.bg,
                    time_font_size / 2, time_font_size, date_font_size * 1.5
                )
     end
@@ -101,28 +102,26 @@ module.gen_desktop_widget = function()
         return wibox.widget.textclock(
                    util.fontfg(
                        beautiful.font_name .. date_font_size,
-                       beautiful.fg_normal, 'Today is '
+                       beautiful.widget_colors.desktop.clock.fg, 'Today is '
                    ) .. util.fontfg(
                        beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop_day, '%A'
+                       beautiful.widget_colors.desktop.clock.day, '%A'
                    ) .. util.fontfg(
                        beautiful.font_name .. date_font_size,
-                       beautiful.fg_normal, ', the '
+                       beautiful.widget_colors.desktop.clock.fg, ', the '
                    ) .. util.fontfg(
                        beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop_date, '%d.'
-                   ) ..
-                       util.fontfg(
-                           beautiful.font_name .. date_font_size,
-                           beautiful.fg_normal, ' of '
-                       ) .. util.fontfg(
+                       beautiful.widget_colors.desktop.clock.date, '%d.'
+                   ) .. util.fontfg(
                        beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop_month, '%B'
-                   ) ..
-                       util.fontfg(
-                           beautiful.font_name .. date_font_size,
-                           beautiful.fg_normal, '.'
-                       )
+                       beautiful.widget_colors.desktop.clock.fg, ' of '
+                   ) .. util.fontfg(
+                       beautiful.font_name .. date_font_size,
+                       beautiful.widget_colors.desktop.clock.month, '%B'
+                   ) .. util.fontfg(
+                       beautiful.font_name .. date_font_size,
+                       beautiful.widget_colors.desktop.clock.fg, '.'
+                   )
                )
     end
 

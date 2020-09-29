@@ -6,7 +6,7 @@
 -- also volume widget
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:20:14
+-- @Last Modified time: 2020-09-29 13:54:08
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -52,7 +52,7 @@ widget_defs.wibar = function(wargs)
         container_args = {color = beautiful.widget_colors.volume},
         widgets = {
             icon = {
-                widget = util.fa_ico(beautiful.widget_colors.vol, 'N/A'),
+                widget = util.fa_ico(beautiful.widget_colors.volume, 'N/A'),
                 wtype = vicious.widgets.volume,
                 warg = device,
                 format = function(_, args)
@@ -87,12 +87,14 @@ widget_defs.arc = function(wargs)
     return {
         default_timeout = default_timeout,
         container_args = {
-            bg = beautiful.widget_colors.volume.bg,
-            fg = beautiful.widget_colors.volume.fg
+            bg = beautiful.widget_colors.desktop.volume.bg,
+            fg = beautiful.widget_colors.desktop.volume.fg
         },
         widgets = {
             icon = {
-                widget = util.fa_ico(beautiful.widget_colors.vol, 'N/A'),
+                widget = util.create_arc_icon(
+                    beautiful.widget_colors.desktop.volume.fg, 'N/A', 150
+                ),
                 wtype = vicious.widgets.volume,
                 warg = device,
                 format = function(_, args)
@@ -104,7 +106,8 @@ widget_defs.arc = function(wargs)
                             fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
                     end
                     return util.fa_markup(
-                               beautiful.widget_colors.volume.fg, ico
+                               beautiful.widget_colors.desktop.volume.fg, ico,
+                               math.floor(150 / 8)
                            )
                 end
             },
@@ -115,13 +118,16 @@ widget_defs.arc = function(wargs)
                     local vol
                     if args[2] == '🔈' then
                         vol = 'M'
+                        widget:emit_signal_recursive('widget::value_changed', 0)
                     else
                         vol = args[1] .. '%'
+                        widget:emit_signal_recursive(
+                            'widget::value_changed', args[1]
+                        )
                     end
-                    widget:emit_signal_recursive('widget::value_changed', vol)
                     return util.fontfg(
                                beautiful.font_name .. 8,
-                               beautiful.widget_colors.volume.fg, vol
+                               beautiful.widget_colors.desktop.volume.fg, vol
                            )
                 end
             }

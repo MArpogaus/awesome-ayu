@@ -6,7 +6,7 @@
 -- factory to build theme based on given colorscheme
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:14:30
+-- @Last Modified time: 2020-09-29 13:41:05
 -- @Changes: 
 --      - removed lain icons
 -- @Last Modified by:   Marcel Arpogaus
@@ -109,36 +109,61 @@ local theme = {
                                       )
 
         self.widget_colors = {
-            netdown = cs.colors[2],
-            netup = cs.colors[3],
-            volume = cs.colors[4],
-            memory = cs.colors[5],
-            cpu = cs.colors[13],
-            fs = cs.colors[7],
-            weather = cs.colors[10],
-            temp = cs.colors[11],
             bat = cs.colors[12],
             cal = cs.colors[16],
             clock = cs.colors[4],
-            desktop_clock = cs.colors[8 + 5],
-            desktop_day = cs.colors[4],
-            desktop_date = cs.colors[2],
-            desktop_month = cs.colors[3],
-            desktop_cpu = {
-                fg = util.reduce_contrast(cs.colors[2], 50),
-                bg = cs.colors[2]
-            },
-            desktop_mem = {
-                fg = util.reduce_contrast(cs.colors[3], 50),
-                bg = cs.colors[3]
-            },
-            desktop_fs = {
-                fg = util.reduce_contrast(cs.colors[4], 50),
-                bg = cs.colors[4]
-            },
-            desktop_bat = {
-                fg = util.reduce_contrast(cs.colors[5], 50),
-                bg = cs.colors[5]
+            cpu = cs.colors[13],
+            fs = cs.colors[7],
+            memory = cs.colors[5],
+            netdown = cs.colors[2],
+            netup = cs.colors[3],
+            temp = cs.colors[11],
+            volume = cs.colors[4],
+            weather = cs.colors[10],
+            desktop = {
+                bat = {
+                    fg = util.reduce_contrast(cs.colors[5], 50),
+                    bg = cs.colors[5]
+                },
+                clock = {
+                    fg = self.fg_normal,
+                    bg = cs.colors[8 + 5],
+                    time = self.bg_normal,
+                    day = cs.colors[4],
+                    date = cs.colors[2],
+                    month = cs.colors[3]
+                },
+                cpu = {
+                    fg = util.reduce_contrast(cs.colors[2], 50),
+                    bg = cs.colors[2]
+                },
+
+                fs = {
+                    fg = util.reduce_contrast(cs.colors[4], 50),
+                    bg = cs.colors[4]
+                },
+                memory = {
+                    fg = util.reduce_contrast(cs.colors[3], 50),
+                    bg = cs.colors[3]
+                },
+                netdown = {
+                    fg = util.reduce_contrast(cs.colors[2], 50),
+                    bg = cs.colors[2]
+                },
+                netup = {
+                    fg = util.reduce_contrast(cs.colors[3], 50),
+                    bg = cs.colors[3]
+                },
+                temp = {
+                    fg = util.reduce_contrast(cs.colors[11], 50),
+                    bg = cs.colors[11]
+                },
+                volume = {
+                    fg = util.reduce_contrast(cs.colors[4], 50),
+                    bg = cs.colors[4]
+                },
+                weather = {fg = self.fg_normal}
+
             }
         }
 

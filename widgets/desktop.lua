@@ -6,7 +6,7 @@
 -- AYU Awesome WM desktop widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 18:44:08
+-- @Last Modified time: 2020-09-29 13:49:43
 -- @Changes: 
 --      - code format
 -- @Last Modified by:   Marcel Arpogaus
@@ -22,6 +22,7 @@ local beautiful = require('beautiful')
 -- widgets
 local date_time = require('themes.ayu.widgets.date_time')
 local weather = require('themes.ayu.widgets.weather')
+
 local cpu = require('themes.ayu.widgets.cpu')
 local memory = require('themes.ayu.widgets.memory')
 local fs = require('themes.ayu.widgets.fs')
@@ -40,10 +41,10 @@ module.arcs = function()
     return wibox.widget {
         nil,
         {
-            cpu.create_arc_widget(),
-            memory.create_arc_widget(),
-            fs.create_arc_widget(),
-            battery.create_arc_widget(),
+            cpu.gen_arc_widget(),
+            memory.gen_arc_widget(),
+            fs.gen_arc_widget(),
+            battery.gen_arc_widget(),
             spacing = beautiful.desktop_widgets_arc_spacing,
             layout = wibox.layout.fixed.horizontal
         },

@@ -6,7 +6,7 @@
 -- cpu utilization widgets
 -- [ changelog ] ---------------------------------------------------------------
 -- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 17:16:56
+-- @Last Modified time: 2020-09-29 13:30:22
 -- @Changes: 
 --      - ported to vicious
 -- @Last Modified by:   Marcel Arpogaus
@@ -69,15 +69,15 @@ widget_defs.arc = function()
         step_width = step_width,
         step_spacing = step_spacing,
         forced_height = beautiful.desktop_widgets_arc_size / 5,
-        color = beautiful.widget_colors.desktop_cpu.fg,
+        color = beautiful.widget_colors.desktop.cpu.fg,
         background_color = '#00000000',
         widget = wibox.widget.graph
     }
     return {
         default_timeout = default_timeout,
         container_args = {
-            bg = beautiful.widget_colors.desktop_cpu.bg,
-            fg = beautiful.widget_colors.desktop_cpu.fg
+            bg = beautiful.widget_colors.desktop.cpu.bg,
+            fg = beautiful.widget_colors.desktop.cpu.fg
         },
         widgets = {
             icon = {
@@ -109,7 +109,7 @@ widget_defs.arc = function()
                     )
                     return util.fontfg(
                                beautiful.font_name .. 8,
-                               beautiful.widget_colors.desktop_cpu.fg,
+                               beautiful.widget_colors.desktop.cpu.fg,
                                args[1] .. '%'
                            )
                 end

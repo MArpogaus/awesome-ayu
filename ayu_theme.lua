@@ -2,34 +2,31 @@
 -- @File:   ayu_theme.lua
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-10-23 19:28:06
+--
+-- @Last Modified by: Marcel Arpogaus
+-- @Last Modified at: 2020-09-30 09:06:21
 -- [ description ] -------------------------------------------------------------
--- factory to build theme based on given colorscheme
--- [ changelog ] ---------------------------------------------------------------
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-29 13:41:05
--- @Changes: 
---      - removed lain icons
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-03-22 10:23:54
--- @Changes: 
---      - changed border_focus color
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-03-18 14:20:15
--- @Changes: 
---      - increased menu and font size
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-12-05 18:27:57
--- @Changes: 
---      - resized some elements for hidpi screens
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-11-18 10:40:02
--- @Changes: 
---      - removed apply_dpi to make use of new DPI handling in v4.3
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-10-28 21:40:48
--- @Changes: 
---      - added header
+-- factory to build theme based on a given colorscheme
+-- [ license ] -----------------------------------------------------------------
+-- MIT License
+-- Copyright (c) 2020 Marcel Arpogaus
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
 --------------------------------------------------------------------------------
+-- [ required modules ] --------------------------------------------------------
 local gears = require('gears')
 
 local theme_assets = require('beautiful.theme_assets')
@@ -40,6 +37,7 @@ local config_path = gfs.get_configuration_dir()
 
 local util = require('themes.ayu.util')
 
+-- [ local objects ] -----------------------------------------------------------
 local theme = {
     set_color_scheme = function(self, cs)
         -- configure theme parameters
@@ -523,4 +521,5 @@ local theme = {
     end
 }
 
+-- [ return module ] -----------------------------------------------------------
 return theme

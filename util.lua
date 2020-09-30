@@ -2,32 +2,31 @@
 -- @File:   util.lua
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-07-15 07:46:40
+--
+-- @Last Modified by: Marcel Arpogaus
+-- @Last Modified at: 2020-09-30 09:11:42
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
--- [ changelog ] ---------------------------------------------------------------
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-28 10:30:35
--- @Changes: 
---      - added fontfg
---      - updated owf_markup for vicious
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 15:34:14
--- @Changes: 
---      - fixed icon width
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-11-18 10:40:23
--- @Changes: 
---      - removed apply_dpi to make use of new DPI handling in v4.3
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-11-18 10:40:16
--- @Changes: 
---      - optimized boxed widget for different sizes
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-19 16:07:04
--- @Changes: 
---      - added header
+-- [ license ] -----------------------------------------------------------------
+-- MIT License
+-- Copyright (c) 2020 Marcel Arpogaus
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
 --------------------------------------------------------------------------------
--- [ modules imports ] ---------------------------------------------------------
+-- [ required modules ] --------------------------------------------------------
 local os = os
 
 local gears = require('gears')
@@ -114,7 +113,7 @@ end
 module.fa_markup = function(col, ico, size)
     local font_size = size or beautiful.font_size
     local fa_font = 'FontAwesome ' .. font_size
-    return module.fontfg(fa_font, col, ico)
+    return module.markup {font = fa_font, fg_color = col, text = ico}
 end
 
 module.fa_ico = function(col, ico, size, width)
@@ -147,7 +146,7 @@ module.owf_markup = function(col, weather, sunrise, sunset, size)
     end
     local font_size = size or beautiful.font_size
     local owf_font = 'owf-regular ' .. font_size
-    return module.fontfg(owf_font, col, icon)
+    return module.markup {font = owf_font, fg_color = col, text = icon}
 end
 module.owf_ico = function(col, weather_now, size, width)
     return wibox.widget {
@@ -195,30 +194,7 @@ module.create_boxed_widget = function(
     return boxed_widget
 end
 
-module.create_wibar_widget = function(color, icon, widget)
-    local icon_widget
-    if type(icon) == 'table' then
-        icon_widget = icon
-    else
-        icon_widget = module.fa_ico(color, icon)
-    end
-    local wibox_widget = wibox.widget {
-        {
-            -- add margins
-            icon_widget,
-            left = beautiful.icon_margin_left,
-            right = beautiful.icon_margin_right,
-            color = '#FF000000',
-            widget = wibox.container.margin
-        },
-        widget,
-        layout = wibox.layout.fixed.horizontal,
-        expand = 'none'
-    }
-    return wibox_widget
-end
-
-module.create_wibar_widget_new = function(args)
+module.create_wibar_widget = function(args)
     local icon_widget
     if type(args.icon) == 'table' then
         icon_widget = args.icon
@@ -244,55 +220,8 @@ end
 module.create_arc_icon = function(fg, icon, size)
     return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
 end
-module.create_arc_widget = function(
-    icon, widget, bg, fg, min, max, size, thickness
-)
-    size = size or beautiful.desktop_widgets_arc_size
-    local icon_widget
-    if type(icon) == 'table' then
-        icon_widget = icon
-    else
-        icon_widget = module.create_arc_icon(fg, icon, size)
-    end
-    widget.align = 'center'
-    local arc_container = wibox.widget {
-        {
-            nil,
-            {
-                nil,
-                {
-                    nil,
-                    icon_widget,
-                    widget,
-                    expand = 'outside',
-                    layout = wibox.layout.align.vertical
-                },
-                nil,
-                expand = 'inside',
-                layout = wibox.layout.align.vertical
-            },
-            nil,
-            expand = 'outside',
-            layout = wibox.layout.align.horizontal
-        },
-        bg = bg,
-        colors = {fg},
-        min_value = min,
-        max_value = max,
-        thickness = thickness or math.sqrt(size),
-        forced_width = size,
-        forced_height = size,
-        start_angle = 0,
-        widget = wibox.container.arcchart
-    }
-    arc_container:connect_signal(
-        'widget::value_changed',
-        function(_, usage) arc_container.value = usage end
-    )
-    return arc_container
-end
 
-module.create_arc_widget_new = function(args)
+module.create_arc_widget = function(args)
     local icon = args.icon
     local widget = args.widget
     local bg = args.bg
@@ -346,10 +275,15 @@ module.create_arc_widget_new = function(args)
     return arc_container
 end
 
-module.fontfg = function(font, fg, text)
-    return string.format(
-               '<span font=\'%s\' foreground=\'%s\'>%s</span>', font, fg, text
-           )
+module.markup = function(args)
+    local style = ''
+    local font, fg_color, text = args.font, args.fg_color, args.text
+    if font then style = style .. string.format(' font=\'%s\'', font) end
+    if fg_color then
+        style = style .. string.format(' foreground=\'%s\'', fg_color)
+    end
+    return string.format('<span %s>%s</span>', style, text)
 end
 
+-- [ return module ] -----------------------------------------------------------
 return module

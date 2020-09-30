@@ -2,24 +2,31 @@
 -- @File:   wibox.lua
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-07-15 08:12:41
+--
+-- @Last Modified by: Marcel Arpogaus
+-- @Last Modified at: 2020-09-30 09:06:10
 -- [ description ] -------------------------------------------------------------
 -- wibar widgets
--- [ changelog ] ---------------------------------------------------------------
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-26 20:19:43
--- @Changes: 
---      - ported to vicious
---      - removed mpd wdiget
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-24 20:06:33
--- @Changes: 
---      - removed apply_dpi to make use of new DPI handling in v4.3
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-15 08:51:52
--- @Changes: 
---      - added header
+-- [ license ] -----------------------------------------------------------------
+-- MIT License
+-- Copyright (c) 2020 Marcel Arpogaus
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
 --------------------------------------------------------------------------------
--- [ modules imports ] ---------------------------------------------------------
+-- [ required modules ] --------------------------------------------------------
 local date_time = require('themes.ayu.widgets.date_time')
 local weather = require('themes.ayu.widgets.weather')
 local fs = require('themes.ayu.widgets.fs')
@@ -32,16 +39,16 @@ local memory = require('themes.ayu.widgets.memory')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {
-    weather = weather.gen_wibar_widget,
-    net = net.gen_wibar_widget,
-    vol = volume.gen_wibar_widget,
-    mem = memory.gen_wibar_widget,
-    cpu = cpu.gen_wibar_widget,
-    temp = temp.gen_wibar_widget,
-    bat = battery.gen_wibar_widget,
-    fs = fs.gen_wibar_widget,
-    datetime = date_time.gen_wibar_widget
+    weather = weather.create_wibar_widget,
+    net = net.create_wibar_widget,
+    vol = volume.create_wibar_widget,
+    mem = memory.create_wibar_widget,
+    cpu = cpu.create_wibar_widget,
+    temp = temp.create_wibar_widget,
+    bat = battery.create_wibar_widget,
+    fs = fs.create_wibar_widget,
+    datetime = date_time.create_wibar_widget
 }
 
--- [ return module object ] -----------.----------------------------------------
+-- [ return module ] -----------------------------------------------------------
 return module

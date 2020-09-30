@@ -2,32 +2,31 @@
 -- @File:   date_time.lua
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-16 10:35:55
+--
+-- @Last Modified by: Marcel Arpogaus
+-- @Last Modified at: 2020-09-30 09:07:57
 -- [ description ] -------------------------------------------------------------
 -- date and time widgets
--- [ changelog ] ---------------------------------------------------------------
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2020-09-29 13:52:02
--- @Changes: 
---      - removed lain
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-11-18 10:40:56
--- @Changes: 
---      - removed apply_dpi to make use of new DPI handling in v4.3
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-10-28 21:38:12
--- @Changes: 
---      - modified desktop clock widget size calculation
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-08-16 13:30:06
--- @Changes: 
---      - remove color as function argument
--- @Last Modified by:   Marcel Arpogaus
--- @Last Modified time: 2019-07-02 10:23:31
--- @Changes: 
---      - newly written
---      - ...
+-- [ license ] -----------------------------------------------------------------
+-- MIT License
+-- Copyright (c) 2020 Marcel Arpogaus
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
 --------------------------------------------------------------------------------
--- [ modules imports ] ---------------------------------------------------------
+-- [ required modules ] --------------------------------------------------------
 local os = os
 
 local wibox = require('wibox')
@@ -42,21 +41,23 @@ local module = {}
 -- [ module functions ] --------------------------------------------------------
 os.setlocale(os.getenv('LANG')) -- to localize the clock
 
-module.gen_wibar_widget = function()
+module.create_wibar_widget = function()
     local clock_icon = util.fa_ico(beautiful.widget_colors.cal, '')
 
     local clock_widget = wibox.widget.textclock(
-                             util.fontfg(
-                                 beautiful.font, beautiful.widget_colors.cal,
-                                 '%A %d %B'
-                             ) ..
-                                 util.fontfg(
-                                     beautiful.font, beautiful.fg_normal, ' | '
-                                 ) ..
-                                 util.fontfg(
-                                     beautiful.font,
-                                     beautiful.widget_colors.clock, '%H:%M'
-                                 )
+                             util.markup {
+            font = beautiful.font,
+            fg_color = beautiful.widget_colors.cal,
+            text = '%A %d %B'
+        } .. util.markup {
+            font = beautiful.font,
+            fg_color = beautiful.fg_normal,
+            text = ' | '
+        } .. util.markup {
+            font = beautiful.font,
+            fg_color = beautiful.widget_colors.clock,
+            text = '%H:%M'
+        }
                          )
 
     -- popup calendar
@@ -76,21 +77,24 @@ module.gen_wibar_widget = function()
 
     beautiful.cal = cal_widget
 
-    return util.create_wibar_widget(
-               beautiful.widget_colors.cal, clock_icon, clock_widget
-           )
+    return util.create_wibar_widget {
+        color = beautiful.widget_colors.cal,
+        icon = clock_icon,
+        widget = clock_widget
+
+    }
 end
 
-module.gen_desktop_widget = function()
+module.create_desktop_widget = function()
     local time_font_size = beautiful.desktop_widgets_time_font_size
     local date_font_size = beautiful.desktop_widgets_date_font_size
-    local gen_deskop_clock_box = function()
+    local create_deskop_clock_box = function()
         local deskop_clock = wibox.widget.textclock(
-                                 util.fontfg(
-                                     beautiful.font_name .. time_font_size,
-                                     beautiful.widget_colors.desktop.clock.time,
-                                     '%H:%M'
-                                 )
+                                 util.markup {
+                font = beautiful.font_name .. time_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.time,
+                text = '%H:%M'
+            }
                              )
         return util.create_boxed_widget(
                    deskop_clock, beautiful.widget_colors.desktop.clock.bg,
@@ -98,30 +102,37 @@ module.gen_desktop_widget = function()
                )
     end
 
-    local gen_desktop_clock_date = function()
+    local create_desktop_clock_date = function()
         return wibox.widget.textclock(
-                   util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.fg, 'Today is '
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.day, '%A'
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.fg, ', the '
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.date, '%d.'
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.fg, ' of '
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.month, '%B'
-                   ) .. util.fontfg(
-                       beautiful.font_name .. date_font_size,
-                       beautiful.widget_colors.desktop.clock.fg, '.'
-                   )
+                   util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.fg,
+                text = 'Today is '
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.day,
+                text = '%A'
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.fg,
+                text = ', the '
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.date,
+                text = '%d.'
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.fg,
+                text = ' of '
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.month,
+                text = '%B'
+            } .. util.markup {
+                font = beautiful.font_name .. date_font_size,
+                fg_color = beautiful.widget_colors.desktop.clock.fg,
+                text = '.'
+            }
                )
     end
 
@@ -131,12 +142,12 @@ module.gen_desktop_widget = function()
 
             {
                 nil,
-                gen_deskop_clock_box(),
+                create_deskop_clock_box(),
                 nil,
                 expand = 'outside',
                 layout = wibox.layout.align.horizontal
             },
-            gen_desktop_clock_date(),
+            create_desktop_clock_date(),
             layout = wibox.layout.fixed.vertical
         },
         nil,
@@ -145,5 +156,5 @@ module.gen_desktop_widget = function()
     }
 end
 
--- [ return module object ] ----------------------------------------------------
+-- [ return module ] -----------------------------------------------------------
 return module

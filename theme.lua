@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:07:12
+-- @Last Modified at: 2020-09-30 09:41:12
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme 0.1
 --
@@ -90,10 +90,12 @@ theme.at_screen_connect = function(s)
         s.mytaglist = nil
     else
         -- Each screen has its own tag table.
-        awful.tag(
-            awful.util.tagnames, s,
-            awful.layout.default[s.index] or awful.layout.layouts[1]
-        )
+        if not config.tyrannical then
+            awful.tag(
+                awful.util.tagnames, s,
+                awful.layout.default[s.index] or awful.layout.layouts[1]
+            )
+        end
     end
 
     -- If wallpaper is a function, call it with the screen

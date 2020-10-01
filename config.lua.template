@@ -1,12 +1,33 @@
 local module = {}
 
--- Your city for the weather forecast widget
-module.city_id = 2658372
-
+-- [ appearance ] --------------------------------------------------------------
 -- Load color schemes from xresources
-module.use_xresources = true
+module.use_xresources = false
+
+-- color scheme to use, choose from: light, mirage, dark
+module.color_scheme = 'light'
+
+-- path to your wallpaper
+-- module.color_scheme = 'light'
+
+
+-- [ widgets ] -----------------------------------------------------------------
+-- disable desktop widget
+-- module.desktop_widgets = false
+
+-- Your city for the weather forcast widget
+module.city_id = 'change me'
+module.app_id = 'change me'
+
 
 -- Set resource for temperature widget
--- module.tempfile = '/sys/devices/virtual/thermal/thermal_zone1/temp'
+module.thermal_zone = 'thermal_zone0'
+
+-- Network interface
+module.net_interface = 'change me'
+
+-- [ miscellaneous ] -----------------------------------------------------------
+-- Using Tyrannical tag managment engine
+module.tyrannical = false
 
 return module

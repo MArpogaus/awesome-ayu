@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:45
+-- @Last Modified at: 2020-10-01 17:12:31
 -- [ description ] -------------------------------------------------------------
 -- networking widgets
 -- [ license ] -----------------------------------------------------------------
@@ -56,11 +56,12 @@ widget_defs.wibar = function(wargs)
             widget = {
                 wtype = vicious.widgets.net,
                 format = function(_, args)
+                    local val =
+                        args['{' .. interface .. ' ' .. value .. '_kb}'] or -1
                     return util.markup {
                         font = beautiful.font,
                         fg_color = color,
-                        text = args['{' .. interface .. ' ' .. value .. '_kb}'] ..
-                            'kb'
+                        text = val .. 'kb'
                     }
                 end
             }
@@ -68,8 +69,7 @@ widget_defs.wibar = function(wargs)
     }
 end
 widget_defs.arc = function(wargs)
-    local color_bg, color_fg, interface, value = wargs.color_bg,
-                                                 wargs.color_fg,
+    local color_bg, color_fg, interface, value = wargs.color_bg, wargs.color_fg,
                                                  wargs.interface, wargs.value
 
     return {
@@ -80,15 +80,13 @@ widget_defs.arc = function(wargs)
             widget = {
                 wtype = vicious.widgets.net,
                 format = function(widget, args)
-                    widget:emit_signal_recursive(
-                        'widget::value_changed',
-                        args['{' .. interface .. ' ' .. value .. '_kb}']
-                    )
+                    local val =
+                        args['{' .. interface .. ' ' .. value .. '_kb}'] or -1
+                    widget:emit_signal_recursive('widget::value_changed', val)
                     return util.markup {
                         font = beautiful.font_name .. 8,
                         fg_color = color_fg,
-                        text = args['{' .. interface .. ' ' .. value .. '_kb}'] ..
-                            'kb'
+                        text = val .. 'kb'
                     }
                 end
             }

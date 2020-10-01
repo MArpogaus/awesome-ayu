@@ -34,7 +34,7 @@ This theme has been inspired by the multicolor theme from [Awesome WM Copycats][
 
 ## Quick installation example
 
- 1. Clone [lain][lain] and theme to `~/.config/awesome/`
+ 1. Clone [vicious][vicious] and theme to `~/.config/awesome/`
     ```shell
     cd .config/awesome
     mkdir themes

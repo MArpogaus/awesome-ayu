@@ -3,7 +3,7 @@
 -- @Author: Marcel Arpogaus
 -- @Date:   2019-06-30 20:36:28
 --
--- @Last Modified by: Marcel Arpogaus
+-- @Last Modified by:   Daniel
 -- @Last Modified at: 2020-09-30 09:41:12
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme 0.1
@@ -53,7 +53,9 @@ local config = {
     -- Load color schemes from xresources
     use_xresources = false,
     -- Network interface
-    net_interface = 'wlp4s0b1'
+    net_interface = 'wlp4s0b1',
+    desktop_widgets = true,
+    color_scheme = 'light'
 }
 
 -- [ module variables ] --------------------------------------------------------
@@ -133,38 +135,40 @@ theme.at_screen_connect = function(s)
     }
 
     -- Create the desktop widget popup
-    s.desktop_popup = awful.popup {
-        widget = {
-            {
-                -- Center widgets vertically
-                nil,
+    if config.desktop_widgets then
+        s.desktop_popup = awful.popup {
+            widget = {
                 {
-                    -- Center widgets horizontally
-                    desktop_widgets.arcs(),
-                    desktop_widgets.clock(),
-                    desktop_widgets.weather {
-                        city_id = config.city_id,
-                        app_id = config.app_id
+                    -- Center widgets vertically
+                    nil,
+                    {
+                        -- Center widgets horizontally
+                        desktop_widgets.arcs(),
+                        desktop_widgets.clock(),
+                        desktop_widgets.weather {
+                            city_id = config.city_id,
+                            app_id = config.app_id
+                        },
+                        expand = 'outside',
+                        layout = wibox.layout.align.vertical
                     },
-                    expand = 'outside',
-                    layout = wibox.layout.align.vertical
+                    nil,
+                    expand = 'none',
+                    layout = wibox.layout.align.horizontal
                 },
-                nil,
-                expand = 'none',
-                layout = wibox.layout.align.horizontal
+                widget = wibox.container.constraint,
+                forced_width = s.workarea.width,
+                forced_height = s.workarea.height
             },
-            widget = wibox.container.constraint,
-            forced_width = s.workarea.width,
-            forced_height = s.workarea.height
-        },
-        type = 'desktop',
-        screen = s,
-        placement = awful.placement.centered,
-        visible = true,
-        bg = '#00000000',
-        shape_input = root.wallpaper(),
-        input_passthrough = true
-    }
+            type = 'desktop',
+            screen = s,
+            placement = awful.placement.centered,
+            visible = true,
+            bg = '#00000000',
+            shape_input = root.wallpaper(),
+            input_passthrough = true
+        }
+    end
 
     -- Create the wibox
     s.mytopwibar = awful.wibar(
@@ -280,7 +284,7 @@ local color_scheme
 if config.use_xresources then
     color_scheme = color_schemes.xrdb()
 else
-    color_scheme = color_schemes.light
+    color_scheme = color_schemes[config.color_scheme]
 end
 
 theme:set_color_scheme(color_scheme)

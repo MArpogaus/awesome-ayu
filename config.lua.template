@@ -13,22 +13,22 @@ module.color_scheme = 'light'
 -- [ widgets ] -----------------------------------------------------------------
 -- disable desktop widget
 -- module.desktop_widgets = false
-module.wibar_widgets = {
-	'net_down',
-	'net_up',
-	'vol',
-	'mem',
-	'cpu',
-	'fs',
-	'weather',
-	'temp',
-	'bat',
-	'datetime'
-}
-module.arc_widgets = {}
+-- module.wibar_widgets = {
+-- 	'net_down',
+-- 	'net_up',
+-- 	'vol',
+-- 	'mem',
+-- 	'cpu',
+-- 	'fs',
+-- 	'weather',
+-- 	'temp',
+-- 	'bat',
+-- 	'datetime'
+-- }
+-- module.arc_widgets = {'cpu', 'mem', 'fs', 'bat'}
 
 -- configure widgets
-module.widgets = {
+module.widgets_arg = {
     weather = {
         -- Your city for the weather forcast widget
         city_id = 'change me',

@@ -4,9 +4,9 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:37:21
+-- @Last Modified at: 2020-10-02 10:59:25
 -- [ description ] -------------------------------------------------------------
--- AYU Awesome WM theme 0.1
+-- AYU Awesome WM theme
 --
 -- inspired by Multicolor Awesome WM theme 2.0
 -- github.com/lcpz
@@ -135,7 +135,10 @@ theme.at_screen_connect = function(s)
             local cidx = (i - 1) % midx + 1
             local bg_color = theme.widgets.desktop.arcs[cidx]
             local fg_color = util.reduce_contrast(bg_color, 50)
-            local warg = config.widgets_arg[w] or {}
+            local warg = config.widgets_arg[w] or
+                             config.widgets_arg[gears.string.split(w, '_')[1]] or
+                             {}
+
             warg.fg_color = warg.fg_color or fg_color
             warg.bg_color = warg.bg_color or bg_color
             table.insert(widgets, desktop_widgets.arcs[w](warg))
@@ -204,7 +207,10 @@ theme.at_screen_connect = function(s)
     for i, w in pairs(config.wibar_widgets) do
         local midx = #theme.widgets.wibar
         local cidx = (i - 1) % midx + 1
-        local warg = config.widgets_arg[w] or {}
+        local warg = config.widgets_arg[w] or
+                         config.widgets_arg[gears.string.split(w, '_')[1]] or
+                         {}
+        warg = gears.table.clone(warg)
         warg.color = warg.color or theme.widgets.wibar[cidx]
         table.insert(widgets, wibar_widgets[w](warg))
     end

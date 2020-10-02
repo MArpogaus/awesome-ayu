@@ -4,7 +4,7 @@
 -- @Date:   2019-10-23 19:28:06
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:06:21
+-- @Last Modified at: 2020-10-02 10:41:04
 -- [ description ] -------------------------------------------------------------
 -- factory to build theme based on a given colorscheme
 -- [ license ] -----------------------------------------------------------------
@@ -45,10 +45,10 @@ local theme = {
         self.top_bar_height = self.titlebar_size
         self.bottom_bar_height = self.titlebar_size
 
-        self.ico_width = 1.2 * self.titlebar_size
+        self.ico_width = self.titlebar_size
         self.icon_margin_left = self.ico_width / 3
-        self.icon_margin_right = self.ico_width / 8
-        self.systray_icon_spacing = self.ico_width / 3
+        self.icon_margin_right = self.ico_width / 10
+        self.systray_icon_spacing = self.ico_width / 4
 
         self.confdir = config_path .. '/themes/ayu/'
 
@@ -106,22 +106,40 @@ local theme = {
                                           self.sticky_button_bg_color, 50
                                       )
 
-        self.widget_colors = {
-            bat = cs.colors[12],
-            cal = cs.colors[16],
-            clock = cs.colors[4],
-            cpu = cs.colors[13],
-            fs = cs.colors[7],
-            memory = cs.colors[5],
-            netdown = cs.colors[2],
-            netup = cs.colors[3],
-            temp = cs.colors[11],
-            volume = cs.colors[4],
-            weather = cs.colors[10],
+        self.widgets = {
+            wibar = {
+
+                cs.colors[2],
+                cs.colors[3],
+                cs.colors[4],
+                cs.colors[6],
+                cs.colors[5],
+                cs.colors[7],
+
+                cs.colors[10],
+                cs.colors[11],
+                cs.colors[12],
+                cs.colors[14],
+                cs.colors[13],
+                cs.colors[15],
+
+                cal = cs.colors[16],
+                clock = cs.colors[4]
+            },
             desktop = {
-                bat = {
-                    fg = util.reduce_contrast(cs.colors[5], 50),
-                    bg = cs.colors[5]
+                arcs = {
+                    -- cs.colors[2],
+                    -- cs.colors[3],
+                    -- cs.colors[4],
+                    -- cs.colors[5],
+                    -- cs.colors[6],
+                    -- cs.colors[7],
+                    cs.colors[10],
+                    cs.colors[11],
+                    cs.colors[12],
+                    cs.colors[14],
+                    cs.colors[13],
+                    cs.colors[15]
                 },
                 clock = {
                     fg = self.fg_normal,
@@ -130,35 +148,6 @@ local theme = {
                     day = cs.colors[4],
                     date = cs.colors[2],
                     month = cs.colors[3]
-                },
-                cpu = {
-                    fg = util.reduce_contrast(cs.colors[2], 50),
-                    bg = cs.colors[2]
-                },
-
-                fs = {
-                    fg = util.reduce_contrast(cs.colors[4], 50),
-                    bg = cs.colors[4]
-                },
-                memory = {
-                    fg = util.reduce_contrast(cs.colors[3], 50),
-                    bg = cs.colors[3]
-                },
-                netdown = {
-                    fg = util.reduce_contrast(cs.colors[2], 50),
-                    bg = cs.colors[2]
-                },
-                netup = {
-                    fg = util.reduce_contrast(cs.colors[3], 50),
-                    bg = cs.colors[3]
-                },
-                temp = {
-                    fg = util.reduce_contrast(cs.colors[11], 50),
-                    bg = cs.colors[11]
-                },
-                volume = {
-                    fg = util.reduce_contrast(cs.colors[4], 50),
-                    bg = cs.colors[4]
                 },
                 weather = {fg = self.fg_normal}
 

@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:09:01
+-- @Last Modified at: 2020-10-02 10:11:37
 -- [ description ] -------------------------------------------------------------
 -- weather widgets
 -- [ license ] -----------------------------------------------------------------
@@ -42,6 +42,11 @@ local widgets = require('themes.ayu.widgets')
 local widget_defs = {}
 
 local default_timeout = 1800
+
+local default_color = beautiful.fg_normal
+
+local default_city_id = ''
+local default_app_id = ''
 
 -- [ local functions ] ---------------------------------------------------------
 local function markup_color_size(size, color, text)
@@ -129,15 +134,17 @@ end
 vicious.cache(vicious_contrib.openweather)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function(wargs)
-    local city_id, app_id = wargs.city_id, wargs.app_id
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_color
+    local city_id = warg.city_id or default_city_id
+    local app_id = warg.app_id or default_app_id
 
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.weather},
+        container_args = {color = color},
         widgets = {
             icon = {
-                widget = util.owf_ico(beautiful.widget_colors.weather),
+                widget = util.owf_ico(color),
                 wtype = vicious_contrib.openweather,
                 warg = {city_id = city_id, app_id = app_id},
                 format = function(_, args)
@@ -145,10 +152,7 @@ widget_defs.wibar = function(wargs)
                     local sunrise = args['{sunrise}']
                     local sunset = args['{sunset}']
 
-                    return util.owf_markup(
-                               beautiful.widget_colors.weather, weather,
-                               sunrise, sunset
-                           )
+                    return util.owf_markup(color, weather, sunrise, sunset)
                 end
             },
             widget = {
@@ -156,8 +160,7 @@ widget_defs.wibar = function(wargs)
                 warg = {city_id = city_id, app_id = app_id},
                 format = function(_, args)
                     return util.markup {
-                        font = beautiful.font,
-                        fg_color = beautiful.widget_colors.weather,
+                        fg_color = color,
                         text = args['{temp c}'] .. '°C'
                     }
                 end
@@ -165,8 +168,9 @@ widget_defs.wibar = function(wargs)
         }
     }
 end
-widget_defs.desktop = function(wargs)
-    local city_id, app_id = wargs.city_id, wargs.app_id
+widget_defs.desktop = function(warg)
+    local city_id = warg.city_id or default_city_id
+    local app_id = warg.app_id or default_app_id
 
     local font_size = beautiful.desktop_widgets_weather_font_size
 
@@ -179,7 +183,7 @@ widget_defs.desktop = function(wargs)
         widget_container = weather_widget_container,
         container_args = {
             font_size = font_size,
-            color = beautiful.widget_colors.desktop.weather.fg,
+            color = beautiful.widgets.desktop.weather.fg,
             spacing = font_size_descr / 2
         },
         widgets = {
@@ -192,8 +196,8 @@ widget_defs.desktop = function(wargs)
                     local sunset = args['{sunset}']
 
                     return util.owf_markup(
-                               beautiful.widget_colors.desktop.weather.fg,
-                               weather, sunrise, sunset, font_size
+                               beautiful.widgets.desktop.weather.fg, weather,
+                               sunrise, sunset, font_size
                            )
                 end
             },
@@ -204,7 +208,7 @@ widget_defs.desktop = function(wargs)
                     local temp = args['{temp c}']
                     return markup_color_size(
                                font_size_temp,
-                               beautiful.widget_colors.desktop.weather.fg, temp
+                               beautiful.widgets.desktop.weather.fg, temp
                            )
                 end
             },
@@ -217,7 +221,7 @@ widget_defs.desktop = function(wargs)
                                      )
                     return markup_color_size(
                                font_size_range,
-                               beautiful.widget_colors.desktop.weather.fg,
+                               beautiful.widgets.desktop.weather.fg,
                                temp_min .. ' / '
                            )
                 end
@@ -231,8 +235,7 @@ widget_defs.desktop = function(wargs)
                                      )
                     return markup_color_size(
                                font_size_range,
-                               beautiful.widget_colors.desktop.weather.fg,
-                               temp_max
+                               beautiful.widgets.desktop.weather.fg, temp_max
                            )
                 end
             },
@@ -243,8 +246,7 @@ widget_defs.desktop = function(wargs)
                     local weather = args['{weather}']
                     return markup_color_size(
                                font_size_descr,
-                               beautiful.widget_colors.desktop.weather.fg,
-                               weather
+                               beautiful.widgets.desktop.weather.fg, weather
                            )
                 end
             }

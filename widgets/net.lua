@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-01 17:12:31
+-- @Last Modified at: 2020-10-02 10:18:43
 -- [ description ] -------------------------------------------------------------
 -- networking widgets
 -- [ license ] -----------------------------------------------------------------
@@ -40,14 +40,21 @@ local widget_defs = {}
 local net_icons = {down = '', up = ''}
 
 local default_timeout = 3
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
+local default_interface = 'eth0'
+local default_value = 'down'
 
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.net)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function(wargs)
-    local color, interface, value = wargs.color, wargs.interface, wargs.value
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+    local interface = warg.interface or default_interface
+    local value = warg.value or default_value
+
     return {
         default_timeout = default_timeout,
         container_args = {color = color},
@@ -58,23 +65,21 @@ widget_defs.wibar = function(wargs)
                 format = function(_, args)
                     local val =
                         args['{' .. interface .. ' ' .. value .. '_kb}'] or -1
-                    return util.markup {
-                        font = beautiful.font,
-                        fg_color = color,
-                        text = val .. 'kb'
-                    }
+                    return util.markup {fg_color = color, text = val .. 'kb'}
                 end
             }
         }
     }
 end
-widget_defs.arc = function(wargs)
-    local color_bg, color_fg, interface, value = wargs.color_bg, wargs.color_fg,
-                                                 wargs.interface, wargs.value
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+    local interface = warg.interface or default_interface
+    local value = warg.value or default_value
 
     return {
         default_timeout = default_timeout,
-        container_args = {bg = color_bg, fg = color_fg, max = 50 * 1024},
+        container_args = {bg = bg_color, fg = fg_color, max = 50 * 1024},
         widgets = {
             icon = {widget = net_icons[value]},
             widget = {
@@ -85,7 +90,7 @@ widget_defs.arc = function(wargs)
                     widget:emit_signal_recursive('widget::value_changed', val)
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = color_fg,
+                        fg_color = fg_color,
                         text = val .. 'kb'
                     }
                 end

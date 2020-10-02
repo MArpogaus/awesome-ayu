@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-01 17:22:24
+-- @Last Modified at: 2020-10-01 21:08:08
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -79,35 +79,36 @@ module.reduce_contrast = function(color, ratio)
 end
 
 -- create titlebar_button ------------------------------------------------------
-module.titlebar_button =
-    function(size, radius, bg_color, fg_color, border_width)
-        border_width = border_width or 1
-        -- Create a surface
-        local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
+module.titlebar_button = function(
+    size, radius, bg_color, fg_color, border_width
+)
+    border_width = border_width or 1
+    -- Create a surface
+    local img = cairo.ImageSurface.create(cairo.Format.ARGB32, size, size)
 
-        -- Create a context
-        local cr = cairo.Context(img)
+    -- Create a context
+    local cr = cairo.Context(img)
 
-        -- paint transparent bg
-        cr:set_source(gears.color('#00000000'))
-        cr:paint()
+    -- paint transparent bg
+    cr:set_source(gears.color('#00000000'))
+    cr:paint()
 
-        -- draw border
-        cr:set_source(gears.color(fg_color or '#00000000'))
-        cr:move_to(size / 2 + radius, size / 2)
-        cr:arc(size / 2, size / 2, radius + border_width, 0, 2 * math.pi)
-        cr:close_path()
-        cr:fill()
+    -- draw border
+    cr:set_source(gears.color(fg_color or '#00000000'))
+    cr:move_to(size / 2 + radius, size / 2)
+    cr:arc(size / 2, size / 2, radius + border_width, 0, 2 * math.pi)
+    cr:close_path()
+    cr:fill()
 
-        -- draw circle
-        cr:set_source(gears.color(bg_color))
-        cr:move_to(size / 2 + radius, size / 2)
-        cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
-        cr:close_path()
-        cr:fill()
+    -- draw circle
+    cr:set_source(gears.color(bg_color))
+    cr:move_to(size / 2 + radius, size / 2)
+    cr:arc(size / 2, size / 2, radius, 0, 2 * math.pi)
+    cr:close_path()
+    cr:fill()
 
-        return img, cr
-    end
+    return img, cr
+end
 
 -- FontAwesome icons -----------------------------------------------------------
 module.fa_markup = function(col, ico, size)
@@ -162,8 +163,13 @@ end
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
-module.create_boxed_widget = function(widget_to_be_boxed, bg_color, radius,
-                                      inner_margin, outer_margin)
+module.create_boxed_widget = function(
+    widget_to_be_boxed,
+    bg_color,
+    radius,
+    inner_margin,
+    outer_margin
+)
     radius = radius or 15
     inner_margin = inner_margin or 30
     outer_margin = outer_margin or 30
@@ -263,9 +269,10 @@ module.create_arc_widget = function(args)
         start_angle = 0,
         widget = wibox.container.arcchart
     }
-    arc_container:connect_signal('widget::value_changed', function(_, usage)
-        arc_container.value = usage
-    end)
+    arc_container:connect_signal(
+        'widget::value_changed',
+        function(_, usage) arc_container.value = usage end
+    )
     return arc_container
 end
 
@@ -289,18 +296,25 @@ function module.load_config(config_file)
         -- disable desktop widget
         desktop_widgets = true,
 
-        -- Your city for the weather forcast widget
-        city_id = 42,
-        app_id = 'N/A',
-
-        -- Set resource for temperature widget
-        thermal_zone = 'thermal_zone0',
-
-        -- Network interface
-        net_interface = 'wlp4s0b1',
-
         -- Using Tyrannical tag managment engine
-        tyrannical = false
+        tyrannical = false,
+
+        -- widgets to be added to wibar
+        wibar_widgets = {
+            'net_down',
+            'net_up',
+            'vol',
+            'mem',
+            'cpu',
+            'fs',
+            'weather',
+            'temp',
+            'bat',
+            'datetime'
+        },
+
+        -- widgets to be added to the desktop pop up
+        arc_widgets = {'cpu', 'mem', 'fs', 'bat'}
     }
     if gfs.file_readable(gfs.get_configuration_dir() .. 'config.lua') then
         config = gears.table.crush(config, require(config_file or 'config'))

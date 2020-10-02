@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-01 17:23:34
+-- @Last Modified at: 2020-10-02 10:37:21
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme 0.1
 --
@@ -42,7 +42,7 @@ local theme = require('themes.ayu.ayu_theme')
 local color_schemes = require('themes.ayu.color_schemes')
 
 -- custom wibox widgets
-local wibox_widgets = require('themes.ayu.widgets.wibox')
+local wibar_widgets = require('themes.ayu.widgets.wibar')
 local desktop_widgets = require('themes.ayu.widgets.desktop')
 
 -- configuration
@@ -83,8 +83,10 @@ theme.at_screen_connect = function(s)
     else
         -- Each screen has its own tag table.
         if not config.tyrannical then
-            awful.tag(awful.util.tagnames, s,
-                      awful.layout.default[s.index] or awful.layout.layouts[1])
+            awful.tag(
+                awful.util.tagnames, s,
+                awful.layout.default[s.index] or awful.layout.layouts[1]
+            )
         end
     end
 
@@ -99,17 +101,14 @@ theme.at_screen_connect = function(s)
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-                              awful.button({}, 1,
-                                           function() awful.layout.inc(1) end),
-                              awful.button({}, 3,
-                                           function()
-            awful.layout.inc(-1)
-        end), awful.button({}, 4, function() awful.layout.inc(1) end),
-                              awful.button({}, 5,
-                                           function()
-            awful.layout.inc(-1)
-        end)))
+    s.mylayoutbox:buttons(
+        gears.table.join(
+            awful.button({}, 1, function() awful.layout.inc(1) end),
+            awful.button({}, 3, function() awful.layout.inc(-1) end),
+            awful.button({}, 4, function() awful.layout.inc(1) end),
+            awful.button({}, 5, function() awful.layout.inc(-1) end)
+        )
+    )
 
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
@@ -126,7 +125,22 @@ theme.at_screen_connect = function(s)
     }
 
     -- Create the desktop widget popup
-    if config.desktop_widgets then
+    if config.arc_widgets then
+        local widgets = {
+            spacing = theme.desktop_widgets_arc_spacing,
+            layout = wibox.layout.fixed.horizontal
+        }
+        for i, w in pairs(config.arc_widgets) do
+            local midx = #theme.widgets.desktop.arcs
+            local cidx = (i - 1) % midx + 1
+            local bg_color = theme.widgets.desktop.arcs[cidx]
+            local fg_color = util.reduce_contrast(bg_color, 50)
+            local warg = config.widgets_arg[w] or {}
+            warg.fg_color = warg.fg_color or fg_color
+            warg.bg_color = warg.bg_color or bg_color
+            table.insert(widgets, desktop_widgets.arcs[w](warg))
+        end
+
         s.desktop_popup = awful.popup {
             widget = {
                 {
@@ -134,12 +148,15 @@ theme.at_screen_connect = function(s)
                     nil,
                     {
                         -- Center widgets horizontally
-                        desktop_widgets.arcs(),
-                        desktop_widgets.clock(),
-                        desktop_widgets.weather {
-                            city_id = config.city_id,
-                            app_id = config.app_id
+                        wibox.widget {
+                            nil,
+                            widgets,
+                            nil,
+                            expand = 'outer',
+                            layout = wibox.layout.align.vertical
                         },
+                        desktop_widgets.clock(),
+                        desktop_widgets.weather(config.widgets_arg.weather),
                         expand = 'outside',
                         layout = wibox.layout.align.vertical
                     },
@@ -161,13 +178,15 @@ theme.at_screen_connect = function(s)
         }
     end
     -- Create the wibox
-    s.mytopwibar = awful.wibar({
-        position = 'top',
-        screen = s,
-        height = theme.top_bar_height,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal
-    })
+    s.mytopwibar = awful.wibar(
+                       {
+            position = 'top',
+            screen = s,
+            height = theme.top_bar_height,
+            bg = theme.bg_normal,
+            fg = theme.fg_normal
+        }
+                   )
 
     -- Add widgets to the wibox
     local myexitmenu = nil
@@ -180,6 +199,17 @@ theme.at_screen_connect = function(s)
             widget = wibox.container.margin
         }
     end
+
+    local widgets = {layout = wibox.layout.fixed.horizontal}
+    for i, w in pairs(config.wibar_widgets) do
+        local midx = #theme.widgets.wibar
+        local cidx = (i - 1) % midx + 1
+        local warg = config.widgets_arg[w] or {}
+        warg.color = warg.color or theme.widgets.wibar[cidx]
+        table.insert(widgets, wibar_widgets[w](warg))
+    end
+    table.insert(widgets, myexitmenu)
+
     s.mytopwibar:setup{
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
@@ -191,41 +221,20 @@ theme.at_screen_connect = function(s)
         },
         -- Middle widgets
         nil,
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            wibox_widgets.net {
-                color = theme.widget_colors.netdown,
-                interface = config.net_interface,
-                value = 'down'
-            },
-            wibox_widgets.net {
-                color = theme.widget_colors.netup,
-                interface = config.net_interface,
-                value = 'up'
-            },
-            wibox_widgets.vol(),
-            wibox_widgets.mem(),
-            wibox_widgets.cpu(),
-            wibox_widgets.fs(),
-            wibox_widgets.weather {
-                city_id = config.city_id,
-                app_id = config.app_id
-            },
-            wibox_widgets.temp {thermal_zone = config.thermal_zone},
-            wibox_widgets.bat(),
-            wibox_widgets.datetime(),
-            myexitmenu
-        }
+        -- Right widgets
+        widgets
     }
 
     -- Create the bottom wibox
-    s.mybottomwibar = awful.wibar({
-        position = 'bottom',
-        screen = s,
-        height = theme.bottom_bar_height,
-        bg = theme.bg_normal,
-        fg = theme.fg_normal
-    })
+    s.mybottomwibar = awful.wibar(
+                          {
+            position = 'bottom',
+            screen = s,
+            height = theme.bottom_bar_height,
+            bg = theme.bg_normal,
+            fg = theme.fg_normal
+        }
+                      )
 
     -- Add widgets to the bottom wibox
     s.systray = wibox.widget.systray()

@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:06:15
+-- @Last Modified at: 2020-10-02 10:11:21
 --
 -- @Last Modified by: Marcel Arpogaus
 -- @Last Modified at: 2020-09-30 08:50:41
@@ -49,6 +49,9 @@ local fa_bat_icons = {
 }
 
 local default_timeout = 5
+local default_bat = 'BAT0'
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
 
 -- [ local functions ] ---------------------------------------------------------
 local function batt_icon(status, perc)
@@ -70,19 +73,21 @@ end
 vicious.cache(vicious.widgets.bat)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function(wargs)
-    local battery = wargs.battery or 'BAT0'
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+    local battery = warg.battery or default_bat
+
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.bat},
+        container_args = {color = color},
         widgets = {
             icon = {
-                widget = util.fa_ico(beautiful.widget_colors.bat, 'N/A'),
+                widget = util.fa_ico(color, 'N/A'),
                 wtype = vicious.widgets.bat,
                 warg = battery,
                 format = function(_, args)
                     local icon = batt_icon(args[1], args[2])
-                    return util.fa_markup(beautiful.widget_colors.bat, icon)
+                    return util.fa_markup(color, icon)
                 end
             },
             widget = {
@@ -90,8 +95,7 @@ widget_defs.wibar = function(wargs)
                 warg = battery,
                 format = function(_, args)
                     return util.markup {
-                        font = beautiful.font,
-                        fg_color = beautiful.widget_colors.bat,
+                        fg_color = color,
                         text = args[2] .. '%'
                     }
                 end
@@ -99,27 +103,22 @@ widget_defs.wibar = function(wargs)
         }
     }
 end
-widget_defs.arc = function(wargs)
-    local battery = wargs.battery or 'BAT0'
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+    local battery = warg.battery or default_bat
+
     return {
         default_timeout = default_timeout,
-        container_args = {
-            bg = beautiful.widget_colors.desktop.bat.bg,
-            fg = beautiful.widget_colors.desktop.bat.fg
-        },
+        container_args = {bg = bg_color, fg = fg_color},
         widgets = {
             icon = {
-                widget = util.create_arc_icon(
-                    beautiful.widget_colors.desktop.bat.fg, 'N/A', 150
-                ),
+                widget = util.create_arc_icon(fg_color, 'N/A', 150),
                 wtype = vicious.widgets.bat,
                 warg = battery,
                 format = function(_, args)
                     local icon = batt_icon(args[1], args[2])
-                    return util.fa_markup(
-                               beautiful.widget_colors.desktop.bat.fg, icon,
-                               math.floor(150 / 8)
-                           )
+                    return util.fa_markup(fg_color, icon, math.floor(150 / 8))
                 end
             },
             widget = {
@@ -131,7 +130,7 @@ widget_defs.arc = function(wargs)
                     )
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = beautiful.widget_colors.desktop.bat.fg,
+                        fg_color = fg_color,
                         text = args[2] .. '%'
                     }
                 end

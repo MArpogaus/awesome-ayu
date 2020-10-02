@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:07:45
+-- @Last Modified at: 2020-10-02 10:03:20
 -- [ description ] -------------------------------------------------------------
 -- cpu utilization widgets
 -- [ license ] -----------------------------------------------------------------
@@ -40,6 +40,9 @@ local widget_defs = {}
 
 local default_timeout = 1
 
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
+
 local step_width = 8
 local step_spacing = 4
 
@@ -48,18 +51,19 @@ local step_spacing = 4
 vicious.cache(vicious.widgets.cpu)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function()
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.cpu},
+        container_args = {color = color},
         widgets = {
             icon = {widget = ''},
             widget = {
                 wtype = vicious.widgets.cpu,
                 format = function(_, args)
                     return util.markup {
-                        font = beautiful.font,
-                        fg_color = beautiful.widget_colors.cpu,
+                        fg_color = color,
                         text = args[1] .. '%'
                     }
                 end
@@ -67,23 +71,23 @@ widget_defs.wibar = function()
         }
     }
 end
-widget_defs.arc = function()
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+
     local cpu_graph = wibox.widget {
         max_value = 100,
         min_value = 0,
         step_width = step_width,
         step_spacing = step_spacing,
         forced_height = beautiful.desktop_widgets_arc_size / 5,
-        color = beautiful.widget_colors.desktop.cpu.fg,
+        color = fg_color,
         background_color = '#00000000',
         widget = wibox.widget.graph
     }
     return {
         default_timeout = default_timeout,
-        container_args = {
-            bg = beautiful.widget_colors.desktop.cpu.bg,
-            fg = beautiful.widget_colors.desktop.cpu.fg
-        },
+        container_args = {bg = bg_color, fg = fg_color},
         widgets = {
             icon = {
                 widget = wibox.widget {
@@ -114,7 +118,7 @@ widget_defs.arc = function()
                     )
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = beautiful.widget_colors.desktop.cpu.fg,
+                        fg_color = fg_color,
                         text = args[1] .. '%'
                     }
                 end

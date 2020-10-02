@@ -4,7 +4,7 @@
 -- @Date:   2019-11-18 10:19:01
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:27
+-- @Last Modified at: 2020-10-02 10:31:31
 -- [ description ] -------------------------------------------------------------
 -- desktop widgets
 -- [ license ] -----------------------------------------------------------------
@@ -26,44 +26,41 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 -- SOFTWARE.
 --------------------------------------------------------------------------------
--- [ libraries ]-----------------------------------------------------------------
-local wibox = require('wibox')
-local beautiful = require('beautiful')
-
--- widgets
+-- [ required modules ] --------------------------------------------------------
+local battery = require('themes.ayu.widgets.battery')
+local cpu = require('themes.ayu.widgets.cpu')
 local date_time = require('themes.ayu.widgets.date_time')
+local fs = require('themes.ayu.widgets.fs')
+local memory = require('themes.ayu.widgets.memory')
+local net = require('themes.ayu.widgets.net')
+local temp = require('themes.ayu.widgets.temp')
+local volume = require('themes.ayu.widgets.volume')
 local weather = require('themes.ayu.widgets.weather')
 
-local cpu = require('themes.ayu.widgets.cpu')
-local memory = require('themes.ayu.widgets.memory')
-local fs = require('themes.ayu.widgets.fs')
-local battery = require('themes.ayu.widgets.battery')
-
+-- [ local objects ] -----------------------------------------------------------
 local module = {}
 
--- [ clock ] -------------------------------------------------------------------
+-- [ module functions ] --------------------------------------------------------
 module.clock = date_time.create_desktop_widget
-
--- [ weather ] -----------------------------------------------------------------
 module.weather = weather.create_desktop_widget
 
 -- [ arcs ] --------------------------------------------------------------------
-module.arcs = function()
-    return wibox.widget {
-        nil,
-        {
-            cpu.create_arc_widget(),
-            memory.create_arc_widget(),
-            fs.create_arc_widget(),
-            battery.create_arc_widget(),
-            spacing = beautiful.desktop_widgets_arc_spacing,
-            layout = wibox.layout.fixed.horizontal
-        },
-        nil,
-        expand = 'outer',
-        layout = wibox.layout.align.vertical
-    }
-end
+module.arcs = {
+    net_down = function(warg)
+        warg.value = 'down'
+        return net.create_arc_widget(warg)
+    end,
+    net_up = function(warg)
+        warg.value = 'up'
+        return net.create_arc_widget(warg)
+    end,
+    vol = volume.create_arc_widget,
+    mem = memory.create_arc_widget,
+    cpu = cpu.create_arc_widget,
+    temp = temp.create_arc_widget,
+    bat = battery.create_arc_widget,
+    fs = fs.create_arc_widget
+}
 
 -- [ return module ] -----------------------------------------------------------
 return module

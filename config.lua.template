@@ -10,21 +10,39 @@ module.color_scheme = 'light'
 -- path to your wallpaper
 -- module.color_scheme = 'light'
 
-
 -- [ widgets ] -----------------------------------------------------------------
 -- disable desktop widget
 -- module.desktop_widgets = false
+module.wibar_widgets = {
+	'net_down',
+	'net_up',
+	'vol',
+	'mem',
+	'cpu',
+	'fs',
+	'weather',
+	'temp',
+	'bat',
+	'datetime'
+}
+module.arc_widgets = {}
 
--- Your city for the weather forcast widget
-module.city_id = 'change me'
-module.app_id = 'change me'
-
-
--- Set resource for temperature widget
-module.thermal_zone = 'thermal_zone0'
-
--- Network interface
-module.net_interface = 'change me'
+-- configure widgets
+module.widgets = {
+    weather = {
+        -- Your city for the weather forcast widget
+        city_id = 'change me',
+        app_id = 'change me'
+    },
+    temp = {
+        -- Set resource for temperature widget
+        thermal_zone = 'thermal_zone0'
+    },
+    net = {
+        -- Network interface
+        net_interface = 'change me'
+    }
+}
 
 -- [ miscellaneous ] -----------------------------------------------------------
 -- Using Tyrannical tag managment engine

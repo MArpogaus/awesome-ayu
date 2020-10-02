@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:55
+-- @Last Modified at: 2020-10-02 09:54:44
 -- [ description ] -------------------------------------------------------------
 -- alsa volume widget
 -- [ license ] -----------------------------------------------------------------
@@ -44,19 +44,26 @@ fa_vol_icons[2] = '' -- fa-volume-up
 
 local default_timeout = 1
 
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
+
+local default_device = 'Master'
+
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.volume)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function(wargs)
-    local device = wargs.device or 'Master'
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+    local device = warg.device or default_device
+
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.volume},
+        container_args = {color = color},
         widgets = {
             icon = {
-                widget = util.fa_ico(beautiful.widget_colors.volume, 'N/A'),
+                widget = util.fa_ico(color, 'N/A'),
                 wtype = vicious.widgets.volume,
                 warg = device,
                 format = function(_, args)
@@ -67,7 +74,7 @@ widget_defs.wibar = function(wargs)
                         ico =
                             fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
                     end
-                    return util.fa_markup(beautiful.widget_colors.volume, ico)
+                    return util.fa_markup(color, ico)
                 end
             },
             widget = {
@@ -80,25 +87,23 @@ widget_defs.wibar = function(wargs)
                     else
                         vol = args[1] .. '%'
                     end
-                    return util.fa_markup(beautiful.widget_colors.volume, vol)
+                    return util.fa_markup(color, vol)
                 end
             }
         }
     }
 end
-widget_defs.arc = function(wargs)
-    local device = wargs.device or 'Master'
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+    local device = warg.device or default_device
+
     return {
         default_timeout = default_timeout,
-        container_args = {
-            bg = beautiful.widget_colors.desktop.volume.bg,
-            fg = beautiful.widget_colors.desktop.volume.fg
-        },
+        container_args = {bg = bg_color, fg = fg_color},
         widgets = {
             icon = {
-                widget = util.create_arc_icon(
-                    beautiful.widget_colors.desktop.volume.fg, 'N/A', 150
-                ),
+                widget = util.create_arc_icon(fg_color, 'N/A', 150),
                 wtype = vicious.widgets.volume,
                 warg = device,
                 format = function(_, args)
@@ -109,10 +114,7 @@ widget_defs.arc = function(wargs)
                         ico =
                             fa_vol_icons[math.min(math.ceil(args[1] / 50), 2)]
                     end
-                    return util.fa_markup(
-                               beautiful.widget_colors.desktop.volume.fg, ico,
-                               math.floor(150 / 8)
-                           )
+                    return util.fa_markup(fg_color, ico, math.floor(150 / 8))
                 end
             },
             widget = {
@@ -131,7 +133,7 @@ widget_defs.arc = function(wargs)
                     end
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = beautiful.widget_colors.desktop.volume.fg,
+                        fg_color = fg_color,
                         text = vol
                     }
                 end

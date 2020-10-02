@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:16
+-- @Last Modified at: 2020-10-02 10:03:20
 -- [ description ] -------------------------------------------------------------
 -- disk usage widgets 
 -- [ license ] -----------------------------------------------------------------
@@ -38,7 +38,10 @@ local widgets = require('themes.ayu.widgets')
 local widget_defs = {}
 
 local fs_icon = ''
+
 local default_timeout = 60
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
 local default_mount_point = '{/ used_p}'
 
 -- [ sequential code ] ---------------------------------------------------------
@@ -46,47 +49,47 @@ local default_mount_point = '{/ used_p}'
 vicious.cache(vicious.widgets.fs)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function()
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+    local mount_point = warg.mount_point or default_mount_point
+
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.fs},
+        container_args = {color = color},
         widgets = {
             icon = {widget = fs_icon},
             widget = {
                 wtype = vicious.widgets.fs,
                 format = function(_, args)
                     return util.markup {
-                        font = beautiful.font,
-                        fg_color = beautiful.widget_colors.fs,
-                        text = args[args.mount_point or default_mount_point] ..
-                            '%'
+                        fg_color = color,
+                        text = args[mount_point] .. '%'
                     }
                 end
             }
         }
     }
 end
-widget_defs.arc = function()
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+    local mount_point = warg.mount_point or default_mount_point
+
     return {
         default_timeout = default_timeout,
-        container_args = {
-            bg = beautiful.widget_colors.desktop.fs.bg,
-            fg = beautiful.widget_colors.desktop.fs.fg
-        },
+        container_args = {bg = bg_color, fg = fg_color},
         widgets = {
             icon = {widget = fs_icon},
             widget = {
                 wtype = vicious.widgets.fs,
                 format = function(widget, args)
                     widget:emit_signal_recursive(
-                        'widget::value_changed',
-                        args[args.mount_point or default_mount_point]
+                        'widget::value_changed', args[mount_point]
                     )
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = beautiful.widget_colors.desktop.fs.fg,
-                        text = args[args.mount_point or default_mount_point] ..
-                            '%'
+                        fg_color = fg_color,
+                        text = args[mount_point] .. '%'
                     }
                 end
             }

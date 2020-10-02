@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:35
+-- @Last Modified at: 2020-10-02 10:03:20
 -- [ description ] -------------------------------------------------------------
 -- memory widgets
 -- [ license ] -----------------------------------------------------------------
@@ -41,23 +41,27 @@ local mem_icon = ''
 
 local default_timeout = 7
 
+local default_fg_color = beautiful.fg_normal
+local default_bg_color = beautiful.bg_normal
+
 -- [ sequential code ] ---------------------------------------------------------
 -- enable caching
 vicious.cache(vicious.widgets.mem)
 
 -- [ define widget ] -----------------------------------------------------------
-widget_defs.wibar = function()
+widget_defs.wibar = function(warg)
+    local color = warg.color or default_fg_color
+
     return {
         default_timeout = default_timeout,
-        container_args = {color = beautiful.widget_colors.memory},
+        container_args = {color = color},
         widgets = {
             icon = {widget = mem_icon},
             widget = {
                 wtype = vicious.widgets.mem,
                 format = function(_, args)
                     return util.markup {
-                        font = beautiful.font,
-                        fg_color = beautiful.widget_colors.memory,
+                        fg_color = color,
                         text = args[1] .. '%'
                     }
                 end
@@ -65,13 +69,13 @@ widget_defs.wibar = function()
         }
     }
 end
-widget_defs.arc = function()
+widget_defs.arc = function(warg)
+    local fg_color = warg.fg_color or default_fg_color
+    local bg_color = warg.bg_color or default_bg_color
+
     return {
         default_timeout = default_timeout,
-        container_args = {
-            bg = beautiful.widget_colors.desktop.memory.bg,
-            fg = beautiful.widget_colors.desktop.memory.fg
-        },
+        container_args = {bg = bg_color, fg = fg_color},
         widgets = {
             icon = {widget = mem_icon},
             widget = {
@@ -82,7 +86,7 @@ widget_defs.arc = function()
                     )
                     return util.markup {
                         font = beautiful.font_name .. 8,
-                        fg_color = beautiful.widget_colors.desktop.memory.fg,
+                        fg_color = fg_color,
                         text = args[1] .. '%'
                     }
                 end

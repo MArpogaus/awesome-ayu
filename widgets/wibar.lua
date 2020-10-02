@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 08:12:41
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:06:10
+-- @Last Modified at: 2020-10-02 10:31:49
 -- [ description ] -------------------------------------------------------------
 -- wibar widgets
 -- [ license ] -----------------------------------------------------------------
@@ -27,20 +27,27 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
-local date_time = require('themes.ayu.widgets.date_time')
-local weather = require('themes.ayu.widgets.weather')
-local fs = require('themes.ayu.widgets.fs')
-local cpu = require('themes.ayu.widgets.cpu')
-local temp = require('themes.ayu.widgets.temp')
 local battery = require('themes.ayu.widgets.battery')
-local volume = require('themes.ayu.widgets.volume')
-local net = require('themes.ayu.widgets.net')
+local cpu = require('themes.ayu.widgets.cpu')
+local date_time = require('themes.ayu.widgets.date_time')
+local fs = require('themes.ayu.widgets.fs')
 local memory = require('themes.ayu.widgets.memory')
+local net = require('themes.ayu.widgets.net')
+local temp = require('themes.ayu.widgets.temp')
+local volume = require('themes.ayu.widgets.volume')
+local weather = require('themes.ayu.widgets.weather')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {
     weather = weather.create_wibar_widget,
-    net = net.create_wibar_widget,
+    net_down = function(warg)
+        warg.value = 'down'
+        return net.create_wibar_widget(warg)
+    end,
+    net_up = function(warg)
+        warg.value = 'up'
+        return net.create_wibar_widget(warg)
+    end,
     vol = volume.create_wibar_widget,
     mem = memory.create_wibar_widget,
     cpu = cpu.create_wibar_widget,

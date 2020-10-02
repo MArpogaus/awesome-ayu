@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:59:25
+-- @Last Modified at: 2020-10-02 11:33:56
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -51,7 +51,7 @@ local config = util.load_config()
 -- [ module variables ] --------------------------------------------------------
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
-theme.icon_theme = config.icon_theme or 'HighContrast'
+theme.icon_theme = config.icon_theme
 
 -- [ module functions ] --------------------------------------------------------
 theme.at_screen_connect = function(s)
@@ -279,7 +279,7 @@ theme.set_mirage =
 
 -- [ sequential code ] ---------------------------------------------------------
 local color_scheme
-if config.use_xresources then
+if config.xresources then
     color_scheme = color_schemes.xrdb()
 else
     color_scheme = color_schemes[config.color_scheme]

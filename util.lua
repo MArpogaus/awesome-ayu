@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-01 21:08:08
+-- @Last Modified at: 2020-10-02 12:28:13
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -29,6 +29,7 @@
 -- [ required modules ] --------------------------------------------------------
 local os = os
 
+local awful = require('awful')
 local gears = require('gears')
 local gfs = require('gears.filesystem')
 local cairo = require('lgi').cairo
@@ -39,6 +40,62 @@ local owfont = require('themes.ayu.owfont')
 
 -- [ local objects ] -----------------------------------------------------------
 local module = {}
+
+-- [ local functions ] ---------------------------------------------------------
+local function set_wpg_colorscheme(theme)
+    awful.spawn.with_shell(string.format('wpg -s %s.png', theme))
+end
+local function set_subl_colorscheme(theme)
+    local subl_prefs = string.format(
+                               '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
+                               os.getenv('HOME')
+                       )
+    awful.spawn.with_shell(
+        string.format(
+            'sed -i \'s:ayu-\\(light\\|dark\\|mirage\\):ayu-%s:\' \'%s\'',
+            theme, subl_prefs
+        )
+    )
+end
+local function set_icon_colorscheme(theme)
+    local xsettings_conf = string.format(
+                               '%s/.config/awesome/xsettings',
+                               os.getenv('HOME')
+                           )
+    if theme then
+        awful.spawn.with_shell(
+            string.format(
+                'echo \'Net/IconThemeName "%s"\n\' > %s && xsettingsd -c %s',
+                theme, xsettings_conf, xsettings_conf
+            )
+        )
+    else
+        awful.spawn.with_shell(
+            string.format('xsettingsd -c %s', xsettings_conf)
+        )
+    end
+end
+local current_cs
+local function set_color_scheme(cs, ico)
+    local widgets = require('themes.ayu.widgets')
+
+    if current_cs ~= cs then
+        current_cs = cs
+        local theme = beautiful.get()
+        theme['set_' .. cs](theme)
+        -- update awesome colorscheme 
+        widgets.unregister_widgets()
+        awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
+        collectgarbage()
+
+        -- update gtk/rofi colorscheme
+        set_wpg_colorscheme(cs)
+        -- update sublime colorscheme
+        set_subl_colorscheme(cs)
+        -- update icon theme
+        set_icon_colorscheme(ico)
+    end
+end
 
 -- [ module functions ] --------------------------------------------------------
 -- Helper functions for modifying hex colors -----------------------------------
@@ -287,11 +344,14 @@ module.markup = function(args)
 end
 
 -- Load configuration file
-function module.load_config(config_file)
+module.load_config = function(config_file)
     local config = {
-        -- Load color schemes from xresources
-        use_xresources = false,
+        -- load color schemes from xresources
+        xresources = false,
         color_scheme = 'light',
+
+        -- icon theme to use
+        icon_theme = 'HighContrast',
 
         -- disable desktop widget
         desktop_widgets = true,
@@ -321,6 +381,11 @@ function module.load_config(config_file)
     end
     return config
 end
+
+-- change colorschemes
+module.set_dark = function() set_color_scheme('dark', 'flattrcolor') end
+module.set_mirage = function() set_color_scheme('mirage', 'flattrcolor') end
+module.set_light = function() set_color_scheme('light', 'flattrcolor-dark') end
 
 -- [ return module ] -----------------------------------------------------------
 return module

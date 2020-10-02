@@ -4,21 +4,38 @@
 
 This theme has been inspired by the multicolor theme from [Awesome WM Copycats][awesome-copycats] and uses the gorgeous [ayu color palette][ayu-colors].
 
+<!-- MarkdownTOC autolink="true" -->
+
+- [Screenshoots](#screenshoots)
+    - [dark](#dark)
+    - [mirage](#mirage)
+    - [light](#light)
+- [Installation](#installation)
+    - [Dependencies](#dependencies)
+    - [Quick installation example](#quick-installation-example)
+- [Configuration](#configuration)
+    - [Widget Parameters](#widget-parameters)
+- [Helper functions](#helper-functions)
+- [Related projects](#related-projects)
+
+<!-- /MarkdownTOC -->
+
+
 # Screenshoots
 
-### dark
+## dark
 
 ![dark colors scheme](img/dark.png)
 
 ---
 
-### mirage
+## mirage
 
 ![mirage colors scheme](img/mirage.png)
 
 ---
 
-### light
+## light
 
 ![light colors scheme](img/light.png)
 
@@ -31,6 +48,10 @@ This theme has been inspired by the multicolor theme from [Awesome WM Copycats][
  * [owfont - symbol font for Open Weather Map API][owfont]
  * [Font Awesome 4][FontAwesome4]
  * [mononoki][mononoki]
+
+optional to switch colorschemes
+
+ * [wpgtk][wpgtk]
 
 ## Quick installation example
 
@@ -67,82 +88,136 @@ This theme has been inspired by the multicolor theme from [Awesome WM Copycats][
     awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
     ```
 
- 1. install [wpgtk][wpgtk] to switch color schemes. (optional)
+ 1. **Optional**: install [wpgtk][wpgtk] to switch colorschemes.
     [JSON colorschemes][JsonColorschemes] and a `Rofi` template can be found in the `wpg` folder.
 
 # Configuration
 
-The configuration file `config.lua` allows you to adjust the following parameters according to your needs.
+The configuration file `config.lua` allows you to adjust the appearance of the theme to your needs.
+The following table gives an overview of all configuration parameters:
+
+| Name              | Description                             | Type             |
+|:------------------|:----------------------------------------|:-----------------|
+| `tyrannical`      | using Tyrannical tag managment engine   | bool             |
+| `xresources`      | load colorschemes from xresources       | bool             |
+| `color_scheme`    | colorscheme to use                      | string           |
+| `dpi`             | number of pixels per inch of the screen | string           |
+| `icon_theme`      | icon theme to use                       | string           |
+| `wallpaper`       | path to your wallpaper                  | string           |
+| `desktop_widgets` | enable/disable desktop widget           | bool             |
+| `wibar_widgets`   | widgets for the wibar                   | array of strings |
+| `arc_widgets`     | widgets for the the desktop pop up      | array of strings |
+| `widgets_arg`     | widget parameters (see below)           | table            |
+
+
+If parameters are unset the following defaults are used:
+
+```lua
+{
+    -- Load colorschemes from xresources
+    xresources = false,
+    color_scheme = 'light',
+
+    -- icon theme to use
+    icon_theme = 'HighContrast',
+
+    -- disable desktop widget
+    desktop_widgets = true,
+
+    -- Using Tyrannical tag managment engine
+    tyrannical = false,
+
+    -- widgets to be added to wibar
+    wibar_widgets = {
+        'net_down',
+        'net_up',
+        'vol',
+        'mem',
+        'cpu',
+        'fs',
+        'weather',
+        'temp',
+        'bat',
+        'datetime'
+    },
+
+    -- widgets to be added to the desktop pop up
+    arc_widgets = {'cpu', 'mem', 'fs', 'bat'}
+}
+```
 
 ## Widget Parameters
 
-`city_id` - OWM id of your city. Find it here: https://openweathermap.org/find?q=
+Some widgets (`weather`, `temp`, `net`) require additional configuration.
+These parameters for each widget are stored in a table under the key `widgets_arg` in the configuration.
+A example configuration is shown in the following listing:
 
-`app_id` - OWM API key. Sign up here: https://home.openweathermap.org/users/sign_up
+```lua
+{
+    weather = {
+        -- Your city for the weather widget
+        city_id = '2643743',
+        app_id = '4c57f0c88d9844630327623633ce269cf826ab99'
+    },
+    temp = {
+        -- Set resource for temperature widget
+        thermal_zone = 'thermal_zone0'
+    },
+    net = {
+        -- Network interface
+        net_interface = 'eth0'
+    }
+}
+```
 
-`thermal_zone` - resource for temperature widget: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-thermal
-
-`net_interface` - Network interface to monitor: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-net
-
-## Color scheme
-
-`use_xresources` - Generate the color scheme from xrdb
+| Name            | Description                                                                                                    | Type   |
+|:----------------|:---------------------------------------------------------------------------------------------------------------|:-------|
+| `city_id`       | open weather map id of your city. Find it here: https://openweathermap.org/find?q=                             | string |
+| `app_id`        | open weather map API key. Sign up here: https://home.openweathermap.org/users/sign_up                          | string |
+| `thermal_zone`  | resource for temperature widget: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-thermal | string |
+| `net_interface` | network interface to monitor: https://vicious.readthedocs.io/en/latest/widgets.html#vicious-widgets-net        | string |
 
 # Helper functions
 
-You can use the following functions to dynamically change the used color scheme:
+A set of helper functions is provided to toggle the colorscheme using key bindings.
+
+**Warning** This is optimized to work on my machine.
+You might want to check the implementation to avoid any damage to your system.
+
+This functionality is implemented in several steps:
+
+ 1. The awesome colorscheme is updated.
+    This involves updating the theme colors and regenerating all widgets.
+ 2. [wpgtk][wpgtk] is used to update gtk and rofi themes.
+ 3. sed is used to change the sublime text colorscheme.
+
+    **Note:** the settings file is expected to be found under `~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings`
+ 4. [xsettingsd][xsettingsd] is used to change the icon theme.
+
+To use these functions import the utilities packages
 
 ```lua
-local set_dark = function() 
-    local theme = beautiful.get()
-    theme:set_dark()
-    -- update awesome colorscheme 
-    awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
-    -- update gtk/rofi colorscheme
-    wpg("dark")
-    -- update sublime colorscheme
-    subl("dark")
-end
-local set_mirage = function() 
-    local theme = beautiful.get()
-    theme:set_mirage()
-    -- update awesome colorscheme 
-    awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
-    -- update gtk/rofi colorscheme
-    wpg("mirage")
-    -- update sublime colorscheme
-    subl("mirage")
-end
-local set_light = function() 
-    local theme = beautiful.get()
-    theme:set_light()
-    -- update awesome colorscheme 
-    awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
-    -- update gtk/rofi colorscheme
-    wpg("light")
-    -- update sublime colorscheme
-    subl("light")
-end
+local util = require('themes.ayu.util')
 ```
 
-**Note:** Using `awful.screen.connect_for_each_screen(beautiful.at_screen_connect)` to update colors inside awesome, seams to cause significant performance issues when heavily used. Probably because old resources aren't freed properly. if you know a better way please let me know :)
+and add the following key bindings to your `rc.lua`:
 
-I use the following function to switch colorschemes using wpgtk.
 ```lua
-local function wpg( theme )
-  awful.spawn.with_shell(string.format("wpg -s %s.png", theme))
-end
+    ...
+    awful.key(
+        {modkey, altkey, 'Control'}, 'l', util.set_light,
+        {description = 'set light colorscheme', group = 'theme'}
+    ), awful.key(
+        {modkey, altkey, 'Control'}, 'm', util.set_mirage,
+        {description = 'set mirage colorscheme', group = 'theme'}
+    ), awful.key(
+        {modkey, altkey, 'Control'}, 'd', util.set_dark,
+        {description = 'set dark colorscheme', group = 'theme'}
+    )
+    ...
 ```
 
-To update the colorscheme in sublime text accordingly, this function can be used.
-```lua
-local function subl( theme )
-  local subl_prefs = string.format("%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings", os.getenv("HOME"))
-  awful.spawn.with_shell(string.format("sed -i 's:ayu-\\(light\\|dark\\|mirage\\):ayu-%s:' '%s'", theme, subl_prefs))
-end
-```
-
-# Related projects and ports
+# Related projects
 
 - `ayu` for Ace: https://github.com/ayu-theme/ayu-ace
 - `ayu` colors as NPM package: https://github.com/ayu-theme/ayu-colors
@@ -159,3 +234,5 @@ end
 [mononoki]: https://madmalik.github.io/mononoki/
 [wpgtk]: https://github.com/deviantfero/wpgtk
 [JsonColorschemes]: https://github.com/deviantfero/wpgtk/wiki/Colorschemes#import-a-colorscheme
+[wpgtk]: https://github.com/deviantfero/wpgtk
+[xsettingsd]: https://wiki.archlinux.org/index.php/Xsettingsd

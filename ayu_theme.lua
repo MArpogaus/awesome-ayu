@@ -4,7 +4,7 @@
 -- @Date:   2019-10-23 19:28:06
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:44:11
+-- @Last Modified at: 2020-10-02 11:52:21
 -- [ description ] -------------------------------------------------------------
 -- factory to build a awesome theme based on a given colorscheme
 -- [ license ] -----------------------------------------------------------------
@@ -132,12 +132,12 @@ module.set_color_scheme = function(self, cs)
         },
         desktop = {
             arcs = {
-                -- cs.colors[2],
-                -- cs.colors[3],
-                -- cs.colors[4],
-                -- cs.colors[5],
-                -- cs.colors[6],
-                -- cs.colors[7],
+                cs.colors[2],
+                cs.colors[3],
+                cs.colors[4],
+                cs.colors[5],
+                cs.colors[6],
+                cs.colors[7],
                 cs.colors[10],
                 cs.colors[11],
                 cs.colors[12],

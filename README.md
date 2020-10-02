@@ -44,9 +44,10 @@ This theme has been inspired by the multicolor theme from [Awesome WM Copycats][
 
 ## Dependencies
 
+ * [awesome v4.3][awesome]
  * [vicious][vicious]
  * [owfont - symbol font for Open Weather Map API][owfont]
- * [Font Awesome 4][FontAwesome4]
+ * [Font Awesome 4][font-awesome4]
  * [mononoki][mononoki]
 
 optional to switch colorschemes
@@ -63,7 +64,7 @@ optional to switch colorschemes
     git clone https://github.com/vicious-widgets/vicious.git vicious
     ```
 
- 1. Install [Font Awesome 4][FontAwesome4] and [mononoki][mononoki]
+ 1. Install [Font Awesome 4][font-awesome4] and [mononoki][mononoki]
     ```shell
     # Debian / Ubuntu
     apt install fonts-font-awesome fonts-mononoki
@@ -88,8 +89,8 @@ optional to switch colorschemes
     awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
     ```
 
- 1. **Optional**: install [wpgtk][wpgtk] to switch colorschemes.
-    [JSON colorschemes][JsonColorschemes] and a `Rofi` template can be found in the `wpg` folder.
+ 1. **Optional:** install [wpgtk][wpgtk] to switch colorschemes.
+    [JSON colorschemes][json-colorschemes] and a `Rofi` template can be found in the `wpg` folder.
 
 # Configuration
 
@@ -149,7 +150,8 @@ If parameters are unset the following defaults are used:
 ## Widget Parameters
 
 Some widgets (`weather`, `temp`, `net`) require additional configuration.
-These parameters for each widget are stored in a table under the key `widgets_arg` in the configuration.
+The parameters for each widget are stored in a table under the key `widgets_arg` in the configuration.
+
 A example configuration is shown in the following listing:
 
 ```lua
@@ -170,6 +172,8 @@ A example configuration is shown in the following listing:
 }
 ```
 
+The following table gives an overview of all widget parameters:
+
 | Name            | Description                                                                                                    | Type   |
 |:----------------|:---------------------------------------------------------------------------------------------------------------|:-------|
 | `city_id`       | open weather map id of your city. Find it here: https://openweathermap.org/find?q=                             | string |
@@ -180,19 +184,20 @@ A example configuration is shown in the following listing:
 # Helper functions
 
 A set of helper functions is provided to toggle the colorscheme using key bindings.
-
-**Warning** This is optimized to work on my machine.
-You might want to check the implementation to avoid any damage to your system.
-
-This functionality is implemented in several steps:
+This functionality is implemented in multiple steps:
 
  1. The awesome colorscheme is updated.
     This involves updating the theme colors and regenerating all widgets.
  2. [wpgtk][wpgtk] is used to update gtk and rofi themes.
- 3. sed is used to change the sublime text colorscheme.
+
+    **Note:** remember to use `wpg-install.sh` to install the [wpk templates][wpk-templates] for gtk, icons and rofi
+ 3. sed is used to change the [sublime text colorscheme][ayu].
 
     **Note:** the settings file is expected to be found under `~/.config/sublime-text-3/Packages/User/Preferences.sublime-settings`
  4. [xsettingsd][xsettingsd] is used to change the icon theme.
+
+**Warning:** This is optimized to work on my machine.
+You might want to check the implementation to avoid any damage to your system.
 
 To use these functions import the utilities packages
 
@@ -203,18 +208,18 @@ local util = require('themes.ayu.util')
 and add the following key bindings to your `rc.lua`:
 
 ```lua
-    ...
-    awful.key(
-        {modkey, altkey, 'Control'}, 'l', util.set_light,
-        {description = 'set light colorscheme', group = 'theme'}
-    ), awful.key(
-        {modkey, altkey, 'Control'}, 'm', util.set_mirage,
-        {description = 'set mirage colorscheme', group = 'theme'}
-    ), awful.key(
-        {modkey, altkey, 'Control'}, 'd', util.set_dark,
-        {description = 'set dark colorscheme', group = 'theme'}
-    )
-    ...
+...
+awful.key(
+    {modkey, altkey, 'Control'}, 'l', util.set_light,
+    {description = 'set light colorscheme', group = 'theme'}
+), awful.key(
+    {modkey, altkey, 'Control'}, 'm', util.set_mirage,
+    {description = 'set mirage colorscheme', group = 'theme'}
+), awful.key(
+    {modkey, altkey, 'Control'}, 'd', util.set_dark,
+    {description = 'set dark colorscheme', group = 'theme'}
+)
+...
 ```
 
 # Related projects
@@ -228,11 +233,12 @@ and add the following key bindings to your `rc.lua`:
 [ayu]: https://github.com/dempfi/ayu/blob/master/README.md
 [awesome-copycats]: https://github.com/lcpz/awesome-copycats
 [ayu-colors]: https://github.com/ayu-theme/ayu-colors
+[awesome]: https://awesomewm.org/
 [vicious]: https://github.com/vicious-widgets/vicious
 [owfont]: http://websygen.github.io/owfont/
-[FontAwesome4]: https://github.com/FortAwesome/Font-Awesome
+[font-awesome4]: https://github.com/FortAwesome/Font-Awesome
 [mononoki]: https://madmalik.github.io/mononoki/
 [wpgtk]: https://github.com/deviantfero/wpgtk
-[JsonColorschemes]: https://github.com/deviantfero/wpgtk/wiki/Colorschemes#import-a-colorscheme
-[wpgtk]: https://github.com/deviantfero/wpgtk
+[json-colorschemes]: https://github.com/deviantfero/wpgtk/wiki/Colorschemes#import-a-colorscheme
+[wpk-templates]: https://github.com/deviantfero/wpgtk-templates
 [xsettingsd]: https://wiki.archlinux.org/index.php/Xsettingsd

@@ -4,7 +4,7 @@
 -- @Date:   2020-09-26 20:19:50
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-09-30 09:08:32
+-- @Last Modified at: 2020-10-04 19:56:11
 -- [ description ] -------------------------------------------------------------
 -- metatable to create register and unregister vicious widgets
 -- [ license ] -----------------------------------------------------------------
@@ -27,8 +27,7 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
-local setmetatable = setmetatable
-
+local gears = require('gears')
 local wibox = require('wibox')
 
 local vicious = require('vicious')
@@ -36,12 +35,19 @@ local vicious = require('vicious')
 local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
+local name = ...
 local module = {}
 
-local registered_widgets = {}
+local registered_widgets
 
 -- [ local functions ] ---------------------------------------------------------
 local function create_widget(widget_def, widget_container, timeout)
+    assert(
+        registered_widgets,
+        'module not initialized for screen. call ' .. name ..
+            '.init(screen) fist!'
+    )
+
     local widget_container_args = widget_def.container_args or {}
     for key, w in pairs(widget_def.widgets) do
         -- define widget
@@ -91,16 +97,28 @@ module.new = function(args)
             end
     end
 
-    -- define a metatable
-    setmetatable(widget_generator, module)
-
     return widget_generator
-
 end
 
 module.unregister_widgets = function()
-    for _, w in pairs(registered_widgets) do vicious.unregister(w) end
+    for i, w in pairs(registered_widgets) do
+        gears.debug.print_warning('unregister ' .. i)
+        vicious.unregister(w)
+    end
     registered_widgets = {}
+end
+
+module.update_widgets = function() vicious.force(registered_widgets) end
+
+module.init = function(s)
+    if s.registered_widgets then
+        registered_widgets = s.registered_widgets
+        -- unregister widgets
+        module.unregister_widgets(s)
+    else
+        s.registered_widgets = {}
+        registered_widgets = s.registered_widgets
+    end
 end
 
 -- [ return module ] -----------------------------------------------------------

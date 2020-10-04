@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 12:28:13
+-- @Last Modified at: 2020-10-04 19:56:53
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -47,9 +47,9 @@ local function set_wpg_colorscheme(theme)
 end
 local function set_subl_colorscheme(theme)
     local subl_prefs = string.format(
-                               '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
-                               os.getenv('HOME')
-                       )
+        '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
+        os.getenv('HOME')
+    )
     awful.spawn.with_shell(
         string.format(
             'sed -i \'s:ayu-\\(light\\|dark\\|mirage\\):ayu-%s:\' \'%s\'',
@@ -77,16 +77,12 @@ local function set_icon_colorscheme(theme)
 end
 local current_cs
 local function set_color_scheme(cs, ico)
-    local widgets = require('themes.ayu.widgets')
-
     if current_cs ~= cs then
         current_cs = cs
         local theme = beautiful.get()
         theme['set_' .. cs](theme)
-        -- update awesome colorscheme 
-        widgets.unregister_widgets()
+        -- update awesome colorscheme
         awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
-        collectgarbage()
 
         -- update gtk/rofi colorscheme
         set_wpg_colorscheme(cs)
@@ -320,6 +316,7 @@ module.create_arc_widget = function(args)
         colors = {fg},
         min_value = min,
         max_value = max,
+        value = 0,
         thickness = thickness,
         forced_width = size,
         forced_height = size,

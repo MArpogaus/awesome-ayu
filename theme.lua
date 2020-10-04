@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 11:33:56
+-- @Last Modified at: 2020-10-04 19:33:43
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -42,6 +42,7 @@ local theme = require('themes.ayu.ayu_theme')
 local color_schemes = require('themes.ayu.color_schemes')
 
 -- custom wibox widgets
+local widgets = require('themes.ayu.widgets')
 local wibar_widgets = require('themes.ayu.widgets.wibar')
 local desktop_widgets = require('themes.ayu.widgets.desktop')
 
@@ -55,6 +56,9 @@ theme.icon_theme = config.icon_theme
 
 -- [ module functions ] --------------------------------------------------------
 theme.at_screen_connect = function(s)
+    -- initialize widgets for this screen
+    widgets.init(s)
+
     if config.dpi then s.dpi = config.dpi end
 
     if s.desktop_popup then
@@ -126,7 +130,7 @@ theme.at_screen_connect = function(s)
 
     -- Create the desktop widget popup
     if config.arc_widgets then
-        local widgets = {
+        local wtable = {
             spacing = theme.desktop_widgets_arc_spacing,
             layout = wibox.layout.fixed.horizontal
         }
@@ -141,7 +145,7 @@ theme.at_screen_connect = function(s)
 
             warg.fg_color = warg.fg_color or fg_color
             warg.bg_color = warg.bg_color or bg_color
-            table.insert(widgets, desktop_widgets.arcs[w](warg))
+            table.insert(wtable, desktop_widgets.arcs[w](warg))
         end
 
         s.desktop_popup = awful.popup {
@@ -153,7 +157,7 @@ theme.at_screen_connect = function(s)
                         -- Center widgets horizontally
                         wibox.widget {
                             nil,
-                            widgets,
+                            wtable,
                             nil,
                             expand = 'outer',
                             layout = wibox.layout.align.vertical
@@ -203,7 +207,7 @@ theme.at_screen_connect = function(s)
         }
     end
 
-    local widgets = {layout = wibox.layout.fixed.horizontal}
+    local wtable = {layout = wibox.layout.fixed.horizontal}
     for i, w in pairs(config.wibar_widgets) do
         local midx = #theme.widgets.wibar
         local cidx = (i - 1) % midx + 1
@@ -212,9 +216,9 @@ theme.at_screen_connect = function(s)
                          {}
         warg = gears.table.clone(warg)
         warg.color = warg.color or theme.widgets.wibar[cidx]
-        table.insert(widgets, wibar_widgets[w](warg))
+        table.insert(wtable, wibar_widgets[w](warg))
     end
-    table.insert(widgets, myexitmenu)
+    table.insert(wtable, myexitmenu)
 
     s.mytopwibar:setup{
         layout = wibox.layout.align.horizontal,
@@ -228,7 +232,7 @@ theme.at_screen_connect = function(s)
         -- Middle widgets
         nil,
         -- Right widgets
-        widgets
+        wtable
     }
 
     -- Create the bottom wibox
@@ -268,6 +272,8 @@ theme.at_screen_connect = function(s)
 
     local focused_screen = awful.screen.focused()
     focused_screen.systray:set_screen(focused_screen)
+
+    widgets.update_widgets()
 end
 
 theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end

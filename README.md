@@ -12,10 +12,12 @@ This theme has been inspired by the multicolor theme from [Awesome WM Copycats][
     - [light](#light)
 - [Installation](#installation)
     - [Dependencies](#dependencies)
-    - [Quick installation example](#quick-installation-example)
+    - [Preconfigured awesome configuration](#preconfigured-awesome-configuration)
+    - [Use theme with your custom configuration.](#use-theme-with-your-custom-configuration)
 - [Configuration](#configuration)
     - [Widget Parameters](#widget-parameters)
 - [Helper functions](#helper-functions)
+- [License](#license)
 - [Related projects](#related-projects)
 
 <!-- /MarkdownTOC -->
@@ -54,7 +56,14 @@ optional to switch colorschemes
 
  * [wpgtk][wpgtk]
 
-## Quick installation example
+## Preconfigured awesome configuration
+
+My [awesome configuration][awesome-rc] uses this theme.
+Follow the instruction in my [awesome-rc][awesome-rc] repo to use my setup as a starting point.
+
+## Use theme with your custom configuration.
+
+Follow these instruction to use my theme in your custom awesome configuration.
 
  1. Clone [vicious][vicious] and theme to `~/.config/awesome/`
     ```shell
@@ -222,6 +231,10 @@ awful.key(
 ...
 ```
 
+# License
+
+licensed under MIT License Copyright (c) 2020 Marcel Arpogaus. See [LICENSE](LICENSE) for further details.
+
 # Related projects
 
 - `ayu` for Ace: https://github.com/ayu-theme/ayu-ace
@@ -242,3 +255,4 @@ awful.key(
 [json-colorschemes]: https://github.com/deviantfero/wpgtk/wiki/Colorschemes#import-a-colorscheme
 [wpk-templates]: https://github.com/deviantfero/wpgtk-templates
 [xsettingsd]: https://wiki.archlinux.org/index.php/Xsettingsd
+[awesome-rc]: https://github.com/MArpogaus/awesome-rc

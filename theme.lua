@@ -142,7 +142,7 @@ theme.at_screen_connect = function(s)
             local warg = config.widgets_arg[w] or
                              config.widgets_arg[gears.string.split(w, '_')[1]] or
                              {}
-
+            warg = gears.table.clone(warg)
             warg.fg_color = warg.fg_color or fg_color
             warg.bg_color = warg.bg_color or bg_color
             table.insert(wtable, desktop_widgets.arcs[w](warg))

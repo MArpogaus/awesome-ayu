@@ -67,7 +67,7 @@ Follow these instruction to use my theme in your custom awesome configuration.
 
  1. Clone [vicious][vicious] and theme to `~/.config/awesome/`
     ```shell
-    cd .config/awesome
+    cd $HOME/.config/awesome
     mkdir themes
     git clone https://github.com/MArpogaus/awesome-ayu.git themes/ayu
     git clone https://github.com/vicious-widgets/vicious.git vicious
@@ -100,6 +100,27 @@ Follow these instruction to use my theme in your custom awesome configuration.
 
  1. **Optional:** install [wpgtk][wpgtk] to switch colorschemes.
     [JSON colorschemes][json-colorschemes] and a `Rofi` template can be found in the `wpg` folder.
+    ```shell
+    # Install from Pip
+    sudo pip3 install wpgtk
+    # Install from AUR
+    pamac build wpgtk-git
+    
+    # install colorschemes
+    cd $HOME/.config/awesome/themes/ayu/img
+    cs=light; wpg -a $cs.png; wpg -i $cs.png ../wpg/ayu_$cs.json
+    cs=dark; wpg -a $cs.png; wpg -i $cs.png ../wpg/ayu_$cs.json
+    cs=mirage; wpg -a $cs.png; wpg -i $cs.png ../wpg/ayu_$cs.json
+    
+    # install wpgtk templates for icons, gtk and rofi themes
+    wpg-install.sh -gir
+
+    # install modified rofi template
+    cp $HOME/.config/awesome/themes/ayu/wpg/templates/rofi.base $HOME/.config/wpg/templates/rofi.base
+
+    # restore on startup
+    echo '$HOME/.config/wpg/wp_init.sh' > $HOME/.xprofile
+    ```
 
 # Configuration
 

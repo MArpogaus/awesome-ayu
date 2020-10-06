@@ -8,7 +8,7 @@ module.xresources = false
 module.color_scheme = 'light'
 
 -- path to your wallpaper
--- module.wallpaper = 'light'
+-- module.wallpaper = ''
 
 -- [ widgets ] -----------------------------------------------------------------
 -- disable desktop widget
@@ -44,7 +44,7 @@ module.widgets_arg = {
     },
     net = {
         -- network interface
-        net_interface = 'change_me'
+        interface = 'change_me'
     }
 }
 

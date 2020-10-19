@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-04 19:33:43
+-- @Last Modified at: 2020-10-19 16:13:38
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -58,6 +58,9 @@ theme.icon_theme = config.icon_theme
 theme.at_screen_connect = function(s)
     -- initialize widgets for this screen
     widgets.init(s)
+
+    -- unregister widgets
+    widgets.unregister_widgets()
 
     if config.dpi then s.dpi = config.dpi end
 
@@ -271,9 +274,41 @@ theme.at_screen_connect = function(s)
     s.mybottomwibar:connect_signal('mouse::enter', s.systray_set_screen)
 
     local focused_screen = awful.screen.focused()
-    focused_screen.systray:set_screen(focused_screen)
+    --focused_screen.systray:set_screen(focused_screen)
 
     widgets.update_widgets()
+
+    s:connect_signal('removed', function ()
+        widgets.init(s)
+
+        -- unregister widgets
+        widgets.unregister_widgets()
+
+        if s.desktop_popup then
+            s.desktop_popup.widget:reset()
+            s.desktop_popup = nil
+        end
+        if s.mytopwibar then
+            s.mytopwibar.widget:reset()
+            s.mytopwibar:remove()
+            s.mytopwibar = nil
+        end
+        if s.mybottomwibar then
+            s.mybottomwibar.widget:reset()
+            s.mybottomwibar:remove()
+            s.mybottomwibar = nil
+        end
+        if s.promptbox then
+            s.promptbox:reset()
+            s.promptbox:remove()
+            s.promptbox = nil
+        end
+        if s.mytaglist then
+            s.mytaglist:reset()
+            s.mytaglist:remove()
+            s.mytaglist = nil
+        end
+    end)
 end
 
 theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end

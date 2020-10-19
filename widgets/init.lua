@@ -4,7 +4,7 @@
 -- @Date:   2020-09-26 20:19:50
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-04 19:56:11
+-- @Last Modified at: 2020-10-19 16:12:46
 -- [ description ] -------------------------------------------------------------
 -- metatable to create register and unregister vicious widgets
 -- [ license ] -----------------------------------------------------------------
@@ -102,7 +102,6 @@ end
 
 module.unregister_widgets = function()
     for i, w in pairs(registered_widgets) do
-        gears.debug.print_warning('unregister ' .. i)
         vicious.unregister(w)
     end
     registered_widgets = {}
@@ -113,8 +112,6 @@ module.update_widgets = function() vicious.force(registered_widgets) end
 module.init = function(s)
     if s.registered_widgets then
         registered_widgets = s.registered_widgets
-        -- unregister widgets
-        module.unregister_widgets(s)
     else
         s.registered_widgets = {}
         registered_widgets = s.registered_widgets

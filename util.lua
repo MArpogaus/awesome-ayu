@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-04 19:56:53
+-- @Last Modified at: 2020-10-19 15:00:23
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -91,6 +91,11 @@ local function set_color_scheme(cs, ico)
         -- update icon theme
         set_icon_colorscheme(ico)
     end
+    local clients = awful.screen.focused().clients
+    for _, c in ipairs(clients) do
+         c:emit_signal("request::titlebars")
+    end
+
 end
 
 -- [ module functions ] --------------------------------------------------------

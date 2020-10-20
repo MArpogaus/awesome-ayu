@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-19 16:13:38
+-- @Last Modified at: 2020-10-20 12:49:02
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -60,7 +60,7 @@ theme.at_screen_connect = function(s)
     widgets.init(s)
 
     -- unregister widgets
-    widgets.unregister_widgets()
+    widgets.unregister_widgets(s)
 
     if config.dpi then s.dpi = config.dpi end
 
@@ -148,7 +148,7 @@ theme.at_screen_connect = function(s)
             warg = gears.table.clone(warg)
             warg.fg_color = warg.fg_color or fg_color
             warg.bg_color = warg.bg_color or bg_color
-            table.insert(wtable, desktop_widgets.arcs[w](warg))
+            table.insert(wtable, desktop_widgets.arcs[w](s, warg))
         end
 
         s.desktop_popup = awful.popup {
@@ -166,7 +166,7 @@ theme.at_screen_connect = function(s)
                             layout = wibox.layout.align.vertical
                         },
                         desktop_widgets.clock(),
-                        desktop_widgets.weather(config.widgets_arg.weather),
+                        desktop_widgets.weather(s, config.widgets_arg.weather),
                         expand = 'outside',
                         layout = wibox.layout.align.vertical
                     },
@@ -219,7 +219,7 @@ theme.at_screen_connect = function(s)
                          {}
         warg = gears.table.clone(warg)
         warg.color = warg.color or theme.widgets.wibar[cidx]
-        table.insert(wtable, wibar_widgets[w](warg))
+        table.insert(wtable, wibar_widgets[w](s, warg))
     end
     table.insert(wtable, myexitmenu)
 
@@ -274,41 +274,43 @@ theme.at_screen_connect = function(s)
     s.mybottomwibar:connect_signal('mouse::enter', s.systray_set_screen)
 
     local focused_screen = awful.screen.focused()
-    --focused_screen.systray:set_screen(focused_screen)
+    -- focused_screen.systray:set_screen(focused_screen)
 
-    widgets.update_widgets()
+    widgets.update_widgets(s)
 
-    s:connect_signal('removed', function ()
-        widgets.init(s)
+    s:connect_signal(
+        'removed', function()
+            widgets.init(s)
 
-        -- unregister widgets
-        widgets.unregister_widgets()
+            -- unregister widgets
+            widgets.unregister_widgets(s)
 
-        if s.desktop_popup then
-            s.desktop_popup.widget:reset()
-            s.desktop_popup = nil
+            if s.desktop_popup then
+                s.desktop_popup.widget:reset()
+                s.desktop_popup = nil
+            end
+            if s.mytopwibar then
+                s.mytopwibar.widget:reset()
+                s.mytopwibar:remove()
+                s.mytopwibar = nil
+            end
+            if s.mybottomwibar then
+                s.mybottomwibar.widget:reset()
+                s.mybottomwibar:remove()
+                s.mybottomwibar = nil
+            end
+            if s.promptbox then
+                s.promptbox:reset()
+                s.promptbox:remove()
+                s.promptbox = nil
+            end
+            if s.mytaglist then
+                s.mytaglist:reset()
+                s.mytaglist:remove()
+                s.mytaglist = nil
+            end
         end
-        if s.mytopwibar then
-            s.mytopwibar.widget:reset()
-            s.mytopwibar:remove()
-            s.mytopwibar = nil
-        end
-        if s.mybottomwibar then
-            s.mybottomwibar.widget:reset()
-            s.mybottomwibar:remove()
-            s.mybottomwibar = nil
-        end
-        if s.promptbox then
-            s.promptbox:reset()
-            s.promptbox:remove()
-            s.promptbox = nil
-        end
-        if s.mytaglist then
-            s.mytaglist:reset()
-            s.mytaglist:remove()
-            s.mytaglist = nil
-        end
-    end)
+    )
 end
 
 theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end

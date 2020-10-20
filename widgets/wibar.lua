@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 08:12:41
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:44:55
+-- @Last Modified at: 2020-10-20 12:44:16
 -- [ description ] -------------------------------------------------------------
 -- wibar widgets
 -- [ license ] -----------------------------------------------------------------
@@ -40,13 +40,13 @@ local weather = require('themes.ayu.widgets.weather')
 -- [ local objects ] -----------------------------------------------------------
 local module = {
     weather = weather.create_wibar_widget,
-    net_down = function(warg)
+    net_down = function(s, warg)
         warg.value = 'down'
-        return net.create_wibar_widget(warg)
+        return net.create_wibar_widget(s, warg)
     end,
-    net_up = function(warg)
+    net_up = function(s, warg)
         warg.value = 'up'
-        return net.create_wibar_widget(warg)
+        return net.create_wibar_widget(s, warg)
     end,
     vol = volume.create_wibar_widget,
     mem = memory.create_wibar_widget,

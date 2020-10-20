@@ -47,9 +47,10 @@ local function set_wpg_colorscheme(theme)
 end
 local function set_subl_colorscheme(theme)
     local subl_prefs = string.format(
-        '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
-        os.getenv('HOME')
-    )
+                          
+                               '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
+                               os.getenv('HOME')
+                       )
     awful.spawn.with_shell(
         string.format(
             'sed -i \'s:ayu-\\(light\\|dark\\|mirage\\):ayu-%s:\' \'%s\'',
@@ -92,9 +93,7 @@ local function set_color_scheme(cs, ico)
         set_icon_colorscheme(ico)
     end
     local clients = awful.screen.focused().clients
-    for _, c in ipairs(clients) do
-         c:emit_signal("request::titlebars")
-    end
+    for _, c in ipairs(clients) do c:emit_signal('request::titlebars') end
 
 end
 

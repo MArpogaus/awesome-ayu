@@ -4,7 +4,7 @@
 -- @Date:   2020-09-26 20:19:50
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-20 12:51:14
+-- @Last Modified at: 2020-11-27 13:32:35
 -- [ description ] -------------------------------------------------------------
 -- create register and unregister vicious widgets
 -- [ license ] -----------------------------------------------------------------
@@ -27,7 +27,6 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
-local gears = require('gears')
 local wibox = require('wibox')
 
 local vicious = require('vicious')
@@ -35,15 +34,11 @@ local vicious = require('vicious')
 local util = require('themes.ayu.util')
 
 -- [ local objects ] -----------------------------------------------------------
-local name = ...
 local module = {}
 
 -- [ local functions ] ---------------------------------------------------------
-local function create_widget(s, widget_def, widget_container, timeout)
-    assert(
-        s.registered_widgets, 'module not initialized for screen. call ' ..
-            name .. '.init(screen) fist!'
-    )
+local function create_widget(widget_def, widget_container, timeout)
+    local registered_widgets = {}
 
     local widget_container_args = widget_def.container_args or {}
     for key, w in pairs(widget_def.widgets) do
@@ -60,12 +55,14 @@ local function create_widget(s, widget_def, widget_container, timeout)
         if w.wtype and w.format then
             vicious.register(widget, w.wtype, w.format, timeout, w.warg)
             -- bookkeeping to unregister widget
-            table.insert(s.registered_widgets, widget)
+            table.insert(registered_widgets, widget)
         end
     end
 
     -- return widget container
-    return widget_container(widget_container_args)
+    local container = widget_container(widget_container_args)
+    container.has_registered_widgets = registered_widgets ~= nil
+    return container, registered_widgets
 end
 
 -- [ module functions ] --------------------------------------------------------
@@ -74,39 +71,27 @@ module.new = function(args)
 
     for k, wd in pairs(args) do
         widget_generator['create_' .. k .. '_widget'] =
-            function(s, wargs)
+            function(wargs)
                 wargs = wargs or {}
                 local widget_def = wd(wargs)
                 local timeout = wargs.timeout or widget_def.default_timeout
                 if k == 'wibar' then
                     return create_widget(
-                               s, widget_def, util.create_wibar_widget, timeout
+                               widget_def, util.create_wibar_widget, timeout
                            )
                 elseif k == 'arc' then
                     return create_widget(
-                               s, widget_def, util.create_arc_widget, timeout
+                               widget_def, util.create_arc_widget, timeout
                            )
                 else
                     return create_widget(
-                               s, widget_def, widget_def.widget_container,
-                               timeout
+                               widget_def, widget_def.widget_container, timeout
                            )
                 end
             end
     end
 
     return widget_generator
-end
-
-module.unregister_widgets = function(s)
-    for i, w in pairs(s.registered_widgets) do vicious.unregister(w) end
-    s.registered_widgets = {}
-end
-
-module.update_widgets = function(s) vicious.force(s.registered_widgets) end
-
-module.init = function(s)
-    if not s.registered_widgets then s.registered_widgets = {} end
 end
 
 -- [ return module ] -----------------------------------------------------------

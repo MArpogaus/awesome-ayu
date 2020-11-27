@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:11:37
+-- @Last Modified at: 2020-11-27 13:23:06
 -- [ description ] -------------------------------------------------------------
 -- weather widgets
 -- [ license ] -----------------------------------------------------------------
@@ -126,7 +126,7 @@ local function weather_widget_container(args)
         nil,
         expand = 'none',
         layout = wibox.layout.align.horizontal
-    }, weather_widget
+    }
 end
 
 -- [ sequential code ] ---------------------------------------------------------

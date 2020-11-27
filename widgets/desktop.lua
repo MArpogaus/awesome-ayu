@@ -4,7 +4,7 @@
 -- @Date:   2019-11-18 10:19:01
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-20 12:44:28
+-- @Last Modified at: 2020-11-27 11:27:46
 -- [ description ] -------------------------------------------------------------
 -- desktop widgets
 -- [ license ] -----------------------------------------------------------------
@@ -46,13 +46,13 @@ module.weather = weather.create_desktop_widget
 
 -- [ arcs ] --------------------------------------------------------------------
 module.arcs = {
-    net_down = function(s, warg)
+    net_down = function(warg)
         warg.value = 'down'
-        return net.create_arc_widget(s, warg)
+        return net.create_arc_widget(warg)
     end,
-    net_up = function(s, warg)
+    net_up = function(warg)
         warg.value = 'up'
-        return net.create_arc_widget(s, warg)
+        return net.create_arc_widget(warg)
     end,
     vol = volume.create_arc_widget,
     mem = memory.create_arc_widget,

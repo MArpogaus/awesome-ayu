@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-19 15:00:23
+-- @Last Modified at: 2020-11-27 11:37:38
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -47,6 +47,7 @@ local function set_wpg_colorscheme(theme)
 end
 local function set_subl_colorscheme(theme)
     local subl_prefs = string.format(
+
                           
                                '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
                                os.getenv('HOME')
@@ -387,6 +388,14 @@ end
 module.set_dark = function() set_color_scheme('dark', 'flattrcolor') end
 module.set_mirage = function() set_color_scheme('mirage', 'flattrcolor') end
 module.set_light = function() set_color_scheme('light', 'flattrcolor-dark') end
+
+-- manage widgets
+module.toggle_widgets =
+    function() for s in screen do s.toggle_widgets() end end
+module.update_widgets =
+    function() for s in screen do s.update_widgets() end end
+module.toggle_desktop_widget_visibility =
+    function() for s in screen do s.toggle_desktop_widget_visibility() end end
 
 -- [ return module ] -----------------------------------------------------------
 return module

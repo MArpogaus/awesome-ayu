@@ -4,7 +4,7 @@
 -- @Date:   2019-06-16 10:35:55
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 10:11:21
+-- @Last Modified at: 2020-11-27 09:33:42
 --
 -- @Last Modified by: Marcel Arpogaus
 -- @Last Modified at: 2020-09-30 08:50:41
@@ -48,7 +48,7 @@ local fa_bat_icons = {
     '' -- fa-battery-4 (alias) [&#xf240;]
 }
 
-local default_timeout = 5
+local default_timeout = 15
 local default_bat = 'BAT0'
 local default_fg_color = beautiful.fg_normal
 local default_bg_color = beautiful.bg_normal

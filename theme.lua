@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-20 12:49:02
+-- @Last Modified at: 2020-11-27 14:28:46
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -37,12 +37,13 @@ local gears = require('gears')
 local awful = require('awful')
 local wibox = require('wibox')
 
+local vicious = require('vicious')
+
 local util = require('themes.ayu.util')
 local theme = require('themes.ayu.ayu_theme')
 local color_schemes = require('themes.ayu.color_schemes')
 
 -- custom wibox widgets
-local widgets = require('themes.ayu.widgets')
 local wibar_widgets = require('themes.ayu.widgets.wibar')
 local desktop_widgets = require('themes.ayu.widgets.desktop')
 
@@ -56,46 +57,10 @@ theme.icon_theme = config.icon_theme
 
 -- [ module functions ] --------------------------------------------------------
 theme.at_screen_connect = function(s)
-    -- initialize widgets for this screen
-    widgets.init(s)
-
     -- unregister widgets
-    widgets.unregister_widgets(s)
+    if s.reset then s.reset() end
 
     if config.dpi then s.dpi = config.dpi end
-
-    if s.desktop_popup then
-        s.desktop_popup.widget:reset()
-        s.desktop_popup = nil
-    end
-    if s.mytopwibar then
-        s.mytopwibar.widget:reset()
-        s.mytopwibar:remove()
-        s.mytopwibar = nil
-    end
-    if s.mybottomwibar then
-        s.mybottomwibar.widget:reset()
-        s.mybottomwibar:remove()
-        s.mybottomwibar = nil
-    end
-    if s.promptbox then
-        s.promptbox:reset()
-        s.promptbox:remove()
-        s.promptbox = nil
-    end
-    if s.mytaglist then
-        s.mytaglist:reset()
-        s.mytaglist:remove()
-        s.mytaglist = nil
-    else
-        -- Each screen has its own tag table.
-        if not config.tyrannical then
-            awful.tag(
-                awful.util.tagnames, s,
-                awful.layout.default[s.index] or awful.layout.layouts[1]
-            )
-        end
-    end
 
     -- If wallpaper is a function, call it with the screen
     local wallpaper = config.wallpaper or theme.wallpaper
@@ -133,10 +98,11 @@ theme.at_screen_connect = function(s)
 
     -- Create the desktop widget popup
     if config.arc_widgets then
-        local wtable = {
+        local arc_widget_containers = {
             spacing = theme.desktop_widgets_arc_spacing,
             layout = wibox.layout.fixed.horizontal
         }
+        s.registered_desktop_widgets = {}
         for i, w in pairs(config.arc_widgets) do
             local midx = #theme.widgets.desktop.arcs
             local cidx = (i - 1) % midx + 1
@@ -148,9 +114,29 @@ theme.at_screen_connect = function(s)
             warg = gears.table.clone(warg)
             warg.fg_color = warg.fg_color or fg_color
             warg.bg_color = warg.bg_color or bg_color
-            table.insert(wtable, desktop_widgets.arcs[w](s, warg))
+            local widget_container, registered_widgets =
+                desktop_widgets.arcs[w](warg)
+            table.insert(arc_widget_containers, widget_container)
+            s.registered_desktop_widgets =
+                gears.table.join(
+                    s.registered_desktop_widgets, registered_widgets
+                )
         end
-
+        local desktop_widgets_clock_container, desktop_widgets_clock_widgets =
+            desktop_widgets.clock()
+        local desktop_widgets_weather_container,
+              desktop_widgets_weather_widgets =
+            desktop_widgets.weather(s, config.widgets_arg.weather)
+        s.registered_desktop_widgets = gears.table.join(
+                                           s.registered_desktop_widgets,
+                                           desktop_widgets_weather_widgets,
+                                           desktop_widgets_clock_widgets
+                                       )
+        s.desktop_widget_containers = gears.table.join(
+                                          arc_widget_containers,
+                                          desktop_widgets_weather_container,
+                                          desktop_widgets_clock_container
+                                      )
         s.desktop_popup = awful.popup {
             widget = {
                 {
@@ -160,13 +146,13 @@ theme.at_screen_connect = function(s)
                         -- Center widgets horizontally
                         wibox.widget {
                             nil,
-                            wtable,
+                            arc_widget_containers,
                             nil,
                             expand = 'outer',
                             layout = wibox.layout.align.vertical
                         },
-                        desktop_widgets.clock(),
-                        desktop_widgets.weather(s, config.widgets_arg.weather),
+                        desktop_widgets_clock_container,
+                        desktop_widgets_weather_container,
                         expand = 'outside',
                         layout = wibox.layout.align.vertical
                     },
@@ -210,7 +196,8 @@ theme.at_screen_connect = function(s)
         }
     end
 
-    local wtable = {layout = wibox.layout.fixed.horizontal}
+    s.wibar_widget_containers = {layout = wibox.layout.fixed.horizontal}
+    s.registered_wibar_widgets = {}
     for i, w in pairs(config.wibar_widgets) do
         local midx = #theme.widgets.wibar
         local cidx = (i - 1) % midx + 1
@@ -219,9 +206,14 @@ theme.at_screen_connect = function(s)
                          {}
         warg = gears.table.clone(warg)
         warg.color = warg.color or theme.widgets.wibar[cidx]
-        table.insert(wtable, wibar_widgets[w](s, warg))
+        local widget_container, registered_widgets = wibar_widgets[w](warg)
+        table.insert(s.wibar_widget_containers, widget_container)
+        s.registered_wibar_widgets = gears.table.join(
+                                         s.registered_wibar_widgets,
+                                         registered_widgets
+                                     )
     end
-    table.insert(wtable, myexitmenu)
+    table.insert(s.wibar_widget_containers, myexitmenu)
 
     s.mytopwibar:setup{
         layout = wibox.layout.align.horizontal,
@@ -235,7 +227,7 @@ theme.at_screen_connect = function(s)
         -- Middle widgets
         nil,
         -- Right widgets
-        wtable
+        s.wibar_widget_containers
     }
 
     -- Create the bottom wibox
@@ -270,47 +262,96 @@ theme.at_screen_connect = function(s)
     s.systray_set_screen = function()
         if s.systray then s.systray:set_screen(s) end
     end
-
-    s.mybottomwibar:connect_signal('mouse::enter', s.systray_set_screen)
-
-    local focused_screen = awful.screen.focused()
-    -- focused_screen.systray:set_screen(focused_screen)
-
-    widgets.update_widgets(s)
-
-    s:connect_signal(
-        'removed', function()
-            widgets.init(s)
-
-            -- unregister widgets
-            widgets.unregister_widgets(s)
-
+    s.unregister_widgets = function()
+        if s.registered_wibar_widgets then
+            for _, w in ipairs(s.registered_wibar_widgets) do
+                vicious.unregister(w)
+                gears.debug.print_warning('removed')
+            end
+            s.registered_wibar_widgets = nil
+        end
+        if s.registered_desktop_widgets then
+            for _, w in ipairs(s.registered_desktop_widgets) do
+                vicious.unregister(w)
+                gears.debug.print_warning('removed')
+            end
+            s.registered_desktop_widgets = nil
+        end
+    end
+    s.update_widgets = function()
+        vicious.force(s.registered_wibar_widgets)
+        if s.desktop_popup then
+            vicious.force(s.registered_desktop_widgets)
+        end
+    end
+    s.toggle_widgets = function()
+        local opacity
+        if s.widgets_suspeded then
+            vicious.activate()
+            s.widgets_suspeded = false
+        else
+            vicious.suspend()
+            s.widgets_suspeded = true
+        end
+    end
+    s.toggle_desktop_widget_visibility =
+        function()
             if s.desktop_popup then
-                s.desktop_popup.widget:reset()
-                s.desktop_popup = nil
-            end
-            if s.mytopwibar then
-                s.mytopwibar.widget:reset()
-                s.mytopwibar:remove()
-                s.mytopwibar = nil
-            end
-            if s.mybottomwibar then
-                s.mybottomwibar.widget:reset()
-                s.mybottomwibar:remove()
-                s.mybottomwibar = nil
-            end
-            if s.promptbox then
-                s.promptbox:reset()
-                s.promptbox:remove()
-                s.promptbox = nil
-            end
-            if s.mytaglist then
-                s.mytaglist:reset()
-                s.mytaglist:remove()
-                s.mytaglist = nil
+                local is_visible = s.desktop_popup.visible
+                s.desktop_popup.visible = not is_visible
+                if is_visible then
+                    for _, w in ipairs(s.registered_desktop_widgets) do
+                        vicious.unregister(w, true)
+                    end
+                else
+                    for _, w in ipairs(s.registered_desktop_widgets) do
+                        vicious.activate(w)
+                    end
+                end
             end
         end
-    )
+    s.reset = function()
+        s.unregister_widgets()
+
+        if s.desktop_popup then
+            s.desktop_popup.widget:reset()
+            s.desktop_popup = nil
+        end
+        if s.mytopwibar then
+            s.mytopwibar.widget:reset()
+            s.mytopwibar:remove()
+            s.mytopwibar = nil
+        end
+        if s.mybottomwibar then
+            s.mybottomwibar.widget:reset()
+            s.mybottomwibar:remove()
+            s.mybottomwibar = nil
+        end
+        if s.promptbox then
+            s.promptbox:reset()
+            s.promptbox:remove()
+            s.promptbox = nil
+        end
+        if s.mytaglist then
+            s.mytaglist:reset()
+            s.mytaglist:remove()
+            s.mytaglist = nil
+        else
+            -- Each screen has its own tag table.
+            if not config.tyrannical then
+                awful.tag(
+                    awful.util.tagnames, s,
+                    awful.layout.default[s.index] or awful.layout.layouts[1]
+                )
+            end
+        end
+        collectgarbage()
+    end
+
+    s.mybottomwibar:connect_signal('mouse::enter', s.systray_set_screen)
+    s:connect_signal('removed', s.reset)
+
+    s.update_widgets()
 end
 
 theme.set_dark = function(self) self:set_color_scheme(color_schemes.dark) end

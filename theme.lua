@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-11-27 14:28:46
+-- @Last Modified at: 2020-11-28 14:57:37
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -97,7 +97,7 @@ theme.at_screen_connect = function(s)
     }
 
     -- Create the desktop widget popup
-    if config.arc_widgets then
+    if config.desktop_widgets then
         local arc_widget_containers = {
             spacing = theme.desktop_widgets_arc_spacing,
             layout = wibox.layout.fixed.horizontal
@@ -139,37 +139,28 @@ theme.at_screen_connect = function(s)
                                       )
         s.desktop_popup = awful.popup {
             widget = {
-                {
-                    -- Center widgets vertically
-                    nil,
-                    {
-                        -- Center widgets horizontally
-                        wibox.widget {
-                            nil,
+                        {
+                            -- Align widgets vertically
                             arc_widget_containers,
-                            nil,
-                            expand = 'outer',
+                            {
+                                desktop_widgets_clock_container,
+                                widget=wibox.container.margin,
+                                top=100,
+                                bottom=100
+                            },
+                            desktop_widgets_weather_container,
                             layout = wibox.layout.align.vertical
                         },
-                        desktop_widgets_clock_container,
-                        desktop_widgets_weather_container,
-                        expand = 'outside',
-                        layout = wibox.layout.align.vertical
+                        widget=wibox.container.margin,
+                        margins=50,
+                        opacity=0.9
                     },
-                    nil,
-                    expand = 'none',
-                    layout = wibox.layout.align.horizontal
-                },
-                widget = wibox.container.constraint,
-                forced_width = s.workarea.width,
-                forced_height = s.workarea.height
-            },
             type = 'desktop',
             screen = s,
             placement = awful.placement.centered,
             visible = true,
-            bg = '#00000000',
-            shape_input = root.wallpaper(),
+            bg = theme.bg_normal..'88',
+            shape = gears.shape.rounded_rect,
             input_passthrough = true
         }
     end
@@ -266,14 +257,12 @@ theme.at_screen_connect = function(s)
         if s.registered_wibar_widgets then
             for _, w in ipairs(s.registered_wibar_widgets) do
                 vicious.unregister(w)
-                gears.debug.print_warning('removed')
             end
             s.registered_wibar_widgets = nil
         end
         if s.registered_desktop_widgets then
             for _, w in ipairs(s.registered_desktop_widgets) do
                 vicious.unregister(w)
-                gears.debug.print_warning('removed')
             end
             s.registered_desktop_widgets = nil
         end

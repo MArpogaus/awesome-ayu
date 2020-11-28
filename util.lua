@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-11-27 11:37:38
+-- @Last Modified at: 2020-11-28 15:03:01
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -42,6 +42,13 @@ local owfont = require('themes.ayu.owfont')
 local module = {}
 
 -- [ local functions ] ---------------------------------------------------------
+local function set_xconf(property, value)
+    local xconf = string.format(
+       "xfconf-query -c xsettings --property %s --set %s",
+       property, value
+    )
+    awful.spawn.with_shell(xconf)
+end
 local function set_wpg_colorscheme(theme)
     awful.spawn.with_shell(string.format('wpg -s %s.png', theme))
 end
@@ -60,22 +67,7 @@ local function set_subl_colorscheme(theme)
     )
 end
 local function set_icon_colorscheme(theme)
-    local xsettings_conf = string.format(
-                               '%s/.config/awesome/xsettings',
-                               os.getenv('HOME')
-                           )
-    if theme then
-        awful.spawn.with_shell(
-            string.format(
-                'echo \'Net/IconThemeName "%s"\n\' > %s && xsettingsd -c %s',
-                theme, xsettings_conf, xsettings_conf
-            )
-        )
-    else
-        awful.spawn.with_shell(
-            string.format('xsettingsd -c %s', xsettings_conf)
-        )
-    end
+    set_xconf('/Net/IconThemeName', theme)
 end
 local current_cs
 local function set_color_scheme(cs, ico)
@@ -355,7 +347,7 @@ module.load_config = function(config_file)
         -- icon theme to use
         icon_theme = 'HighContrast',
 
-        -- disable desktop widget
+        -- enable / disable desktop widget
         desktop_widgets = true,
 
         -- Using Tyrannical tag managment engine
@@ -388,6 +380,19 @@ end
 module.set_dark = function() set_color_scheme('dark', 'flattrcolor') end
 module.set_mirage = function() set_color_scheme('mirage', 'flattrcolor') end
 module.set_light = function() set_color_scheme('light', 'flattrcolor-dark') end
+module.restore_xsettings = function() set_xconf() end
+
+-- change dpi
+module.inc_dpi = function(inc)
+    for s in screen do
+        s.dpi = s.dpi + inc
+        set_xconf('/Xft/DPI', s.dpi)
+        gears.debug.print_warning(s.dpi)
+    end
+end
+module.dec_dpi = function(dec)
+    module.inc_dpi(-dec)
+end
 
 -- manage widgets
 module.toggle_widgets =

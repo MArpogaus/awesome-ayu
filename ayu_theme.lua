@@ -4,7 +4,7 @@
 -- @Date:   2019-10-23 19:28:06
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-10-02 11:52:21
+-- @Last Modified at: 2020-12-04 09:05:22
 -- [ description ] -------------------------------------------------------------
 -- factory to build a awesome theme based on a given colorscheme
 -- [ license ] -----------------------------------------------------------------
@@ -48,9 +48,9 @@ module.set_color_scheme = function(self, cs)
     self.bottom_bar_height = self.titlebar_size
 
     self.ico_width = self.titlebar_size
-    self.icon_margin_left = self.ico_width / 3
-    self.icon_margin_right = self.ico_width / 10
-    self.systray_icon_spacing = self.ico_width / 4
+    self.icon_margin_left = 12
+    self.icon_margin_right = 8
+    self.systray_icon_spacing = self.icon_margin_left
 
     self.confdir = config_path .. '/themes/ayu/'
 
@@ -59,8 +59,6 @@ module.set_color_scheme = function(self, cs)
     self.font = self.font_name .. self.font_size
     self.notification_font = self.font_name .. (2 * self.font_size)
 
-    -- self.tasklist_plain_task_name = true
-    self.tasklist_disable_icon = true
     self.useless_gap = 0
     self.button_size = self.titlebar_size
     self.button_radius = 0.35 * self.titlebar_size
@@ -84,6 +82,10 @@ module.set_color_scheme = function(self, cs)
     self.menu_fg_focus = cs.colors[4]
     self.menu_bg_normal = cs.bg
     self.menu_bg_focus = cs.bg
+
+    -- self.tasklist_plain_task_name = true
+    self.tasklist_bg_normal = self.bg_normal
+    self.tasklist_bg_focus = self.fg_focus
 
     -- set colors for buttons and widgets
     self.exit_icon_bg_color = cs.bg -- "#F07171"
@@ -160,6 +162,7 @@ module.set_color_scheme = function(self, cs)
 
     self.desktop_widgets_arc_size = 220
     self.desktop_widgets_arc_spacing = 110
+    self.desktop_widgets_vertical_spacing = 170
     self.desktop_widgets_time_font_size = 50
     self.desktop_widgets_date_font_size =
         self.desktop_widgets_time_font_size / 3

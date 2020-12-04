@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-11-28 14:57:37
+-- @Last Modified at: 2020-12-04 16:58:29
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -30,10 +30,11 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
-local root = root
+local capi = {client = client}
+
+local table = table
 
 local gears = require('gears')
-
 local awful = require('awful')
 local wibox = require('wibox')
 
@@ -64,8 +65,25 @@ theme.at_screen_connect = function(s)
 
     -- If wallpaper is a function, call it with the screen
     local wallpaper = config.wallpaper or theme.wallpaper
-    if type(wallpaper) == 'function' then wallpaper = wallpaper(s) end
-    gears.wallpaper.maximized(wallpaper, s, true)
+    if type(wallpaper) == 'function' then
+        gears.wallpaper.maximized(wallpaper(s), s, true)
+    elseif wallpaper == 'xfconf-query' then
+        local command =
+            'xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path'
+        awful.spawn.easy_async_with_shell(
+            command,
+            function(stdout, stderr, reason, exit_code) -- luacheck: no unused args
+                if exit_code == 0 then
+                    local file_name = string.gsub(stdout, '\n', '')
+                    gears.wallpaper.maximized(file_name, s, true)
+                else
+                    gears.wallpaper.maximized(theme.wallpaper(s), s, true)
+                end
+            end
+        )
+    else
+        gears.wallpaper.maximized(wallpaper, s, true)
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -93,77 +111,158 @@ theme.at_screen_connect = function(s)
     s.mytasklist = awful.widget.tasklist {
         screen = s,
         filter = awful.widget.tasklist.filter.currenttags,
-        buttons = awful.util.tasklist_buttons
+        buttons = awful.util.tasklist_buttons,
+        layout = {
+            spacing = theme.systray_icon_spacing,
+            layout = wibox.layout.fixed.horizontal
+        },
+        -- Notice that there is *NO* wibox.wibox prefix, it is a template,
+        -- not a widget instance.
+        widget_template = {
+            {
+                wibox.widget.base.make_widget(),
+                forced_height = 2,
+                id = 'clientstack',
+                widget = wibox.container.background
+            },
+            {
+                nil,
+                {id = 'clienticon', widget = awful.widget.clienticon},
+                nil,
+                expand = 'none',
+                id = 'clienticoncontainer',
+                widget = wibox.layout.align.horizontal
+            },
+            nil,
+            create_callback = function(self, c, index, objects) -- luacheck: no unused args
+                self:get_children_by_id('clienticon')[1].client = c
+            end,
+            update_callback = function(self, c, index, objects) -- luacheck: no unused args
+                if c.multiple_instances and c.multiple_instances > 1 then
+                    self:get_children_by_id('clientstack')[1].bg =
+                        theme.fg_normal
+                else
+                    self:get_children_by_id('clientstack')[1].bg =
+                        theme.bg_normal
+                end
+                if capi.client.focus and capi.client.focus.class == c.class then
+                    self:get_children_by_id('clienticoncontainer')[1].opacity =
+                        1
+                else
+                    self:get_children_by_id('clienticoncontainer')[1].opacity =
+                        0.5
+                end
+                self:emit_signal('widget::redraw_needed')
+            end,
+            layout = wibox.layout.align.vertical
+        },
+        source = function()
+            -- Get all clients
+            local cls = client.get()
+
+            -- Filter by an existing filter function and allowing only one client per class
+            local clients = {}
+            local class_seen = {}
+            for _, c in pairs(cls) do
+                if awful.widget.tasklist.filter.currenttags(c, s) then
+                    if not class_seen[c.class] then
+                        class_seen[c.class] = 1
+                        clients[c.class] = c
+                    else
+                        class_seen[c.class] = class_seen[c.class] + 1
+                    end
+                    clients[c.class].multiple_instances = class_seen[c.class]
+                end
+            end
+            local ret = {}
+            for _, v in pairs(clients) do table.insert(ret, v) end
+            return ret
+        end
     }
 
     -- Create the desktop widget popup
-    if config.desktop_widgets then
-        local arc_widget_containers = {
-            spacing = theme.desktop_widgets_arc_spacing,
-            layout = wibox.layout.fixed.horizontal
-        }
-        s.registered_desktop_widgets = {}
-        for i, w in pairs(config.arc_widgets) do
-            local midx = #theme.widgets.desktop.arcs
-            local cidx = (i - 1) % midx + 1
-            local bg_color = theme.widgets.desktop.arcs[cidx]
-            local fg_color = util.reduce_contrast(bg_color, 50)
-            local warg = config.widgets_arg[w] or
-                             config.widgets_arg[gears.string.split(w, '_')[1]] or
-                             {}
-            warg = gears.table.clone(warg)
-            warg.fg_color = warg.fg_color or fg_color
-            warg.bg_color = warg.bg_color or bg_color
-            local widget_container, registered_widgets =
-                desktop_widgets.arcs[w](warg)
-            table.insert(arc_widget_containers, widget_container)
-            s.registered_desktop_widgets =
-                gears.table.join(
-                    s.registered_desktop_widgets, registered_widgets
-                )
-        end
-        local desktop_widgets_clock_container, desktop_widgets_clock_widgets =
-            desktop_widgets.clock()
-        local desktop_widgets_weather_container,
-              desktop_widgets_weather_widgets =
-            desktop_widgets.weather(s, config.widgets_arg.weather)
+    local arc_widget_containers = {
+        spacing = theme.desktop_widgets_arc_spacing,
+        layout = wibox.layout.fixed.horizontal
+    }
+    s.registered_desktop_widgets = {}
+    for i, w in pairs(config.arc_widgets) do
+        local midx = #theme.widgets.desktop.arcs
+        local cidx = (i - 1) % midx + 1
+        local color = theme.widgets.desktop.arcs[cidx]
+        local fg_color = util.reduce_contrast(color, 50)
+        local bg_color = util.set_alpha(fg_color, 50)
+        local warg = config.widgets_arg[w] or
+                         config.widgets_arg[gears.string.split(w, '_')[1]] or
+                         {}
+        warg = gears.table.clone(warg)
+        warg.fg_color = warg.fg_color or fg_color
+        warg.bg_color = warg.bg_color or bg_color
+        local widget_container, registered_widgets =
+            desktop_widgets.arcs[w](warg)
+        table.insert(arc_widget_containers, widget_container)
         s.registered_desktop_widgets = gears.table.join(
                                            s.registered_desktop_widgets,
-                                           desktop_widgets_weather_widgets,
-                                           desktop_widgets_clock_widgets
+                                           registered_widgets
                                        )
-        s.desktop_widget_containers = gears.table.join(
-                                          arc_widget_containers,
-                                          desktop_widgets_weather_container,
-                                          desktop_widgets_clock_container
-                                      )
-        s.desktop_popup = awful.popup {
-            widget = {
-                        {
-                            -- Align widgets vertically
-                            arc_widget_containers,
-                            {
-                                desktop_widgets_clock_container,
-                                widget=wibox.container.margin,
-                                top=100,
-                                bottom=100
-                            },
-                            desktop_widgets_weather_container,
-                            layout = wibox.layout.align.vertical
-                        },
-                        widget=wibox.container.margin,
-                        margins=50,
-                        opacity=0.9
-                    },
-            type = 'desktop',
-            screen = s,
-            placement = awful.placement.centered,
-            visible = true,
-            bg = theme.bg_normal..'88',
-            shape = gears.shape.rounded_rect,
-            input_passthrough = true
-        }
     end
+    local desktop_widgets_clock_container, desktop_widgets_clock_widgets =
+        desktop_widgets.clock()
+    local desktop_widgets_weather_container, desktop_widgets_weather_widgets =
+        desktop_widgets.weather(s, config.widgets_arg.weather)
+
+    s.registered_desktop_widgets = gears.table.join(
+                                       s.registered_desktop_widgets,
+                                       desktop_widgets_weather_widgets,
+                                       desktop_widgets_clock_widgets
+                                   )
+    s.desktop_widget_containers = gears.table.join(
+                                      arc_widget_containers,
+                                      desktop_widgets_weather_container,
+                                      desktop_widgets_clock_container
+                                  )
+
+    local desktop_popup_widget = wibox.widget {
+        {
+            -- Align widgets vertically
+            arc_widget_containers,
+            {
+                desktop_widgets_clock_container,
+                widget = wibox.container.margin,
+                top = theme.desktop_widgets_vertical_spacing,
+                bottom = theme.desktop_widgets_vertical_spacing
+            },
+            desktop_widgets_weather_container,
+            layout = wibox.layout.align.vertical
+        },
+        widget = wibox.container.margin,
+        margins = theme.desktop_widgets_vertical_spacing / 2
+    }
+    local desktop_popup_arg = {
+        widget = desktop_popup_widget,
+        type = 'desktop',
+        screen = s,
+        placement = awful.placement.centered,
+        visible = false,
+        input_passthrough = true
+    }
+    if config.wallpaper then
+        desktop_popup_arg.border_color = theme.fg_normal
+        desktop_popup_arg.border_width = theme.border_width
+        desktop_popup_arg.bg = util.set_alpha(theme.bg_normal, 75)
+    end
+
+    s.desktop_popup = awful.popup(desktop_popup_arg)
+    s.desktop_popup:connect_signal(
+        'property::visible', function()
+            if s.desktop_popup.visible then
+                s.activate_desktop_widgets()
+            else
+                s.suspend_desktop_widgets()
+            end
+        end
+    )
+
     -- Create the wibox
     s.mytopwibar = awful.wibar(
                        {
@@ -269,18 +368,50 @@ theme.at_screen_connect = function(s)
     end
     s.update_widgets = function()
         vicious.force(s.registered_wibar_widgets)
-        if s.desktop_popup then
-            vicious.force(s.registered_desktop_widgets)
-        end
+        vicious.force(s.registered_desktop_widgets)
     end
     s.toggle_widgets = function()
-        local opacity
+        local wibar_widgets_opacity
+        local desktop_popup_visible
         if s.widgets_suspeded then
             vicious.activate()
             s.widgets_suspeded = false
+            desktop_popup_visible = true
+            wibar_widgets_opacity = 1
         else
             vicious.suspend()
             s.widgets_suspeded = true
+            desktop_popup_visible = false
+            wibar_widgets_opacity = 0.5
+        end
+        s.desktop_popup.visible = desktop_popup_visible
+        for _, w in ipairs(s.wibar_widget_containers) do
+            if w.has_registered_widgets then
+                w.opacity = wibar_widgets_opacity
+                w:emit_signal('widget::redraw_needed')
+            end
+        end
+    end
+    s.toggle_widgets = function()
+        local wibar_widgets_opacity
+        local desktop_popup_visible
+        if s.widgets_suspeded then
+            vicious.activate()
+            s.widgets_suspeded = false
+            desktop_popup_visible = true
+            wibar_widgets_opacity = 1
+        else
+            vicious.suspend()
+            s.widgets_suspeded = true
+            desktop_popup_visible = false
+            wibar_widgets_opacity = 0.5
+        end
+        s.desktop_popup.visible = desktop_popup_visible
+        for _, w in ipairs(s.wibar_widget_containers) do
+            if w.has_registered_widgets then
+                w.opacity = wibar_widgets_opacity
+                w:emit_signal('widget::redraw_needed')
+            end
         end
     end
     s.toggle_desktop_widget_visibility =
@@ -288,17 +419,18 @@ theme.at_screen_connect = function(s)
             if s.desktop_popup then
                 local is_visible = s.desktop_popup.visible
                 s.desktop_popup.visible = not is_visible
-                if is_visible then
-                    for _, w in ipairs(s.registered_desktop_widgets) do
-                        vicious.unregister(w, true)
-                    end
-                else
-                    for _, w in ipairs(s.registered_desktop_widgets) do
-                        vicious.activate(w)
-                    end
-                end
             end
         end
+    s.suspend_desktop_widgets = function()
+        for _, w in ipairs(s.registered_desktop_widgets) do
+            vicious.unregister(w, true)
+        end
+    end
+    s.activate_desktop_widgets = function()
+        for _, w in ipairs(s.registered_desktop_widgets) do
+            vicious.activate(w)
+        end
+    end
     s.reset = function()
         s.unregister_widgets()
 
@@ -339,6 +471,9 @@ theme.at_screen_connect = function(s)
 
     s.mybottomwibar:connect_signal('mouse::enter', s.systray_set_screen)
     s:connect_signal('removed', s.reset)
+
+    -- show hide desktop_popup
+    s.desktop_popup.visible = config.desktop_widgets
 
     s.update_widgets()
 end

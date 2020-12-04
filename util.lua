@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-11-28 15:03:01
+-- @Last Modified at: 2020-12-04 15:53:40
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -27,10 +27,14 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
+local capi = {screen = screen}
+
 local os = os
+local string = string
 
 local awful = require('awful')
 local gears = require('gears')
+local naughty = require('naughty')
 local gfs = require('gears.filesystem')
 local cairo = require('lgi').cairo
 local wibox = require('wibox')
@@ -42,11 +46,13 @@ local owfont = require('themes.ayu.owfont')
 local module = {}
 
 -- [ local functions ] ---------------------------------------------------------
-local function set_xconf(property, value)
+local function set_xconf(property, value, sleep)
     local xconf = string.format(
-       "xfconf-query -c xsettings --property %s --set %s",
-       property, value
-    )
+                      'xfconf-query -c xsettings --property %s --set \'%s\'',
+                      property, value
+                  )
+    if sleep then xconf = string.format('sleep %.1f && %s', sleep, xconf) end
+    naughty.notify {text = xconf}
     awful.spawn.with_shell(xconf)
 end
 local function set_wpg_colorscheme(theme)
@@ -54,10 +60,9 @@ local function set_wpg_colorscheme(theme)
 end
 local function set_subl_colorscheme(theme)
     local subl_prefs = string.format(
-
-                          
-                               '%s/.config/sublime-text-3/Packages/User/Preferences.sublime-settings',
-                               os.getenv('HOME')
+                           '%s/.config/sublime-text-3/Packages/User' ..
+                               '/Preferences.sublime-settings',
+                           os.getenv('HOME')
                        )
     awful.spawn.with_shell(
         string.format(
@@ -66,8 +71,17 @@ local function set_subl_colorscheme(theme)
         )
     )
 end
+local function reload_emacs_theme()
+    awful.spawn.with_shell(
+        'pgrep emacs && emacsclient -e "(doom/reload-theme)"'
+    )
+end
 local function set_icon_colorscheme(theme)
     set_xconf('/Net/IconThemeName', theme)
+end
+local function set_gtk_colorscheme()
+    set_xconf('/Net/ThemeName', '')
+    set_xconf('/Net/ThemeName', 'FlatColor', 0.5)
 end
 local current_cs
 local function set_color_scheme(cs, ico)
@@ -82,8 +96,12 @@ local function set_color_scheme(cs, ico)
         set_wpg_colorscheme(cs)
         -- update sublime colorscheme
         set_subl_colorscheme(cs)
+        -- update emacs theme
+        reload_emacs_theme()
         -- update icon theme
         set_icon_colorscheme(ico)
+        -- update gtk theme
+        set_gtk_colorscheme()
     end
     local clients = awful.screen.focused().clients
     for _, c in ipairs(clients) do c:emit_signal('request::titlebars') end
@@ -127,6 +145,10 @@ module.reduce_contrast = function(color, ratio)
         return module.darker(color, ratio)
     end
 end
+module.set_alpha = function(color, alpha)
+    local alpha_hex = string.format('%02x', math.floor(alpha * 2.56))
+    return string.sub(color, 1, 7) .. alpha_hex
+end
 
 -- create titlebar_button ------------------------------------------------------
 module.titlebar_button = function(
@@ -167,13 +189,12 @@ module.fa_markup = function(col, ico, size)
     return module.markup {font = fa_font, fg_color = col, text = ico}
 end
 
-module.fa_ico = function(col, ico, size, width)
+module.fa_ico = function(col, ico, size)
     return wibox.widget {
         markup = module.fa_markup(col, ico, size),
         widget = wibox.widget.textbox,
         align = 'center',
-        valign = 'center',
-        forced_width = width or beautiful.ico_width
+        valign = 'center'
     }
 end
 
@@ -199,17 +220,16 @@ module.owf_markup = function(col, weather, sunrise, sunset, size)
     local owf_font = 'owf-regular ' .. font_size
     return module.markup {font = owf_font, fg_color = col, text = icon}
 end
-module.owf_ico = function(col, weather_now, size, width)
+module.owf_ico = function(col, weather_now, size)
     return wibox.widget {
         markup = module.owf_markup(col, weather_now, size),
         widget = wibox.widget.textbox,
         align = 'center',
-        valign = 'center',
-        forced_width = width or beautiful.ico_width
+        valign = 'center'
     }
 end
 
--- stolen from: https://github.com/elenapan/dotfiles/blob/master/config/awesome/noodle/start_screen.lua
+-- inspired by: https://github.com/elenapan/dotfiles/blob/master/config/awesome/noodle/start_screen.lua
 -- Helper function that puts a widget inside a box with a specified background color
 -- Invisible margins are added so that the boxes created with this function are evenly separated
 -- The widget_to_be_boxed is vertically and horizontally centered inside the box
@@ -269,7 +289,7 @@ module.create_wibar_widget = function(args)
 end
 
 module.create_arc_icon = function(fg, icon, size)
-    return module.fa_ico(fg, icon, math.floor(size / 8), math.floor(size / 2))
+    return module.fa_ico(fg, icon, math.floor(size / 8))
 end
 
 module.create_arc_widget = function(args)
@@ -380,27 +400,27 @@ end
 module.set_dark = function() set_color_scheme('dark', 'flattrcolor') end
 module.set_mirage = function() set_color_scheme('mirage', 'flattrcolor') end
 module.set_light = function() set_color_scheme('light', 'flattrcolor-dark') end
-module.restore_xsettings = function() set_xconf() end
 
 -- change dpi
 module.inc_dpi = function(inc)
-    for s in screen do
+    for s in capi.screen do
         s.dpi = s.dpi + inc
-        set_xconf('/Xft/DPI', s.dpi)
-        gears.debug.print_warning(s.dpi)
+        set_xconf('/Xft/DPI', math.floor(s.dpi))
     end
 end
-module.dec_dpi = function(dec)
-    module.inc_dpi(-dec)
-end
+module.dec_dpi = function(dec) module.inc_dpi(-dec) end
 
 -- manage widgets
-module.toggle_widgets =
-    function() for s in screen do s.toggle_widgets() end end
-module.update_widgets =
-    function() for s in screen do s.update_widgets() end end
+module.toggle_widgets = function()
+    for s in capi.screen do s.toggle_widgets() end
+end
+module.update_widgets = function()
+    for s in capi.screen do s.update_widgets() end
+end
 module.toggle_desktop_widget_visibility =
-    function() for s in screen do s.toggle_desktop_widget_visibility() end end
+    function()
+        for s in capi.screen do s.toggle_desktop_widget_visibility() end
+    end
 
 -- [ return module ] -----------------------------------------------------------
 return module

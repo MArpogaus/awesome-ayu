@@ -4,7 +4,7 @@
 -- @Date:   2019-06-30 20:36:28
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-12-04 16:58:29
+-- @Last Modified at: 2020-12-06 12:22:15
 -- [ description ] -------------------------------------------------------------
 -- AYU Awesome WM theme
 --
@@ -30,9 +30,9 @@
 -- SOFTWARE.
 --------------------------------------------------------------------------------
 -- [ required modules ] --------------------------------------------------------
-local capi = {client = client}
-
 local table = table
+
+local capi = {client = client}
 
 local gears = require('gears')
 local awful = require('awful')
@@ -58,7 +58,14 @@ theme.icon_theme = config.icon_theme
 
 -- [ module functions ] --------------------------------------------------------
 theme.at_screen_connect = function(s)
-    -- unregister widgets
+    -- Each screen has its own tag table.
+    if not s.mytaglist then
+        awful.tag(
+            awful.util.tagnames, s,
+            awful.layout.default[s.index] or awful.layout.layouts[1]
+        )
+    end
+
     if s.reset then s.reset() end
 
     if config.dpi then s.dpi = config.dpi end
@@ -121,7 +128,7 @@ theme.at_screen_connect = function(s)
         widget_template = {
             {
                 wibox.widget.base.make_widget(),
-                forced_height = 2,
+                forced_height = 5,
                 id = 'clientstack',
                 widget = wibox.container.background
             },
@@ -158,7 +165,7 @@ theme.at_screen_connect = function(s)
         },
         source = function()
             -- Get all clients
-            local cls = client.get()
+            local cls = capi.client.get()
 
             -- Filter by an existing filter function and allowing only one client per class
             local clients = {}
@@ -457,14 +464,6 @@ theme.at_screen_connect = function(s)
             s.mytaglist:reset()
             s.mytaglist:remove()
             s.mytaglist = nil
-        else
-            -- Each screen has its own tag table.
-            if not config.tyrannical then
-                awful.tag(
-                    awful.util.tagnames, s,
-                    awful.layout.default[s.index] or awful.layout.layouts[1]
-                )
-            end
         end
         collectgarbage()
     end

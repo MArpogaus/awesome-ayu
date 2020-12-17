@@ -48,8 +48,4 @@ module.widgets_arg = {
     }
 }
 
--- [ miscellaneous ] -----------------------------------------------------------
--- Using Tyrannical tag managment engine
-module.tyrannical = false
-
 return module

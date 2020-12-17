@@ -4,7 +4,7 @@
 -- @Date:   2019-07-15 07:46:40
 --
 -- @Last Modified by: Marcel Arpogaus
--- @Last Modified at: 2020-12-04 15:53:40
+-- @Last Modified at: 2020-12-08 08:20:01
 -- [ description ] -------------------------------------------------------------
 -- collection of utility functions
 -- [ license ] -----------------------------------------------------------------
@@ -81,7 +81,7 @@ local function set_icon_colorscheme(theme)
 end
 local function set_gtk_colorscheme()
     set_xconf('/Net/ThemeName', '')
-    set_xconf('/Net/ThemeName', 'FlatColor', 0.5)
+    set_xconf('/Net/ThemeName', 'FlatColor', 1)
 end
 local current_cs
 local function set_color_scheme(cs, ico)
@@ -369,9 +369,6 @@ module.load_config = function(config_file)
 
         -- enable / disable desktop widget
         desktop_widgets = true,
-
-        -- Using Tyrannical tag managment engine
-        tyrannical = false,
 
         -- widgets to be added to wibar
         wibar_widgets = {

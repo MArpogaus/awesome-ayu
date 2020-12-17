@@ -129,7 +129,6 @@ The following table gives an overview of all configuration parameters:
 
 | Name              | Description                             | Type             |
 |:------------------|:----------------------------------------|:-----------------|
-| `tyrannical`      | using Tyrannical tag managment engine   | bool             |
 | `xresources`      | load colorschemes from xresources       | bool             |
 | `color_scheme`    | colorscheme to use                      | string           |
 | `dpi`             | number of pixels per inch of the screen | string           |
@@ -154,9 +153,6 @@ If parameters are unset the following defaults are used:
 
     -- disable desktop widget
     desktop_widgets = true,
-
-    -- Using Tyrannical tag managment engine
-    tyrannical = false,
 
     -- widgets to be added to wibar
     wibar_widgets = {

@@ -104,7 +104,11 @@ local function set_color_scheme(cs, ico)
         set_gtk_colorscheme()
     end
     local clients = awful.screen.focused().clients
-    for _, c in ipairs(clients) do c:emit_signal('request::titlebars') end
+    for _, c in ipairs(clients) do
+        if c.titlebars_enabled then
+            c:emit_signal('request::titlebars')
+        end
+    end
 
 end
 
